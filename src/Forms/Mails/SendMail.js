@@ -2,6 +2,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Select from "react-select";
+import { TextField, Button, Card, Typography, Box, CircularProgress } from "@mui/material";
+
+const customStyles = {
+  control: (provided) => ({
+    ...provided,
+    backgroundColor: "white",
+    borderColor: "#ccc",
+    boxShadow: "none",
+    "&:hover": { borderColor: "#888" },
+  }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: "white",
+    zIndex: 1000,
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isFocused ? "#f0f0f0" : "white",
+    color: "black",
+  }),
+};
 
 const SendMail = () => {
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -10,9 +31,11 @@ const SendMail = () => {
   const [customEmail, setCustomEmail] = useState("");
   const [emailOptions, setEmailOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchEmails = async (search = "") => {
     try {
+      setLoading(true);
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/students-for-table`, {
         params: { search },
       });
@@ -23,6 +46,8 @@ const SendMail = () => {
       setEmailOptions(emails);
     } catch (error) {
       console.error("Error fetching emails:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,6 +75,7 @@ const SendMail = () => {
       return;
     }
     try {
+      setLoading(true);
       await axios.post(`${process.env.REACT_APP_API_URL}/api/send-mail`, {
         emails: selectedEmails.map((e) => e.value),
         subject,
@@ -61,65 +87,73 @@ const SendMail = () => {
       setMessage("");
     } catch (error) {
       Swal.fire({ icon: "error", title: "Failed!", text: "Something went wrong while sending the email. 😢" });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
-        <h3 className="text-center text-2xl font-bold text-blue-600 mb-4">📧 Send Mail</h3>
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="grey.100" width="100%">
+      <Card sx={{ p: 4, width: "100%", maxWidth: 800, boxShadow: 3 }}>
+        <Typography variant="h5" textAlign="center" color="primary" gutterBottom>
+          📧 Send Mail
+        </Typography>
 
-        <div className="mb-4">
-          <label className="block font-semibold">To:</label>
-          <Select
-            isMulti
-            options={emailOptions}
-            value={selectedEmails}
-            onChange={setSelectedEmails}
-            onInputChange={setSearchTerm}
-            className="border rounded mt-2"
-            placeholder="Search or select emails..."
-          />
-          <div className="flex mt-2 gap-2">
-            <input
+        <Box mb={3}>
+          <Typography fontWeight="bold">To:</Typography>
+          {loading ? <CircularProgress size={24} /> : (
+            <Select
+              isMulti
+              options={emailOptions}
+              value={selectedEmails}
+              onChange={setSelectedEmails}
+              onInputChange={setSearchTerm}
+              placeholder="Search or select emails..."
+              styles={customStyles}
+            />
+          )}
+          <Box display="flex" gap={2} mt={2}>
+            <TextField
+              fullWidth
               type="email"
-              className="border rounded w-full p-2"
-              placeholder="Type email & press Add"
+              label="Type email & press Add"
               value={customEmail}
               onChange={(e) => setCustomEmail(e.target.value)}
+              variant="outlined"
             />
-            <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded" onClick={handleAddEmail}>
+            <Button variant="outlined" onClick={handleAddEmail}>
               ➕ Add
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Box>
+        </Box>
 
-        <div className="mb-4">
-          <label className="block font-semibold">Subject:</label>
-          <input
-            type="text"
-            className="border rounded w-full p-2"
-            placeholder="Enter subject"
+        <Box mb={3}>
+          <TextField
+            fullWidth
+            label="Subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
+            variant="outlined"
           />
-        </div>
+        </Box>
 
-        <div className="mb-4">
-          <label className="block font-semibold">Message:</label>
-          <textarea
-            className="border rounded w-full p-2 h-32"
-            placeholder="Write your message..."
+        <Box mb={3}>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            label="Message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            variant="outlined"
           />
-        </div>
+        </Box>
 
-        <button className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition" onClick={handleSendMail}>
-          🚀 Send Mail
-        </button>
-      </div>
-    </div>
+        <Button fullWidth variant="contained" color="primary" onClick={handleSendMail} disabled={loading}>
+          {loading ? <CircularProgress size={24} color="inherit" /> : "🚀 Send Mail"}
+        </Button>
+      </Card>
+    </Box>
   );
 };
 
