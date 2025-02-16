@@ -24,9 +24,8 @@ const SidebarEbook = ({ setComponent }) => {
       <nav className="sidebar-ebook__nav">
         <div className="sidebar-ebook__group">
           <h3
-            className={`sidebar-ebook__group-title ${
-              openGroups["Typing"] ? "open" : ""
-            }`}
+            className={`sidebar-ebook__group-title ${openGroups["Typing"] ? "open" : ""
+              }`}
             onClick={() => toggleGroup("Typing")}
           >
             Typing {openGroups["Typing"] ? <FaChevronUp /> : <FaChevronDown />}
@@ -49,7 +48,7 @@ const SidebarEbook = ({ setComponent }) => {
                 className="sidebar-ebook__link"
                 onClick={() => setComponent("ManageStatusTypingParagraph")}
               >
-               Edit Typing Status
+                Edit Typing Status
               </button>
               <button
                 className="sidebar-ebook__link"
@@ -95,27 +94,26 @@ const SidebarEbook = ({ setComponent }) => {
                 className="sidebar-ebook__link"
                 onClick={() => setComponent("AdminContactUs")}
               >
-               Contact us
+                Contact us
               </button>
 
               <button
                 className="sidebar-ebook__link"
                 onClick={() => setComponent("TypingCategoryErrorTable")}
               >
-               Exam error percent
+                Exam error percent
               </button>
 
 
             </div>
           )}
         </div>
-        
+
 
         <div className="sidebar-ebook__group">
           <h3
-            className={`sidebar-ebook__group-title ${
-              openGroups["Student"] ? "open" : ""
-            }`}
+            className={`sidebar-ebook__group-title ${openGroups["Student"] ? "open" : ""
+              }`}
             onClick={() => toggleGroup("Student")}
           >
             Student {openGroups["Student"] ? <FaChevronUp /> : <FaChevronDown />}
@@ -139,9 +137,16 @@ const SidebarEbook = ({ setComponent }) => {
                 className="sidebar-ebook__link"
                 onClick={() => setComponent("NotificationTable")}
               >
-               Notification{" "}
+                Notification{" "}
               </button>
-             
+
+              <button
+                className="sidebar-ebook__link"
+                onClick={() => setComponent("EmailSender")}
+              >
+                Send Mail{" "}
+              </button>
+
             </div>
           )}
         </div>

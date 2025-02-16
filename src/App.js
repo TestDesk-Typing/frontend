@@ -185,10 +185,7 @@ const App = () => {
        <HelmetProvider> {/* Wrap your app in HelmetProvider */}
     <Router>
       <Routes>
-      <Route
-                          path="/students-for-purchase/:studentId"
-                          element={<StudentDetail />}
-                        />
+      <Route path="/students-for-purchase/:studentId" element={<StudentDetail />} />
       <Route path="/online-free-typing-test" element={<TestSelection />} />
       <Route path="/online-free-typing-test/:testId" element={<TypingTestfee />} />
       <Route path='/course-page/:paramLink' element={<InfoPage />} />
