@@ -3,6 +3,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Select from "react-select";
 import { TextField, Button, Card, Typography, Box, CircularProgress } from "@mui/material";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const customStyles = {
   control: (provided) => ({
@@ -94,7 +96,7 @@ const SendMail = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="grey.100" width="100%">
-      <Card sx={{ p: 4, width: "90%", boxShadow: 3 }}>
+      <Card sx={{ p: 4, width: "100%", maxWidth: 800, boxShadow: 3 }}>
         <Typography variant="h5" textAlign="center" color="primary" gutterBottom>
           📧 Send Mail
         </Typography>
@@ -138,15 +140,8 @@ const SendMail = () => {
         </Box>
 
         <Box mb={3}>
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            label="Message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            variant="outlined"
-          />
+          <Typography fontWeight="bold">Message:</Typography>
+          <ReactQuill theme="snow" value={message} onChange={setMessage} />
         </Box>
 
         <Button fullWidth variant="contained" color="primary" onClick={handleSendMail} disabled={loading}>
