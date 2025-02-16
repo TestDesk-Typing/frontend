@@ -94,7 +94,7 @@ const SendMail = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="grey.100" width="100%">
-      <Card sx={{ p: 4, width: "100%", maxWidth: 800, boxShadow: 3 }}>
+      <Card sx={{ p: 4, width: "90%", boxShadow: 3 }}>
         <Typography variant="h5" textAlign="center" color="primary" gutterBottom>
           📧 Send Mail
         </Typography>
