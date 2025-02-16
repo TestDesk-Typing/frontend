@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Select from "react-select";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const SendMail = () => {
   const [selectedEmails, setSelectedEmails] = useState([]);
@@ -10,41 +9,34 @@ const SendMail = () => {
   const [message, setMessage] = useState("");
   const [customEmail, setCustomEmail] = useState("");
   const [emailOptions, setEmailOptions] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch emails from the backend based on search term
   const fetchEmails = async (search = "") => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/students-for-table`, {
-        params: { search }, // Pass the search term to the API
+        params: { search },
       });
-
       const emails = response.data.students.map((student) => ({
         value: student.email_id,
         label: student.email_id,
       }));
-
-      setEmailOptions(emails); // Update email options
+      setEmailOptions(emails);
     } catch (error) {
       console.error("Error fetching emails:", error);
     }
   };
 
-  // Fetch emails on component mount
   useEffect(() => {
     fetchEmails();
   }, []);
 
-  // Fetch emails on search term change (keyup in dropdown)
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      fetchEmails(searchTerm); // Call API with search term
-    }, 300); // Add a small delay to avoid too many API calls
-
-    return () => clearTimeout(delayDebounceFn); // Cleanup timeout
+      fetchEmails(searchTerm);
+    }, 300);
+    return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
-  // Add custom email to the selected list
   const handleAddEmail = () => {
     if (customEmail && !selectedEmails.some((e) => e.value === customEmail)) {
       setSelectedEmails([...selectedEmails, { value: customEmail, label: customEmail }]);
@@ -52,103 +44,78 @@ const SendMail = () => {
     }
   };
 
-  // Send mail
   const handleSendMail = async () => {
     if (!selectedEmails.length || !subject || !message) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "All fields are required!",
-      });
+      Swal.fire({ icon: "error", title: "Oops...", text: "All fields are required!" });
       return;
     }
-
-    const emails = selectedEmails.map((e) => e.value);
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}/api/send-mail`, {
-        emails,
+        emails: selectedEmails.map((e) => e.value),
         subject,
         message,
       });
-
-      Swal.fire({
-        icon: "success",
-        title: "Mail Sent!",
-        text: "Your email was sent successfully. 🚀",
-        timer: 3000,
-        showConfirmButton: false,
-      });
-
-      // Clear input fields after sending mail
+      Swal.fire({ icon: "success", title: "Mail Sent!", text: "Your email was sent successfully. 🚀", timer: 3000, showConfirmButton: false });
       setSelectedEmails([]);
       setSubject("");
       setMessage("");
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Failed!",
-        text: "Something went wrong while sending the email. 😢",
-      });
+      Swal.fire({ icon: "error", title: "Failed!", text: "Something went wrong while sending the email. 😢" });
     }
   };
 
   return (
-    <div className="container justify-content-center align-items-center vh-100">
-      <div className="card shadow-lg p-4">
-        <h3 className="text-center mb-4 text-primary">📧 Send Mail</h3>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+        <h3 className="text-center text-2xl font-bold text-blue-600 mb-4">📧 Send Mail</h3>
 
-        {/* Email Multi-Select */}
-        <div className="mb-3">
-          <label className="form-label fw-bold">To:</label>
+        <div className="mb-4">
+          <label className="block font-semibold">To:</label>
           <Select
             isMulti
             options={emailOptions}
             value={selectedEmails}
             onChange={setSelectedEmails}
-            onInputChange={(inputValue) => setSearchTerm(inputValue)} // Capture search term
-            className="border rounded"
+            onInputChange={setSearchTerm}
+            className="border rounded mt-2"
             placeholder="Search or select emails..."
           />
-          <div className="d-flex mt-2">
+          <div className="flex mt-2 gap-2">
             <input
               type="email"
-              className="form-control me-2"
+              className="border rounded w-full p-2"
               placeholder="Type email & press Add"
               value={customEmail}
               onChange={(e) => setCustomEmail(e.target.value)}
             />
-            <button className="btn btn-outline-secondary" onClick={handleAddEmail}>
+            <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded" onClick={handleAddEmail}>
               ➕ Add
             </button>
           </div>
         </div>
 
-        {/* Subject Input */}
-        <div className="mb-3">
-          <label className="form-label fw-bold">Subject:</label>
+        <div className="mb-4">
+          <label className="block font-semibold">Subject:</label>
           <input
             type="text"
-            className="form-control"
+            className="border rounded w-full p-2"
             placeholder="Enter subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
           />
         </div>
 
-        {/* Message Textarea */}
-        <div className="mb-3">
-          <label className="form-label fw-bold">Message:</label>
+        <div className="mb-4">
+          <label className="block font-semibold">Message:</label>
           <textarea
-            className="form-control"
-            rows="5"
+            className="border rounded w-full p-2 h-32"
             placeholder="Write your message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
         </div>
 
-        {/* Send Button */}
-        <button className="btn btn-primary w-100 fw-bold" onClick={handleSendMail}>
+        <button className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition" onClick={handleSendMail}>
           🚀 Send Mail
         </button>
       </div>
