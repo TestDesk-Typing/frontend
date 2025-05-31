@@ -33,17 +33,17 @@ const TypingModule = () => {
     const disableRightClick = (event) => {
       event.preventDefault();
     };
-  
+
     // Function to prevent cut, copy, and paste
     const disableCutCopyPaste = (event) => {
       if (event.ctrlKey || event.metaKey) {
         // Allow Ctrl or Command key
         return;
       }
-  
+
       event.preventDefault();
     };
-  
+
     const disableKeyCombinations = (event) => {
       if (
         (event.ctrlKey && event.shiftKey && event.code === "KeyI") ||
@@ -53,20 +53,20 @@ const TypingModule = () => {
         (event.keyCode === 121 && event.shiftKey === true) ||
         (event.ctrlKey && event.code === "KeyU") ||
         (event.ctrlKey && event.code === "KeyP") || // Add Ctrl+P check
-       
-        (event.code === "F12")  
+
+        (event.code === "F12")
       ) {
         event.preventDefault();
       }
     };
-  
+
     // Add event listeners when the component mounts
     document.addEventListener("contextmenu", disableRightClick);
     document.addEventListener("cut", disableCutCopyPaste);
     document.addEventListener("copy", disableCutCopyPaste);
     document.addEventListener("paste", disableCutCopyPaste);
     document.addEventListener("keydown", disableKeyCombinations);
-  
+
     // Remove event listeners when the component unmounts
     return () => {
       document.removeEventListener("contextmenu", disableRightClick);
@@ -76,7 +76,7 @@ const TypingModule = () => {
       document.removeEventListener("keydown", disableKeyCombinations);
     };
   }, []);
-  
+
 
 
   const fetchParagraph = async () => {
@@ -168,7 +168,17 @@ const TypingModule = () => {
 
     checkAccess();
   }, [testcode, exam, cookies.session_id, userDetails, navigate]);
-
+  // console.log("all details here => ", { testcode, exam, userDetails })
+  // all details here => {
+  //   "testcode": "SC-JCA-TYPING-02-2025",
+  //   "exam": "JCA",
+  //   "userDetails": {
+  //       "id": "6738cf6ae62469acc03a12e8",
+  //       "fullName": "prashant kumar sinha",
+  //       "email_id": "meekuprashant@gmail.com",
+  //       "mobile_number": "7209822149"
+  //   }
+  // }
   let d = paragraph;
 
   const handleMessageChange = (event) => {
@@ -193,88 +203,185 @@ const TypingModule = () => {
   };
 
 
+  // const messageSubmit = async () => {
+  //   const originalParagraph = paragraph.trim(); // The original paragraph to compare against
+  //   const userInput = message.trim(); // User's input
+
+  //   // Use diffWords to compare the original and user input paragraphs word-by-word
+  //   const diff = diffWords(originalParagraph, userInput);
+
+  //   // Build the comparison result by mapping the diff output to formatted HTML
+  //   const comparisonResult = diff
+  //     .map((part) => {
+  //       const text = part.value;
+  //       if (part.added) {
+  //         // Extra words in user input
+  //         return `<span class="wrongword">${text}</span>`;
+  //       } else if (part.removed) {
+  //         // Missing words in user input
+  //         return `<span class="missingword">${text}</span>`;
+  //       } else {
+  //         // Correct words
+  //         return `<span class="correctword">${text}</span>`;
+  //       }
+  //     })
+  //     .join(" ");
+
+  //   // Combine the result array into a single string of HTML for rendering and submission
+  //   const finalParagraph = comparisonResult;
+
+  //   let correctChars = 0; // Count of correct characters
+  //   let wrongChars = 0; // Count of wrong characters
+  //   const totalDepressions = originalParagraph.length; // Total characters in the original paragraph
+  //   const actualDepressions = message.length; // Total characters typed by the user
+
+  //   // Count correct and wrong characters
+  //   diff.forEach((part) => {
+  //     if (!part.added && !part.removed) {
+  //       // Correct characters
+  //       correctChars += part.value.length;
+  //     } else if (part.added) {
+  //       // Extra (wrong) characters
+  //       wrongChars += part.value.length;
+  //     }
+  //   });
+
+  //   // Time and Speed Calculations
+  //   if (rmTm !== undefined) {
+  //     const timeParts = rmTm.split(":");
+  //     const total_time = `00:${minute}:00`;
+  //     const totalSecondsUsed =
+  //       +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
+  //     const totalTestSeconds = +total_time.split(":")[1] * 60;
+  //     const timeTaken = totalTestSeconds - totalSecondsUsed; // Time taken in seconds
+
+  //     const netSpeed = Math.round((correctChars * 60) / (timeTaken * 5)); // Net speed in WPM
+  //     const grossSpeed = Math.round((message.length * 60) / (timeTaken * 5)); // Gross speed in WPM
+
+  //     const accuracy = ((correctChars / totalDepressions) * 100).toFixed(2);
+  //     const wrongPercentage = (100 - accuracy).toFixed(2);
+
+  //     // console.log(`Total correct depressions: ${correctChars}`);
+  //     // console.log(`Total wrong depressions: ${wrongChars}`);
+  //     // console.log(`Accuracy: ${accuracy}%, Wrong percentage: ${wrongPercentage}%`);
+
+  //     // Prepare the result object
+  //     const typing_performance_result = {
+  //       email_id: cookies.SSIDCE,
+  //       paper_code: testcode,
+  //       student_paragraph: message,
+  //       paragraph: finalParagraph, // Formatted comparison result with HTML
+  //       accuracy: accuracy,
+  //       wrong: wrongPercentage,
+  //       grossspeed: grossSpeed,
+  //       totaldepres: totalDepressions,
+  //       accuratedep: correctChars,
+  //       wrongdep: wrongChars,
+  //       testname:testname,
+  //       speed: netSpeed,
+  //       time: rmTm,
+  //       actual_depression: actualDepressions, // Add the actual depressions count
+  //       oldparagraph:oldparagraph,
+  //     };
+
+  //     // Submit the result to the backend
+  //     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/post-user-typing-result`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //         Authorization: `Bearer ${cookies.session_id}`,
+  //       },
+  //       body: JSON.stringify(typing_performance_result), // Convert to JSON string
+  //     });
+
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       // console.log("Submission successful:", result);
+  //       // navigate(
+  //       //   `/typingperformance/${accuracy}/${wrongPercentage}/${correctChars}/${netSpeed}/${testcode}/${exam}/UR`
+  //       // );
+
+
+  //       navigate(
+  //         `/${testcode}/${exam}/${testname}/feedback`
+  //       );
+  //     } else {
+  //       console.error("Error submitting typing performance");
+  //     }
+  //   }
+  // };
+
   const messageSubmit = async () => {
-    const originalParagraph = paragraph.trim(); // The original paragraph to compare against
-    const userInput = message.trim(); // User's input
-  
-    // Use diffWords to compare the original and user input paragraphs word-by-word
-    const diff = diffWords(originalParagraph, userInput);
-  
-    // Build the comparison result by mapping the diff output to formatted HTML
+    const originalParagraph = paragraph.trim();
+    const userInput = message.trim();
+
+    // Truncate original paragraph to match the length of user input only if exam is JCA
+    const trimmedOriginal =
+      exam === "JCA" ? originalParagraph.substring(0, userInput.length) : originalParagraph;
+
+    const diff = diffWords(trimmedOriginal, userInput);
+
     const comparisonResult = diff
       .map((part) => {
         const text = part.value;
         if (part.added) {
-          // Extra words in user input
           return `<span class="wrongword">${text}</span>`;
         } else if (part.removed) {
-          // Missing words in user input
           return `<span class="missingword">${text}</span>`;
         } else {
-          // Correct words
           return `<span class="correctword">${text}</span>`;
         }
       })
       .join(" ");
-  
-    // Combine the result array into a single string of HTML for rendering and submission
+
     const finalParagraph = comparisonResult;
-  
-    let correctChars = 0; // Count of correct characters
-    let wrongChars = 0; // Count of wrong characters
-    const totalDepressions = originalParagraph.length; // Total characters in the original paragraph
-    const actualDepressions = message.length; // Total characters typed by the user
-  
-    // Count correct and wrong characters
+
+    let correctChars = 0;
+    let wrongChars = 0;
+    const totalDepressions = trimmedOriginal.length;
+    const actualDepressions = userInput.length;
+
     diff.forEach((part) => {
       if (!part.added && !part.removed) {
-        // Correct characters
         correctChars += part.value.length;
       } else if (part.added) {
-        // Extra (wrong) characters
         wrongChars += part.value.length;
       }
     });
-  
-    // Time and Speed Calculations
+
     if (rmTm !== undefined) {
       const timeParts = rmTm.split(":");
       const total_time = `00:${minute}:00`;
       const totalSecondsUsed =
         +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
       const totalTestSeconds = +total_time.split(":")[1] * 60;
-      const timeTaken = totalTestSeconds - totalSecondsUsed; // Time taken in seconds
-  
-      const netSpeed = Math.round((correctChars * 60) / (timeTaken * 5)); // Net speed in WPM
-      const grossSpeed = Math.round((message.length * 60) / (timeTaken * 5)); // Gross speed in WPM
-  
+      const timeTaken = totalTestSeconds - totalSecondsUsed;
+
+      const netSpeed = Math.round((correctChars * 60) / (timeTaken * 5));
+      const grossSpeed = Math.round((actualDepressions * 60) / (timeTaken * 5));
+
       const accuracy = ((correctChars / totalDepressions) * 100).toFixed(2);
       const wrongPercentage = (100 - accuracy).toFixed(2);
-  
-      // console.log(`Total correct depressions: ${correctChars}`);
-      // console.log(`Total wrong depressions: ${wrongChars}`);
-      // console.log(`Accuracy: ${accuracy}%, Wrong percentage: ${wrongPercentage}%`);
-  
-      // Prepare the result object
+
       const typing_performance_result = {
         email_id: cookies.SSIDCE,
         paper_code: testcode,
         student_paragraph: message,
-        paragraph: finalParagraph, // Formatted comparison result with HTML
+        paragraph: finalParagraph,
         accuracy: accuracy,
         wrong: wrongPercentage,
         grossspeed: grossSpeed,
         totaldepres: totalDepressions,
         accuratedep: correctChars,
         wrongdep: wrongChars,
-        testname:testname,
+        testname: testname,
         speed: netSpeed,
         time: rmTm,
-        actual_depression: actualDepressions, // Add the actual depressions count
-        oldparagraph:oldparagraph,
+        actual_depression: actualDepressions,
+        oldparagraph: oldparagraph,
       };
-  
-      // Submit the result to the backend
+
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/post-user-typing-result`, {
         method: "POST",
         headers: {
@@ -282,26 +389,17 @@ const TypingModule = () => {
           Accept: "application/json",
           Authorization: `Bearer ${cookies.session_id}`,
         },
-        body: JSON.stringify(typing_performance_result), // Convert to JSON string
+        body: JSON.stringify(typing_performance_result),
       });
-  
+
       if (response.ok) {
         const result = await response.json();
-        // console.log("Submission successful:", result);
-        // navigate(
-        //   `/typingperformance/${accuracy}/${wrongPercentage}/${correctChars}/${netSpeed}/${testcode}/${exam}/UR`
-        // );
-
-
-        navigate(
-          `/${testcode}/${exam}/${testname}/feedback`
-        );
+        navigate(`/${testcode}/${exam}/${testname}/feedback`);
       } else {
         console.error("Error submitting typing performance");
       }
     }
   };
-  
 
 
   function parseTime(timeString) {
@@ -440,7 +538,7 @@ const TypingModule = () => {
           Keyboard Layout: QWERTY
         </span>
         <div
-        
+
           className="unique-left-container"
         >
           {/* <br /> */}
@@ -463,12 +561,12 @@ const TypingModule = () => {
           </div>
         </div>
         <div className="keyboard-selector-message">
-      To set up the keyboard for Hindi typing, 
-      first go to Settings, then Time & Language, and select 
-      Language on your laptop. Install Hindi as a preferred language. 
-      After that, press <strong>Windows + Space</strong> to switch to the Hindi keyboard, 
-      but only switch when Hindi typing is required for the test.
-    </div>
+          To set up the keyboard for Hindi typing,
+          first go to Settings, then Time & Language, and select
+          Language on your laptop. Install Hindi as a preferred language.
+          After that, press <strong>Windows + Space</strong> to switch to the Hindi keyboard,
+          but only switch when Hindi typing is required for the test.
+        </div>
         <Button className="button-submit-typing" onClick={messageSubmit}>
           Submit
         </Button>
