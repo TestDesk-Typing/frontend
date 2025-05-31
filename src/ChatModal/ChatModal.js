@@ -25,7 +25,7 @@ const ChatModal = ({ open, onClose }) => {
   const messageContainerRef = useRef(null);
   const loadingRef = useRef(false);
 
-  // Scroll handler for lazy loading older messages
+  // Lazy loading older messages when scrolled near top
   const handleScroll = useCallback(() => {
     if (!messageContainerRef.current || loadingRef.current || !hasMore) return;
 
@@ -34,7 +34,7 @@ const ChatModal = ({ open, onClose }) => {
       loadMessages();
       setTimeout(() => {
         loadingRef.current = false;
-      }, 1000); // A small delay to prevent rapid repeated loads
+      }, 1000);
     }
   }, [hasMore, loadMessages]);
 
@@ -66,7 +66,10 @@ const ChatModal = ({ open, onClose }) => {
   const getUserName = (msg) => {
     if (!msg) return "Unknown";
     if (msg.userName) return msg.userName;
-    if (msg.userId && typeof msg.userId === "object" && msg.userId.fullName) return msg.userId.fullName;
+    if (msg.userId) {
+      if (typeof msg.userId === "object" && msg.userId.fullName) return msg.userId.fullName;
+      if (typeof msg.userId === "string" || typeof msg.userId === "number") return `User ${msg.userId}`;
+    }
     return "User";
   };
 
@@ -119,12 +122,9 @@ const ChatModal = ({ open, onClose }) => {
                     <Typography
                       variant="caption"
                       color="text.secondary"
-                      sx={{ display: "block", mb: 0.5 }}
+                      sx={{ display: "block", mb: 0.5, fontStyle: "italic" }}
                     >
-                      Replying to:{" "}
-                      <strong>
-                        {getUserName(messages.find((m) => m._id === msg.repliedTo))}
-                      </strong>
+                      {msg.repliedTo.message || "Unknown message"}
                     </Typography>
                   )}
                   <Typography variant="body2">{msg.message}</Typography>
