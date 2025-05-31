@@ -19,7 +19,7 @@ const BATCH_SIZE = 12;
 
 const ChatModal = ({ open, onClose }) => {
   const { userDetails, isLoggedIn } = useAuth();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]); // Always start with an array
   const [newMessage, setNewMessage] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [skip, setSkip] = useState(0);
@@ -27,9 +27,9 @@ const ChatModal = ({ open, onClose }) => {
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
   const socketRef = useRef(null);
-  const loadingRef = useRef(false); // to avoid multiple loads at the same time
+  const loadingRef = useRef(false);
 
-  // Connect socket & handle new messages
+  // Connect socket & handle incoming messages
   useEffect(() => {
     if (isLoggedIn && !socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL, {
@@ -39,7 +39,7 @@ const ChatModal = ({ open, onClose }) => {
 
       socketRef.current.on("receiveMessage", (message) => {
         setMessages((prev) => [...prev, message]);
-        setSkip((prev) => prev + 1); // update skip as new message added
+        setSkip((prev) => prev + 1);
       });
     }
 
@@ -51,7 +51,7 @@ const ChatModal = ({ open, onClose }) => {
     };
   }, [isLoggedIn]);
 
-  // Load initial batch of messages on open
+  // Load initial batch of messages when modal opens
   useEffect(() => {
     if (!isLoggedIn || !open || !socketRef.current) return;
 
@@ -59,9 +59,14 @@ const ChatModal = ({ open, onClose }) => {
     socketRef.current.emit("getMessages", { skip: 0, limit: BATCH_SIZE });
 
     socketRef.current.on("chatHistory", ({ messages: newMessages }) => {
-      setMessages(newMessages);
-      setSkip(newMessages?.length);
-      setHasMore(newMessages?.length === BATCH_SIZE);
+      if (Array.isArray(newMessages)) {
+        setMessages(newMessages);
+        setSkip(newMessages.length);
+        setHasMore(newMessages.length === BATCH_SIZE);
+      } else {
+        setMessages([]);
+        setHasMore(false);
+      }
       loadingRef.current = false;
 
       // Scroll to bottom on first load
@@ -77,34 +82,34 @@ const ChatModal = ({ open, onClose }) => {
     };
   }, [open, isLoggedIn]);
 
-  // Load more messages when scrolling near top
+  // Lazy load older messages when scrolling near top
   const handleScroll = useCallback(() => {
     if (!messageContainerRef.current || loadingRef.current || !hasMore) return;
 
     const scrollTop = messageContainerRef.current.scrollTop;
-    if (scrollTop < 100) { // near top
+    if (scrollTop < 100) {
       loadingRef.current = true;
 
       socketRef.current.emit("getMessages", { skip, limit: BATCH_SIZE });
 
       socketRef.current.once("chatHistory", ({ messages: olderMessages }) => {
-        if (olderMessages.length === 0) {
-          setHasMore(false);
-        } else {
+        if (Array.isArray(olderMessages) && olderMessages.length > 0) {
           setMessages((prev) => [...olderMessages, ...prev]);
           setSkip((prev) => prev + olderMessages.length);
 
-          // Maintain scroll position after prepending messages
+          // Maintain scroll position approximately
           if (messageContainerRef.current) {
-            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight / 2; // Approximate fix
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight / 2;
           }
+        } else {
+          setHasMore(false);
         }
         loadingRef.current = false;
       });
     }
   }, [skip, hasMore]);
 
-  // Attach scroll handler to message container
+  // Attach scroll listener
   useEffect(() => {
     const container = messageContainerRef.current;
     if (!container) return;
@@ -115,7 +120,7 @@ const ChatModal = ({ open, onClose }) => {
     };
   }, [handleScroll]);
 
-  // Send message function
+  // Send a new message
   const sendMessage = () => {
     if (newMessage.trim() && socketRef.current && userDetails?.id) {
       const messageData = {
@@ -131,7 +136,7 @@ const ChatModal = ({ open, onClose }) => {
     }
   };
 
-  // Get username helper
+  // Get username safely
   const getUserName = (msg) => {
     if (!msg) return "Unknown";
     if (msg.userName) return msg.userName;
@@ -163,57 +168,58 @@ const ChatModal = ({ open, onClose }) => {
         sx={{ bgcolor: "#f3e8ff", height: "500px", overflowY: "auto", p: 1 }}
       >
         <List>
-          {messages?.map((msg) => {
-            const isOwnMessage =
-              msg.userId === userDetails.id ||
-              (typeof msg.userId === "object" && msg.userId._id === userDetails.id);
+          {Array.isArray(messages) &&
+            messages.map((msg) => {
+              const isOwnMessage =
+                msg.userId === userDetails.id ||
+                (typeof msg.userId === "object" && msg.userId._id === userDetails.id);
 
-            const senderName = getUserName(msg);
+              const senderName = getUserName(msg);
 
-            return (
-              <ListItem
-                key={msg._id || Math.random()}
-                sx={{
-                  justifyContent: isOwnMessage ? "flex-end" : "flex-start",
-                }}
-              >
-                <Paper
+              return (
+                <ListItem
+                  key={msg._id || Math.random()}
                   sx={{
-                    p: 1,
-                    borderRadius: 2,
-                    maxWidth: "75%",
-                    bgcolor: isOwnMessage ? "#d6b3ff" : "white",
-                    boxShadow: 1,
+                    justifyContent: isOwnMessage ? "flex-end" : "flex-start",
                   }}
                 >
-                  <Typography variant="caption" color="text.secondary">
-                    <strong>{senderName}</strong>
-                  </Typography>
-                  {msg.repliedTo && (
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ display: "block", mb: 0.5 }}
-                    >
-                      Replying to:{" "}
-                      <strong>
-                        {getUserName(messages.find((m) => m._id === msg.repliedTo))}
-                      </strong>
+                  <Paper
+                    sx={{
+                      p: 1,
+                      borderRadius: 2,
+                      maxWidth: "75%",
+                      bgcolor: isOwnMessage ? "#d6b3ff" : "white",
+                      boxShadow: 1,
+                    }}
+                  >
+                    <Typography variant="caption" color="text.secondary">
+                      <strong>{senderName}</strong>
                     </Typography>
-                  )}
-                  <Typography variant="body2">{msg.message}</Typography>
-                </Paper>
-                <IconButton
-                  onClick={() => setReplyingTo(msg)}
-                  size="small"
-                  sx={{ ml: 1 }}
-                  aria-label="Reply"
-                >
-                  <ReplyIcon fontSize="small" />
-                </IconButton>
-              </ListItem>
-            );
-          })}
+                    {msg.repliedTo && (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ display: "block", mb: 0.5 }}
+                      >
+                        Replying to:{" "}
+                        <strong>
+                          {getUserName(messages.find((m) => m._id === msg.repliedTo))}
+                        </strong>
+                      </Typography>
+                    )}
+                    <Typography variant="body2">{msg.message}</Typography>
+                  </Paper>
+                  <IconButton
+                    onClick={() => setReplyingTo(msg)}
+                    size="small"
+                    sx={{ ml: 1 }}
+                    aria-label="Reply"
+                  >
+                    <ReplyIcon fontSize="small" />
+                  </IconButton>
+                </ListItem>
+              );
+            })}
           <div ref={messagesEndRef} />
         </List>
       </DialogContent>
