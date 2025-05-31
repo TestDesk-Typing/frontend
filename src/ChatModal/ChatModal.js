@@ -19,7 +19,7 @@ const BATCH_SIZE = 12;
 
 const ChatModal = ({ open, onClose }) => {
   const { userDetails, isLoggedIn } = useAuth();
-  const [messages, setMessages] = useState([]); // Always start with an array
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [skip, setSkip] = useState(0);
@@ -29,7 +29,6 @@ const ChatModal = ({ open, onClose }) => {
   const socketRef = useRef(null);
   const loadingRef = useRef(false);
 
-  // Connect socket & handle incoming messages
   useEffect(() => {
     if (isLoggedIn && !socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL, {
@@ -51,7 +50,6 @@ const ChatModal = ({ open, onClose }) => {
     };
   }, [isLoggedIn]);
 
-  // Load initial batch of messages when modal opens
   useEffect(() => {
     if (!isLoggedIn || !open || !socketRef.current) return;
 
@@ -60,7 +58,9 @@ const ChatModal = ({ open, onClose }) => {
 
     socketRef.current.on("chatHistory", ({ messages: newMessages }) => {
       if (Array.isArray(newMessages)) {
-        setMessages(newMessages);
+        // Reverse because backend sends newest first, UI shows oldest first top-down
+        const orderedMessages = [...newMessages].reverse();
+        setMessages(orderedMessages);
         setSkip(newMessages.length);
         setHasMore(newMessages.length === BATCH_SIZE);
       } else {
@@ -69,20 +69,16 @@ const ChatModal = ({ open, onClose }) => {
       }
       loadingRef.current = false;
 
-      // Scroll to bottom on first load
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     });
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.off("chatHistory");
-      }
+      socketRef.current.off("chatHistory");
     };
   }, [open, isLoggedIn]);
 
-  // Lazy load older messages when scrolling near top
   const handleScroll = useCallback(() => {
     if (!messageContainerRef.current || loadingRef.current || !hasMore) return;
 
@@ -94,12 +90,20 @@ const ChatModal = ({ open, onClose }) => {
 
       socketRef.current.once("chatHistory", ({ messages: olderMessages }) => {
         if (Array.isArray(olderMessages) && olderMessages.length > 0) {
-          setMessages((prev) => [...olderMessages, ...prev]);
+          const orderedOlderMessages = [...olderMessages].reverse();
+
+          setMessages((prev) => [...orderedOlderMessages, ...prev]);
+
           setSkip((prev) => prev + olderMessages.length);
 
-          // Maintain scroll position approximately
+          // Maintain scroll position smoothly
           if (messageContainerRef.current) {
-            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight / 2;
+            const prevScrollHeight = messageContainerRef.current.scrollHeight;
+            setTimeout(() => {
+              const newScrollHeight = messageContainerRef.current.scrollHeight;
+              messageContainerRef.current.scrollTop =
+                newScrollHeight - prevScrollHeight + scrollTop;
+            }, 100);
           }
         } else {
           setHasMore(false);
@@ -109,7 +113,6 @@ const ChatModal = ({ open, onClose }) => {
     }
   }, [skip, hasMore]);
 
-  // Attach scroll listener
   useEffect(() => {
     const container = messageContainerRef.current;
     if (!container) return;
@@ -120,7 +123,6 @@ const ChatModal = ({ open, onClose }) => {
     };
   }, [handleScroll]);
 
-  // Send a new message
   const sendMessage = () => {
     if (newMessage.trim() && socketRef.current && userDetails?.id) {
       const messageData = {
@@ -136,7 +138,6 @@ const ChatModal = ({ open, onClose }) => {
     }
   };
 
-  // Get username safely
   const getUserName = (msg) => {
     if (!msg) return "Unknown";
     if (msg.userName) return msg.userName;
