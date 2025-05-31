@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaBell } from 'react-icons/fa';
 import { FaTimes, FaUserCircle } from 'react-icons/fa';
 import ChatModal from '../ChatModal/ChatModal';
-import Button from "@mui/material/Button";
-
+import { Button, Badge } from "@mui/material";
+import ChatIcon from "@mui/icons-material/Chat";
 
 const DashboardHeader = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -236,12 +236,27 @@ const DashboardHeader = () => {
 
         <div className="header-account" onClick={toggleDropdown}>
           Give tests
-
-        </div> </div>
+        </div>
+      </div>
       <div>
-        <Button variant="contained" onClick={() => setShowChatModal(true)}>
+        <Button
+          variant="contained"
+          startIcon={<ChatIcon />}
+          onClick={() => setShowChatModal(true)}
+          sx={{
+            textTransform: "none",
+            fontWeight: "bold",
+            fontSize: 12,
+            padding: "8px 20px",
+            "&:hover": {
+              backgroundColor: "#1976d2cc",
+            },
+          }}
+          aria-label="Open chat"
+        >
           Open Chat
         </Button>
+
         <ChatModal open={showChatModal} onClose={() => setShowChatModal(false)} />
       </div>
       <div className="dashboard-header-part2">
