@@ -15,6 +15,7 @@ const UserResults = () => {
   const [cookies] = useCookies(['session_id', 'SSIDCE']);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All'); // Added status filter state
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -42,6 +43,7 @@ const UserResults = () => {
   }, []);
 
   const handleExamNameSelect = (examName, exam) => {
+    clearDateFilter()
     setSelectedExamName(examName);
     const paperCodes = examDropdownData[exam][examName] || [];
     setSelectedPaperCode(paperCodes);
@@ -96,27 +98,37 @@ const UserResults = () => {
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day);
   };
-  
+
   const applyDateFilter = () => {
     // Parse start and end dates from ISO strings and normalize to midnight
     const start = startDate ? new Date(startDate + 'T00:00:00') : null;
     const end = endDate ? new Date(endDate + 'T23:59:59.999') : null;
-  
+
     const filtered = userResults.filter((result) => {
       const resultDate = parseCustomDate(result.date);
       // Compare dates inclusively
       const afterStart = !start || resultDate >= start;
       const beforeEnd = !end || resultDate <= end;
-      return afterStart && beforeEnd;
+
+      // Filter by status too
+      const statusMatch = statusFilter === 'All' || result.status === statusFilter;
+
+      return afterStart && beforeEnd && statusMatch;
     });
-  
+
     setFilteredResults(filtered);
     setCurrentPage(1);
   };
 
+  // Apply filter automatically when statusFilter changes
+  useEffect(() => {
+    applyDateFilter();
+  }, [statusFilter]);
+
   const clearDateFilter = () => {
     setStartDate('');
     setEndDate('');
+    setStatusFilter('All'); // reset status filter on clear
     setFilteredResults(userResults);
     setCurrentPage(1);
   };
@@ -172,6 +184,17 @@ const UserResults = () => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
+          </label>
+          <label>
+            Status:
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Pass">Pass</option>
+              <option value="Fail">Fail</option>
+            </select>
           </label>
           <button onClick={applyDateFilter}>Apply Filter</button>
           <button onClick={clearDateFilter}>Clear</button>

@@ -267,3 +267,20 @@
     align-items: center;
   }
 }
+
+.filter-controls select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  background-color: white;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.filter-controls select:focus {
+  border-color: #4c0070;
+  box-shadow: 0 0 5px rgba(76, 0, 112, 0.3);
+}
