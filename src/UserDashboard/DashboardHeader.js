@@ -3,19 +3,22 @@ import './DashboardHeader.css'; // Ensure you create this CSS file with the prov
 import { useCookies } from 'react-cookie';
 import logo from "../i/newlogo.gif";
 import { useNavigate } from 'react-router-dom';
-import { FaBell } from 'react-icons/fa'; 
+import { FaBell } from 'react-icons/fa';
 import { FaTimes, FaUserCircle } from 'react-icons/fa';
+import ChatModal from '../ChatModal/ChatModal';
+import Button from "@mui/material/Button";
 
 
 const DashboardHeader = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(['session_id', 'SSIDCE', 'SSDSD']); // Include cookies to remove
   const navigate = useNavigate();
-   const [message, setMessage] = useState('');
-    const [notifications, setNotifications] = useState([]);
+  const [message, setMessage] = useState('');
+  const [notifications, setNotifications] = useState([]);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false); // State to track notification visibility
   const [hasNotification, setHasNotification] = useState(false);
   const notificationRef = useRef(null);
+  const [showChatModal, setShowChatModal] = useState(false);
 
   // Function to toggle dropdown visibility
   const toggleDropdown = () => {
@@ -23,7 +26,7 @@ const DashboardHeader = () => {
   };
 
   const home = () => {
-     navigate('/');
+    navigate('/');
   }
 
   // Function to handle logout
@@ -41,8 +44,8 @@ const DashboardHeader = () => {
       if (response.ok) {
         const data = await response.json();
         // console.log(data.message); // Optional: Show success message
-         // Redirect to home page after successful logout
-     
+        // Redirect to home page after successful logout
+
         // Clear cookies after successful logout
         removeCookie('session_id');
         removeCookie('SSIDCE');
@@ -68,7 +71,7 @@ const DashboardHeader = () => {
       console.error("SSIDCE cookie is missing.");
       return;
     }
-  
+
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-expired-subscriptions-message`, {
         method: 'POST', // Use POST method
@@ -79,13 +82,13 @@ const DashboardHeader = () => {
         },
         body: JSON.stringify({ email }), // Include email in the request body
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       // Check if expired subscription message exists
       if (data.expiredSubscription && data.expiredSubscription.message) {
         setMessage(data.expiredSubscription.message); // Update the message state with the expired subscription message
@@ -96,9 +99,9 @@ const DashboardHeader = () => {
       console.error('Error:', err.message); // Log any errors
     }
   };
-  
-  
-  
+
+
+
   const fetchNotifications = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/get-notifications-header`);
@@ -127,7 +130,7 @@ const DashboardHeader = () => {
 
 
   useEffect(() => {
-  
+
     checkExpiredSubscriptionsMessage();
   }, [cookies.session_id]);
 
@@ -151,7 +154,7 @@ const DashboardHeader = () => {
     } else {
       setHasNotification(false); // If no notifications, set hasNotification to false
     }
- 
+
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
         setIsNotificationOpen(false);
@@ -171,73 +174,79 @@ const DashboardHeader = () => {
 
   return (
     <div className="dashboard-header">
-       <div className="dashboard-header-part2">
-       <div className="typing-brand">    
+      <div className="dashboard-header-part2">
+        <div className="typing-brand">
           <img onClick={home}
-            src={logo} 
+            src={logo}
             alt="Brand Logo"
             className="typing-brand-logo"
           />
         </div>
-      {/* <div className="header-title">Dashboard</div> */}
-      
-      <div className="header-notification"><div
-        className={`typing-help-item-notification ${hasNotification || message ? 'animated' : ''}`}
-        onClick={handleNotificationClick}
-      >
-        <FaBell className="notification-icon-dash" />
-        
-        {/* Show red circle when there is a message or notifications */}
-        {hasNotification || message ? (
-          <span className="notification-badge"></span>
-        ) : null}
-      </div>
-      
-      {isNotificationOpen && (
-        <div className="notification-content-overlay">
-          <div className="notification-content" ref={notificationRef}>
-            {/* Close button */}
-            <button
-              className="close-button"
-              onClick={handleNotificationClick}
-            >
-              <FaTimes />
-            </button>
-            <h2 className="notification-heading">📢 Notifications</h2>
-            {/* Display main message if available */}
-            {message ? (
-              <div className="static-notification">
-                <p>{message}</p>
-              </div>
-            ) : (
-              // Default message when no message exists
-              <div className="static-notification">
-                <p>🔔 Stay updated with the latest news and tests!</p>
-              </div>
-            )}
-      
-            {/* Display notifications if available */}
-            {notifications.length > 0 ? (
-              notifications.map((notification) => (
-                <div key={notification.id} className="static-notification">
-                  <p>{notification.notification}</p>
-                </div>
-              ))
-            ) : (
-              // Show nothing if there are no notifications
-              <></>
-            )}
-          </div>
+        {/* <div className="header-title">Dashboard</div> */}
+
+        <div className="header-notification"><div
+          className={`typing-help-item-notification ${hasNotification || message ? 'animated' : ''}`}
+          onClick={handleNotificationClick}
+        >
+          <FaBell className="notification-icon-dash" />
+
+          {/* Show red circle when there is a message or notifications */}
+          {hasNotification || message ? (
+            <span className="notification-badge"></span>
+          ) : null}
         </div>
-      )}</div>
-      
-      <div className="header-account" onClick={toggleDropdown}>
-        Give tests
-     
-      </div> </div>
+
+          {isNotificationOpen && (
+            <div className="notification-content-overlay">
+              <div className="notification-content" ref={notificationRef}>
+                {/* Close button */}
+                <button
+                  className="close-button"
+                  onClick={handleNotificationClick}
+                >
+                  <FaTimes />
+                </button>
+                <h2 className="notification-heading">📢 Notifications</h2>
+                {/* Display main message if available */}
+                {message ? (
+                  <div className="static-notification">
+                    <p>{message}</p>
+                  </div>
+                ) : (
+                  // Default message when no message exists
+                  <div className="static-notification">
+                    <p>🔔 Stay updated with the latest news and tests!</p>
+                  </div>
+                )}
+
+                {/* Display notifications if available */}
+                {notifications.length > 0 ? (
+                  notifications.map((notification) => (
+                    <div key={notification.id} className="static-notification">
+                      <p>{notification.notification}</p>
+                    </div>
+                  ))
+                ) : (
+                  // Show nothing if there are no notifications
+                  <></>
+                )}
+              </div>
+            </div>
+          )}</div>
+
+        <div className="header-account" onClick={toggleDropdown}>
+          Give tests
+
+        </div> </div>
+      <div>
+        <Button variant="contained" onClick={() => setShowChatModal(true)}>
+          Open Chat
+        </Button>
+        <ChatModal open={showChatModal} onClose={() => setShowChatModal(false)} />
+      </div>
       <div className="dashboard-header-part2">
-      <div className="header-logout" onClick={handleLogout}>Logout</div>
-   </div>   </div>
+        <div className="header-logout" onClick={handleLogout}>Logout</div>
+      </div>   </div>
   );
 };
 

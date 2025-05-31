@@ -82,7 +82,7 @@ const ExamList = () => {
     <div className="exam-list-container-examlist">
       <h2>All Courses</h2>
       <div className="exam-list-grid-examlist">
-        {exams.map((exam, index) => {
+        {exams?.map((exam, index) => {
           // Log each exam and static mapping to debug
           // console.log("Exam govName:", exam.govName, "Static Data:", staticNames[exam.govName]);
 
