@@ -91,13 +91,25 @@ const UserResults = () => {
     }
   };
 
+  const parseCustomDate = (dateStr) => {
+    // "31/05/2025" -> Date(year, month-1, day)
+    const [day, month, year] = dateStr.split('/').map(Number);
+    return new Date(year, month - 1, day);
+  };
+  
   const applyDateFilter = () => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    // Parse start and end dates from ISO strings and normalize to midnight
+    const start = startDate ? new Date(startDate + 'T00:00:00') : null;
+    const end = endDate ? new Date(endDate + 'T23:59:59.999') : null;
+  
     const filtered = userResults.filter((result) => {
-      const resultDate = new Date(result.date);
-      return (!startDate || resultDate >= start) && (!endDate || resultDate <= end);
+      const resultDate = parseCustomDate(result.date);
+      // Compare dates inclusively
+      const afterStart = !start || resultDate >= start;
+      const beforeEnd = !end || resultDate <= end;
+      return afterStart && beforeEnd;
     });
+  
     setFilteredResults(filtered);
     setCurrentPage(1);
   };
