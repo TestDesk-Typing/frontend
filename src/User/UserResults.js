@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './UserResults.css';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Card, Button, Form, Dropdown, Pagination, Spinner, Alert } from 'react-bootstrap';
+import './UserResults.css';
 
 const RESULTS_PER_PAGE = 5;
 
@@ -15,7 +16,7 @@ const UserResults = () => {
   const [cookies] = useCookies(['session_id', 'SSIDCE']);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All'); // Added status filter state
+  const [statusFilter, setStatusFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -43,7 +44,7 @@ const UserResults = () => {
   }, []);
 
   const handleExamNameSelect = (examName, exam) => {
-    clearDateFilter()
+    clearDateFilter();
     setSelectedExamName(examName);
     const paperCodes = examDropdownData[exam][examName] || [];
     setSelectedPaperCode(paperCodes);
@@ -94,25 +95,19 @@ const UserResults = () => {
   };
 
   const parseCustomDate = (dateStr) => {
-    // "31/05/2025" -> Date(year, month-1, day)
     const [day, month, year] = dateStr.split('/').map(Number);
     return new Date(year, month - 1, day);
   };
 
   const applyDateFilter = () => {
-    // Parse start and end dates from ISO strings and normalize to midnight
     const start = startDate ? new Date(startDate + 'T00:00:00') : null;
     const end = endDate ? new Date(endDate + 'T23:59:59.999') : null;
 
     const filtered = userResults.filter((result) => {
       const resultDate = parseCustomDate(result.date);
-      // Compare dates inclusively
       const afterStart = !start || resultDate >= start;
       const beforeEnd = !end || resultDate <= end;
-
-      // Filter by status too
       const statusMatch = statusFilter === 'All' || result.status === statusFilter;
-
       return afterStart && beforeEnd && statusMatch;
     });
 
@@ -120,7 +115,6 @@ const UserResults = () => {
     setCurrentPage(1);
   };
 
-  // Apply filter automatically when statusFilter changes
   useEffect(() => {
     applyDateFilter();
   }, [statusFilter]);
@@ -128,7 +122,7 @@ const UserResults = () => {
   const clearDateFilter = () => {
     setStartDate('');
     setEndDate('');
-    setStatusFilter('All'); // reset status filter on clear
+    setStatusFilter('All');
     setFilteredResults(userResults);
     setCurrentPage(1);
   };
@@ -145,116 +139,147 @@ const UserResults = () => {
   const totalPages = Math.ceil(filteredResults.length / RESULTS_PER_PAGE);
 
   return (
-    <div className="user-results-container">
-      <h2>Select an Exam and View Results</h2>
+    <Container className="user-results-container mt-4">
+      <h2 className="text-center mb-4">Select an Exam and View Results</h2>
 
-      <nav className="horizontal-nav">
-        {Object.keys(examDropdownData).map((exam, index) => (
-          <div className="horizontal-nav-item" key={index}>
-            <button className="nav-btn">{exam}</button>
-            <div className="dropdown-menu">
-              {Object.keys(examDropdownData[exam]).map((examName, subIndex) => (
-                <span
-                  key={subIndex}
-                  onClick={() => handleExamNameSelect(examName, exam)}
-                  className="dropdown-item"
-                >
-                  {examName}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </nav>
+      <Row className="justify-content-center mb-4">
+        <Col xs={12} className="d-flex flex-wrap justify-content-center gap-2">
+          {Object.keys(examDropdownData).map((exam, index) => (
+            <Dropdown key={index} className="me-2">
+              <Dropdown.Toggle variant="primary" id={`dropdown-${index}`}>
+                {exam}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {Object.keys(examDropdownData[exam]).map((examName, subIndex) => (
+                  <Dropdown.Item 
+                    key={subIndex} 
+                    onClick={() => handleExamNameSelect(examName, exam)}
+                  >
+                    {examName}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          ))}
+        </Col>
+      </Row>
 
       {selectedExamName && (
-        <div className="filter-controls">
-          <label>
-            Start Date:
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </label>
-          <label>
-            End Date:
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </label>
-          <label>
-            Status:
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Pass">Pass</option>
-              <option value="Fail">Fail</option>
-            </select>
-          </label>
-          <button onClick={applyDateFilter}>Apply Filter</button>
-          <button onClick={clearDateFilter}>Clear</button>
-        </div>
+        <Card className="mb-4">
+          <Card.Body>
+            <Row className="g-3 align-items-center">
+              <Col xs={12} md={3}>
+                <Form.Group>
+                  <Form.Label>Start Date</Form.Label>
+                  <Form.Control 
+                    type="date" 
+                    value={startDate} 
+                    onChange={(e) => setStartDate(e.target.value)} 
+                  />
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={3}>
+                <Form.Group>
+                  <Form.Label>End Date</Form.Label>
+                  <Form.Control 
+                    type="date" 
+                    value={endDate} 
+                    onChange={(e) => setEndDate(e.target.value)} 
+                  />
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={3}>
+                <Form.Group>
+                  <Form.Label>Status</Form.Label>
+                  <Form.Select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <option value="All">All</option>
+                    <option value="Pass">Pass</option>
+                    <option value="Fail">Fail</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col xs={12} md={3} className="d-flex align-items-end gap-2">
+                <Button variant="primary" onClick={applyDateFilter}>
+                  Apply Filter
+                </Button>
+                <Button variant="secondary" onClick={clearDateFilter}>
+                  Clear
+                </Button>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
       )}
 
-      <div className="results-list">
-        {loading ? (
-          <p className="loader">Loading...</p>
-        ) : !selectedExamName ? (
-          <p className="select-exam-message">Please select an exam to view results.</p>
-        ) : filteredResults.length === 0 ? (
-          <p className="no-results-message">No results available for the selected exam name.</p>
-        ) : (
-          <>
-            {paginatedResults.map((result, index) => (
-              <div
-                className={`result-card ${result.status === 'Pass' ? 'pass' : 'fail'}`}
-                key={index}
-              >
-                <div className="result-info">
-                  <p><strong>Date:</strong> {result.date}</p>
-                  <p><strong>Test Name:</strong> {result.testname}</p>
-                  <p><strong>Accuracy:</strong> {result.accuracy}%</p>
-                  <p className={result.status === 'Pass' ? 'pass-user' : 'fail-user'}>
-                    <strong>Status:</strong> {result.status}
-                  </p>
-                </div>
-                <div className="result-action">
-                  <button
-                    className="view-button"
-                    onClick={() => handleViewResult(result.testname, result.paper_code)}
-                  >
-                    View Results
-                  </button>
-                </div>
-              </div>
-            ))}
+      <Row>
+        <Col xs={12}>
+          {loading ? (
+            <div className="text-center my-5">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+          ) : !selectedExamName ? (
+            <Alert variant="info" className="text-center">
+              Please select an exam to view results.
+            </Alert>
+          ) : filteredResults.length === 0 ? (
+            <Alert variant="warning" className="text-center">
+              No results available for the selected exam name.
+            </Alert>
+          ) : (
+            <>
+              {paginatedResults.map((result, index) => (
+                <Card 
+                  key={index} 
+                  className={`mb-3 ${result.status === 'Pass' ? 'border-start border-success border-3' : 'border-start border-danger border-3'}`}
+                >
+                  <Card.Body>
+                    <Row className="align-items-center">
+                      <Col xs={12} md={8}>
+                        <p><strong>Date:</strong> {result.date}</p>
+                        <p><strong>Test Name:</strong> {result.testname}</p>
+                        <p><strong>Accuracy:</strong> {result.accuracy}%</p>
+                        <span className={`badge ${result.status === 'Pass' ? 'bg-success' : 'bg-danger'}`}>
+                          Status: {result.status}
+                        </span>
+                      </Col>
+                      <Col xs={12} md={4} className="mt-3 mt-md-0 text-md-end">
+                        <Button 
+                          variant="primary" 
+                          onClick={() => handleViewResult(result.testname, result.paper_code)}
+                        >
+                          View Results
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              ))}
 
-            {totalPages > 1 && (
-              <div className="pagination">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+              {totalPages > 1 && (
+                <div className="d-flex justify-content-center mt-4">
+                  <Pagination>
+                    <Pagination.Prev 
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                    />
+                    <Pagination.Item active>{currentPage}</Pagination.Item>
+                    <Pagination.Next 
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                    />
+                  </Pagination>
+                </div>
+              )}
+            </>
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

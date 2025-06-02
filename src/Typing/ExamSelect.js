@@ -1,5 +1,3 @@
-
-// Import Helmet
 import React, { useState, useEffect } from 'react';
 import './ExamSelect.css';
 import { useNavigate } from 'react-router-dom';
@@ -8,10 +6,11 @@ import { FaSearch, FaTimes } from 'react-icons/fa';
 import { MdKeyboard } from "react-icons/md";
 import { useCookies } from 'react-cookie';
 import pic1 from '../i/sscLogo.webp';
-import { Helmet } from 'react-helmet-async'; // Import Helmet
+import { Helmet } from 'react-helmet-async';
 import { MdKeyboardArrowRight } from "react-icons/md";
 import MainFooter from '../Footermain/Footer';
 import { FaTelegram } from 'react-icons/fa';
+import { Container, Row, Col, Card, Button, Spinner, Modal } from 'react-bootstrap';
 
 const ExamSelect = () => {
   const [examList, setExamList] = useState([]);
@@ -20,14 +19,14 @@ const ExamSelect = () => {
   const [examType, setExamType] = useState('SSC');
   const [paragraphs, setParagraphs] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [examImages, setExamImages] = useState({}); // To store images from the API
+  const [examImages, setExamImages] = useState({});
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [cookies] = useCookies(['session_id']);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
 
   // Fetch exams and their corresponding images
   useEffect(() => {
@@ -80,7 +79,7 @@ const ExamSelect = () => {
     };
 
     fetchExams();
-    fetchExamImages(); // Fetch images
+    fetchExamImages();
   }, []);
 
   useEffect(() => {
@@ -122,7 +121,7 @@ const ExamSelect = () => {
         }
         return response.json();
       })
-      .then((data) => setParagraphs(data)) // Assuming data contains the mapped response
+      .then((data) => setParagraphs(data))
       .catch((error) => console.error('Error fetching paragraphs:', error.message));
   };
   
@@ -133,10 +132,10 @@ const ExamSelect = () => {
   };
 
   const handleExamClick = (examCategory, examName) => {
-    setModalIsOpen(true); // Open modal immediately
+    setModalIsOpen(true);
     setSelectedExamCategory(examCategory);
-    setLoading(true); // Show loading spinner
-    fetchParagraphs(examName).finally(() => setLoading(false)); // Fetch data and hide spinner
+    setLoading(true);
+    fetchParagraphs(examName).finally(() => setLoading(false));
   };
 
   const closeModal = () => {
@@ -152,7 +151,7 @@ const ExamSelect = () => {
           "Accept": "application/json",
           "Authorization": `Bearer ${cookies.session_id}`,
         },
-        body: JSON.stringify({ product_id: '999' }) // Replace with actual product ID
+        body: JSON.stringify({ product_id: '999' })
       });
 
       if (response.ok) {
@@ -173,7 +172,7 @@ const ExamSelect = () => {
   };
 
   const handleParagraphClick = (para) => {
-    checkProductAccess(para); // Call the access check before navigating
+    checkProductAccess(para);
   };
 
   const countExamNames = () => {
@@ -188,14 +187,11 @@ const ExamSelect = () => {
   const examNameCounts = countExamNames();
 
   const handleRedirect = () => {
-    // Redirect to the Telegram link
     window.location.href = "https://t.me/+4qa-d1bgP7pmYTVl";
   }
 
   return (
     <>
-     
-
       <Helmet>
         <title>Exam Selection - Prepare for SSC, CGL, DSSSB Typing Tests | Testdesk</title>
         <meta
@@ -208,8 +204,6 @@ const ExamSelect = () => {
         />
         <meta name="author" content="Testdesk" />
         <meta name="robots" content="index, follow" />
-
-        {/* Open Graph Meta Tags for Social Sharing */}
         <meta property="og:title" content="Exam Selection - Prepare for SSC, CGL, DSSSB Typing Tests | Testdesk" />
         <meta
           property="og:description"
@@ -218,8 +212,6 @@ const ExamSelect = () => {
         <meta property="og:image" content="https://testdesk.in/logo.png?v=1" />
         <meta property="og:url" content="https://testdesk.in/choose-exam" />
         <meta property="og:type" content="website" />
-
-        {/* Twitter Card for Social Sharing */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Exam Selection - Prepare for SSC, CGL, DSSSB Typing Tests | Testdesk" />
         <meta
@@ -227,128 +219,144 @@ const ExamSelect = () => {
           content="Prepare for typing exams with Testdesk. Practice for SSC CHSL, CGL, DSSSB, EPFO, RRB, and more. Start your typing journey now!"
         />
         <meta name="twitter:image" content="https://testdesk.in/logo.png?v=1"  />
-
-        {/* Canonical URL */}
         <link rel="canonical" href="https://testdesk.in/choose-exam" />
       </Helmet>
 
       <TypingHeader />
 
+      <Container fluid className="py-4 bg-light mt-5">
+        <Container>
+          <Row className="mb-4">
+            <Col>
+              <h2 className="fw-bold">Explore all typing tests</h2>
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <p className="text-muted mb-3 mb-md-0">
+                  Get exam-ready with structured typing practice, skill-building exercises, and real-time feedback.
+                </p>
+                <Button 
+                  variant="outline-primary" 
+                  className="d-flex align-items-center telegram-btn"
+                  onClick={handleRedirect}
+                >
+                  <FaTelegram className="me-2" />
+                  Join Telegram
+                </Button>
+              </div>
+            </Col>
+          </Row>
 
-      <div className='container-exam-selection'>
-
-        
-      <a href="https://t.me/yourTelegramLink" target="_blank" rel="noopener noreferrer" className="telegram-icon-link">
-        <FaTelegram className="telegram-icon" />
-      </a>
-        <div className='heading-exam-select'>
-  
-  <h2>Explore all typing test</h2>
-
-
-  <div className="heading-with-telegram">
-  <p>Get exam-ready with structured typing practice, skill-building exercises, and real-time feedback.</p>
-  <div className="join-now-container"  onClick={handleRedirect}>
-    <a href="https://t.me/+4qa-d1bgP7pmYTVl" target="_blank" rel="noopener noreferrer" className="telegram-icon-link">
-      <FaTelegram className="telegram-icon" />
-    </a>
-    <span className="join-now-text">Join Now</span>
-  </div>
-</div>
-        </div>
-        <div className="layout-section-exam">
-          <div className="layout-section">
-            <div className="exam-categories">
-              <div className='new-category-select'>
-                <div className="category-list">
-                  {examList.map((item, index) => (
-                    <div key={index} className="div-exam-name-image"
-                        onMouseEnter={() => handleExamHover(item)}
-                    >
-                      <img
-                        width="31"
-                        height="31"
-                        alt="Exam"
-                        className="examselectimage"
-                        src={examImages[item.exam] ? `${process.env.REACT_APP_API_URL}/${examImages[item.exam]}` : pic1} // Use image from API or default
-                      />
+          <Row>
+            <Col md={3} className="mb-4 mb-md-0">
+              <Card className="h-100 shadow-sm">
+                <Card.Body className="p-0">
+                  <div className="list-group list-group-flush">
+                    {examList.map((item, index) => (
                       <div 
-                        className="category-item" 
+                        key={index}
+                        className={`list-group-item list-group-item-action d-flex align-items-center py-3 ${selectedExamCategory?.exam === item.exam ? 'active' : ''}`}
+                        onMouseEnter={() => handleExamHover(item)}
+                        style={{ cursor: 'pointer' }}
                       >
-                        {item.exam} Exams
+                        <img
+                          width="31"
+                          height="31"
+                          alt="Exam"
+                          className="me-3 rounded-circle"
+                          src={examImages[item.exam] ? `${process.env.REACT_APP_API_URL}/${examImages[item.exam]}` : pic1}
+                        />
+                        <span className="fw-medium">{item.exam} Exams</span>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="exam-details">
-            {loading && <div className="loader"></div>}
-              <div className="exam-cards">
-                {selectedExamCategory && 
-                  Array.from(new Set(selectedExamCategory.examNames)).map((examName, idx) => (
-                    <div 
-                      key={idx} 
-                      className="exam-card" 
-                      onClick={() => handleExamClick(selectedExamCategory, examName)}
-                    >
-                      <div className="exam-cards-img">
-                        <img className="myexamnameimg" src={examImages[selectedExamCategory.exam] ? `${process.env.REACT_APP_API_URL}/${examImages[selectedExamCategory.exam]}` : pic1} alt="Exam" />
-                      </div>
-                      <div className="exam-cards-count-test">
-                        <div className="exam-cards-para">
-                          <p>{selectedExamCategory.exam}</p>
-                          <p className='examname'>{examName}</p>
-                        </div>
-                        <p className='exam-count'>{examNameCounts[examName] || 0} typing tests</p>
-                      </div>
-                      <MdKeyboardArrowRight className='right-exam-arrow'/>
-                    </div>
-                  ))
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className={`examselectmodal ${modalIsOpen ? 'open' : ''}`}>
-        <div className="modal-content-review">
-          <button className="close-button" onClick={closeModal}>
-            <FaTimes />
-          </button>
-         
-          <h2 className="exam-header header-highlight" style={{ marginBottom: "10px" }}>
-  {selectedExamCategory?.exam}
-</h2>
-<span className="exam-instruction-for-select">
-  Please select the code given below to open the typing test date-wise.
-</span>
+                    ))}
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
 
+            <Col md={9}>
+              <Card className="h-100 shadow-sm">
+                <Card.Body className="p-3">
+                  {loading && (
+                    <div className="text-center py-5">
+                      <Spinner animation="border" variant="primary" />
+                    </div>
+                  )}
+                  {!loading && selectedExamCategory && (
+                    <Row xs={1} sm={2} lg={3} className="g-3">
+                      {Array.from(new Set(selectedExamCategory.examNames)).map((examName, idx) => (
+                        <Col key={idx}>
+                          <Card 
+                            className="h-100 exam-card-hover"
+                            onClick={() => handleExamClick(selectedExamCategory, examName)}
+                          >
+                            <Card.Body className="d-flex align-items-center">
+                              <div className="me-3">
+                                <div className="bg-light rounded-circle p-2">
+                                  <img 
+                                    src={examImages[selectedExamCategory.exam] ? `${process.env.REACT_APP_API_URL}/${examImages[selectedExamCategory.exam]}` : pic1} 
+                                    alt="Exam" 
+                                    width="40" 
+                                    height="40" 
+                                    className="img-fluid"
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex-grow-1">
+                                <h6 className="mb-0 fw-bold">{selectedExamCategory.exam}</h6>
+                                <p className="mb-0 text-muted small">{examName}</p>
+                                <small className="text-primary">{examNameCounts[examName] || 0} typing tests</small>
+                              </div>
+                              <MdKeyboardArrowRight className="text-muted ms-2" size={20} />
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      ))}
+                    </Row>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </Container>
 
-           <div className="modal-content">
-  {loading ? (
-    <div className="loader"></div> // Display spinner while loading
-  ) : paragraphs.length > 0 ? (
-              // Use a Set to ensure unique paper codes
-              Array.from(new Set(paragraphs.map(para => para.paper_code))).map((uniqueCode, idx) => {
+      <Modal show={modalIsOpen} onHide={closeModal} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title className="w-100 text-center">
+            <h4 className="mb-0 text-primary fw-bold">{selectedExamCategory?.exam}</h4>
+            <small className="text-muted">Select a paper code to start the test</small>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {loading ? (
+            <div className="text-center py-4">
+              <Spinner animation="border" variant="primary" />
+            </div>
+          ) : paragraphs.length > 0 ? (
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+              {Array.from(new Set(paragraphs.map(para => para.paper_code))).map((uniqueCode, idx) => {
                 const para = paragraphs.find(p => p.paper_code === uniqueCode);
                 return (
-                  <div
-                    key={idx}
-                    className="paragraph-item"
-                    onClick={() => handleParagraphClick(para)}
-                  >
-                    <p>{para.paper_code}</p>
+                  <div key={idx} className="col">
+                    <Button 
+                      variant="outline-primary" 
+                      className="w-100 py-2"
+                      onClick={() => handleParagraphClick(para)}
+                    >
+                      {para.paper_code}
+                    </Button>
                   </div>
                 );
-              })
-            ) : (
-              <p>No paragraphs available for this exam.</p>
-            )}
-          </div>
-        </div>
-      </div>
-      <MainFooter/>
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <p>No tests available for this exam.</p>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
+
+      <MainFooter />
     </>
   );
 };

@@ -205,7 +205,7 @@ const PaymentComponent = () => {
       </div>
       {/* <div className="scrolling-message">
   <span>
-    Live Test Schedule: Morning Session 6 AM TO 7 AM And Evening Session 7 PM TO 8 PM - Special For 2024 Typing Test
+    Live Test Schedule: Morning Session 6 AM TO 7 AM And Evening Session 7 PM TO 8 PM - Special For 2025 Typing Test
   </span>
 </div> */}
       <div className='check-sub'>

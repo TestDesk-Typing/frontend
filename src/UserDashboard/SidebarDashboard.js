@@ -1,20 +1,18 @@
-
-
-
 import React, { useState } from 'react';
-import { FaTachometerAlt, FaUser, FaHome, FaCog, FaSignOutAlt,FaFileInvoice } from 'react-icons/fa'; // Importing icons
-import './SidebarDashboard.css';
+import { FaTachometerAlt, FaUser, FaHome, FaCog, FaSignOutAlt, FaFileInvoice } from 'react-icons/fa';
 import { TbReport } from "react-icons/tb";
-import { Link } from 'react-router-dom'; // Import Link
-import { useCookies } from 'react-cookie'; // Import useCookies for cookie management
+import { Link } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { Nav, ListGroup } from 'react-bootstrap';
+import './SidebarDashboard.css';
 
 const SidebarDashboard = ({ onMenuClick }) => {
-  const [activeMenu, setActiveMenu] = useState('UserOverallChart'); // State to keep track of active menu
-  const [cookies, setCookie, removeCookie] = useCookies(['session_id', 'SSIDCE', 'SSDSD']); // Include cookies to remove
+  const [activeMenu, setActiveMenu] = useState('UserOverallChart');
+  const [cookies, setCookie, removeCookie] = useCookies(['session_id', 'SSIDCE', 'SSDSD']);
 
   const handleMenuClick = (menu) => {
-    setActiveMenu(menu); // Set the active menu item
-    onMenuClick(menu);   // Call the parent function
+    setActiveMenu(menu);
+    onMenuClick(menu);
   };
 
   const handleLogout = async () => {
@@ -29,79 +27,89 @@ const SidebarDashboard = ({ onMenuClick }) => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        // console.log(data.message); // Optional: Show success message
-         // Redirect to home page after successful logout
-     
-        // Clear cookies after successful logout
         removeCookie('session_id');
         removeCookie('SSIDCE');
         removeCookie('SSDSD');
-        // navigate("/");
         window.location.href = '/';
-        // Optional: Redirect or perform any other necessary actions after successful logout
       } else {
         const errorData = await response.json();
-        console.error('Logout failed:', errorData.error); // Handle error accordingly
+        console.error('Logout failed:', errorData.error);
       }
     } catch (error) {
-      console.error('Error during logout:', error); // Handle network or other errors
+      console.error('Error during logout:', error);
     }
   };
 
   return (
-    <div className="sidebar-dashboard-container">  {/* Updated class */}
-      <ul className="sidebar-menu">
-      <Link to="/" style={{ textDecoration: 'none' }}> {/* Navigation to Home */}
-          <li 
-            className={activeMenu === 'Home' ? 'sidebar-item active' : 'sidebar-item'} 
+    <div className="sidebar-dashboard-container">
+      <Nav className="flex-column sidebar-menu">
+        <ListGroup variant="flush" className="w-100">
+          {/* Home Link */}
+          <ListGroup.Item 
+            as={Link} 
+            to="/" 
+            action 
+            className={`sidebar-item ${activeMenu === 'Home' ? 'active' : ''}`}
             onClick={() => handleMenuClick('Home')}
           >
-            <FaHome className="icon" /> Home
-          </li>
-        </Link>
-        <li 
-          className={activeMenu === 'UserOverallChart' ? 'sidebar-item active' : 'sidebar-item'} 
-          onClick={() => handleMenuClick('UserOverallChart')}
-        >
-          <FaTachometerAlt className="icon" /> Typing Speed Chart
-        </li>
+            <FaHome className="icon me-2" /> Home
+          </ListGroup.Item>
 
-        <li 
-          className={activeMenu === 'UserResults' ? 'sidebar-item active' : 'sidebar-item'} 
-          onClick={() => handleMenuClick('UserResults')}
-        >
-          <TbReport className="icon" /> Your Typing Results
-        </li>
+          {/* Typing Speed Chart */}
+          <ListGroup.Item 
+            action 
+            className={`sidebar-item ${activeMenu === 'UserOverallChart' ? 'active' : ''}`}
+            onClick={() => handleMenuClick('UserOverallChart')}
+          >
+            <FaTachometerAlt className="icon me-2" /> Typing Speed Chart
+          </ListGroup.Item>
 
+          {/* Your Typing Results */}
+          <ListGroup.Item 
+            action 
+            className={`sidebar-item ${activeMenu === 'UserResults' ? 'active' : ''}`}
+            onClick={() => handleMenuClick('UserResults')}
+          >
+            <TbReport className="icon me-2" /> Your Typing Results
+          </ListGroup.Item>
 
-        <li 
-          className={activeMenu === 'Profile' ? 'sidebar-item active' : 'sidebar-item'} 
-          onClick={() => handleMenuClick('Profile')}
-        >
-          <FaUser className="icon" /> Profile
-        </li>
-        <li 
-          className={activeMenu === 'Settings' ? 'sidebar-item active' : 'sidebar-item'} 
-          onClick={() => handleMenuClick('Settings')}
-        >
-          <FaCog className="icon" /> Settings
-        </li>
+          {/* Profile */}
+          <ListGroup.Item 
+            action 
+            className={`sidebar-item ${activeMenu === 'Profile' ? 'active' : ''}`}
+            onClick={() => handleMenuClick('Profile')}
+          >
+            <FaUser className="icon me-2" /> Profile
+          </ListGroup.Item>
 
-        <li 
-            className={activeMenu === 'Invoice' ? 'sidebar-item active' : 'sidebar-item'} 
+          {/* Settings */}
+          <ListGroup.Item 
+            action 
+            className={`sidebar-item ${activeMenu === 'Settings' ? 'active' : ''}`}
+            onClick={() => handleMenuClick('Settings')}
+          >
+            <FaCog className="icon me-2" /> Settings
+          </ListGroup.Item>
+
+          {/* Invoice */}
+          <ListGroup.Item 
+            action 
+            className={`sidebar-item ${activeMenu === 'Invoice' ? 'active' : ''}`}
             onClick={() => handleMenuClick('Invoice')}
           >
-            <FaFileInvoice className="icon" /> Invoice
-          </li>
+            <FaFileInvoice className="icon me-2" /> Invoice
+          </ListGroup.Item>
 
-        <li 
-          className="sidebar-item" 
-          onClick={handleLogout} // Call handleLogout on click
-        >
-          <FaSignOutAlt className="icon" /> Logout
-        </li>
-      </ul>
+          {/* Logout */}
+          <ListGroup.Item 
+            action 
+            className="sidebar-item"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt className="icon me-2" /> Logout
+          </ListGroup.Item>
+        </ListGroup>
+      </Nav>
     </div>
   );
 };

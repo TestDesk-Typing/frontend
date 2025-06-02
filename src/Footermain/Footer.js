@@ -80,7 +80,7 @@ const MainFooter = () => {
             </div>
             
             <div className="mainfooter-bottom">
-                <p>Copyright © 2014-2024 Testdesk Edu Solutions Pvt. Ltd.: All rights reserved</p>
+                <p>Copyright © 2014-2025 Testdesk Edu Solutions Pvt. Ltd.: All rights reserved</p>
                 <div className="mainfooter-policies">
                     <a href="/acceptable-use-policy">User Policy</a>
                     <a href="/terms-of-service">Terms</a>

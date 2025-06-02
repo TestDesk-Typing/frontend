@@ -1,36 +1,29 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { useNavigate } from 'react-router-dom';
 import SidebarDashboard from './SidebarDashboard';
-import UserOverallChart from './UserOverallChart'; // Default component
+import UserOverallChart from './UserOverallChart';
 import Profile from '../User/Profile'; 
 import Settings from '../User/Settings'; 
 import UserResults from '../User/UserResults';
-import Invoice from '../User/Invoice'; 
-// import OtherComponent from './OtherComponent'; 
-import './DashboardContainer.css'; // Custom CSS
+import Invoice from '../User/Invoice';
+import './DashboardContainer.css';
 import DashboardHeader from './DashboardHeader';
 
-
 const DashboardContainer = () => {
-  // State to keep track of which component to render
   const [activeComponent, setActiveComponent] = useState('UserOverallChart');
-  const [cookies] = useCookies(['session_id']); // Get cookies
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [cookies] = useCookies(['session_id']);
+  const navigate = useNavigate();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-
-  // Function to change the component on the right
   const handleMenuClick = (component) => {
     setActiveComponent(component);
   };
 
-  // Function to check access
   const checkAccess = async () => {
     if (cookies.session_id) {
       try {
@@ -44,55 +37,65 @@ const DashboardContainer = () => {
         });
 
         if (!response.ok) {
-          // If access check fails, redirect to login
           navigate('/login');
         }
       } catch (error) {
         console.error('Error checking access:', error);
-        // Handle any network or unexpected errors here
-        navigate('/login'); // Redirect to login on error
+        navigate('/login');
       }
     } else {
-      // If no session_id, redirect to login
       navigate('/login');
     }
   };
 
-  // Check access when component mounts
   useEffect(() => {
     checkAccess();
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
-  // Render the appropriate component based on the activeComponent state
   const renderComponent = () => {
     switch (activeComponent) {
       case 'UserOverallChart':
         return <UserOverallChart />;
       case 'Profile':
         return <Profile />;
-        case 'Settings':
-          return <Settings />;
-          case 'Invoice':
-            return <Invoice />;
-            case 'UserResults':
-              return <UserResults />;
-      //   case 'OtherComponent':
-      //     return <OtherComponent />;
+      case 'Settings':
+        return <Settings />;
+      case 'Invoice':
+        return <Invoice />;
+      case 'UserResults':
+        return <UserResults />;
       default:
         return <UserOverallChart />;
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
   return (
-    <div className="dashboard-container">
-      <SidebarDashboard onMenuClick={handleMenuClick} />
-      <DashboardHeader />
-      <div className="right-content-container">
-        {renderComponent()}
+    <div className="container-fluid p-0 dashboard-container">
+      <div className="row g-0">
+        {/* Sidebar - using col-md-3 for medium screens and up */}
+        <div className={`col-md-3 col-lg-2 d-md-block bg-dark sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+          <SidebarDashboard 
+            onMenuClick={handleMenuClick} 
+            isCollapsed={sidebarCollapsed}
+            toggleCollapse={toggleSidebar}
+          />
+        </div>
+        
+        {/* Main content area */}
+        <div className={`col-md-9 col-lg-10 ms-sm-auto px-0 main-content ${sidebarCollapsed ? 'expanded' : ''}`}>
+          <DashboardHeader toggleSidebar={toggleSidebar} />
+          
+          <div className="right-content-container">
+            {renderComponent()}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default DashboardContainer;
-
