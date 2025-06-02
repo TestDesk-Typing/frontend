@@ -154,83 +154,299 @@ const TypingModule = () => {
 
   const rmTimeFun = (rTm) => setrmTm(rTm);
 
+  // const messageSubmit = async () => {
+  //   const originalParagraph = paragraph.trim(); // Original paragraph
+  //   const userInput = message.trim(); // User's typed content
+
+  //   let comparisonResult, correctChars, wrongChars, totalDepressions, accuracy, wrongPercentage, netSpeed, grossSpeed;
+
+  //   if (exam === "JCA") {
+  //     // For JCA: Compare only the typed portion against the corresponding part of the original paragraph
+  //     const typedLength = userInput.length;
+  //     const originalSubstring = originalParagraph.substring(0, typedLength); // Align with typed length
+
+  //     const diff = diffWords(originalSubstring, userInput); // Compare only relevant part
+
+  //     // Build comparison result (HTML formatted)
+  //     comparisonResult = diff
+  //       .map((part) => {
+  //         const text = part.value;
+  //         if (part.added) {
+  //           return `<span class="wrongword">${text}</span>`; // Extra words (wrong)
+  //         } else if (part.removed) {
+  //           return `<span class="missingword">${text}</span>`; // Missing words
+  //         } else {
+  //           return `<span class="correctword">${text}</span>`; // Correct words
+  //         }
+  //       })
+  //       .join(" ");
+
+  //     // Count correct & wrong characters in the typed portion
+  //     correctChars = diff.reduce((acc, part) => (!part.added && !part.removed ? acc + part.value.length : acc), 0);
+  //     wrongChars = diff.reduce((acc, part) => (part.added ? acc + part.value.length : acc), 0);
+
+  //     totalDepressions = typedLength; // Total depressions = typed length (not full paragraph)
+  //   } else {
+  //     // For non-JCA exams: Compare against the full paragraph (original logic)
+  //     const diff = diffWords(originalParagraph, userInput);
+
+  //     comparisonResult = diff
+  //       .map((part) => {
+  //         const text = part.value;
+  //         if (part.added) {
+  //           return `<span class="wrongword">${text}</span>`;
+  //         } else if (part.removed) {
+  //           return `<span class="missingword">${text}</span>`;
+  //         } else {
+  //           return `<span class="correctword">${text}</span>`;
+  //         }
+  //       })
+  //       .join(" ");
+
+  //     correctChars = diff.reduce((acc, part) => (!part.added && !part.removed ? acc + part.value.length : acc), 0);
+  //     wrongChars = diff.reduce((acc, part) => (part.added ? acc + part.value.length : acc), 0);
+  //     totalDepressions = originalParagraph.length; // Full paragraph length
+  //   }
+
+  //   // Time calculations (same for both cases)
+  //   if (rmTm !== undefined) {
+  //     const timeParts = rmTm.split(":");
+  //     const total_time = `00:${minute}:00`;
+  //     const totalSecondsUsed = +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
+  //     const totalTestSeconds = +total_time.split(":")[1] * 60;
+  //     const timeTaken = totalTestSeconds - totalSecondsUsed; // Time taken in seconds
+
+  //     // Calculate speed & accuracy
+  //     grossSpeed = Math.round((message.length * 60) / (timeTaken * 5)); // Gross WPM
+  //     netSpeed = Math.round((correctChars * 60) / (timeTaken * 5)); // Net WPM
+  //     accuracy = ((correctChars / totalDepressions) * 100).toFixed(2);
+  //     wrongPercentage = (100 - accuracy).toFixed(2);
+
+  //     // Prepare result for submission
+  //     const typing_performance_result = {
+  //       email_id: cookies.SSIDCE,
+  //       paper_code: testcode,
+  //       student_paragraph: message,
+  //       paragraph: comparisonResult,
+  //       accuracy: accuracy,
+  //       wrong: wrongPercentage,
+  //       grossspeed: grossSpeed,
+  //       totaldepres: totalDepressions,
+  //       accuratedep: correctChars,
+  //       wrongdep: wrongChars,
+  //       testname: testname,
+  //       speed: netSpeed,
+  //       time: rmTm,
+  //       actual_depression: message.length,
+  //       oldparagraph: oldparagraph,
+  //     };
+
+  //     // Submit to backend
+  //     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/post-user-typing-result`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //         Authorization: `Bearer ${cookies.session_id}`,
+  //       },
+  //       body: JSON.stringify(typing_performance_result),
+  //     });
+
+  //     if (response.ok) {
+  //       navigate(`/${testcode}/${exam}/${testname}/feedback`);
+  //     } else {
+  //       console.error("Error submitting typing performance");
+  //     }
+  //   }
+  // };
+
   const messageSubmit = async () => {
-    const originalParagraph = paragraph.trim();
-    const userInput = message.trim();
-    let comparisonResult, correctChars, wrongChars, totalDepressions, accuracy, wrongPercentage, netSpeed, grossSpeed;
+    const originalParagraph = paragraph.trim(); // Original paragraph
+    const userInput = message.trim(); // User's typed content
 
+    // Declare all variables at the top
+    let comparisonResult, correctChars = 0, wrongChars = 0, totalDepressions, accuracy, wrongPercentage, netSpeed, grossSpeed;
+    let correctWordCount = 0, mistakeCount = 0, omissionCount = 0; // For JCA evaluation
+
+    let marks = 50;
     if (exam === "JCA") {
-      const typedLength = userInput.length;
-      const originalSubstring = originalParagraph.substring(0, typedLength);
-      const diff = diffWords(originalSubstring, userInput);
+      // JCA-specific evaluation logic based on Supreme Court instructions
 
-      comparisonResult = diff.map((part) => {
-        const text = part.value;
-        if (part.added) return `<span class="wrongword">${text}</span>`;
-        if (part.removed) return `<span class="missingword">${text}</span>`;
-        return `<span class="correctword">${text}</span>`;
-      }).join(" ");
+      // Split both texts into arrays of words for comparison
+      const originalWords = originalParagraph.split(/\s+/);
+      const userWords = userInput.split(/\s+/);
 
-      correctChars = diff.reduce((acc, part) => (!part.added && !part.removed ? acc + part.value.length : acc), 0);
-      wrongChars = diff.reduce((acc, part) => (part.added ? acc + part.value.length : acc), 0);
-      totalDepressions = typedLength;
+      let comparisonHTML = [];
+      let originalIndex = 0;
+      let userIndex = 0;
+
+      // Reset counters
+      correctWordCount = 0;
+      mistakeCount = 0;
+      omissionCount = 0;
+
+      // Implement the 4-case evaluation logic from the PDF
+      while (userIndex < userWords.length && originalIndex < originalWords.length) {
+        // Case 1: Exact match
+        if (userWords[userIndex] === originalWords[originalIndex]) {
+          comparisonHTML.push(`<span class="correctword">${userWords[userIndex]}</span>`);
+          correctWordCount++;
+          userIndex++;
+          originalIndex++;
+        }
+        // Case 2: Check next word
+        else if (originalIndex + 1 < originalWords.length &&
+          userWords[userIndex] === originalWords[originalIndex + 1]) {
+          comparisonHTML.push(`<span class="missingword">[${originalWords[originalIndex]}]</span>`);
+          omissionCount++;
+          originalIndex++;
+        }
+        // Case 3: Check for 3-word sequence match
+        else if (userIndex + 2 < userWords.length &&
+          originalIndex + 2 < originalWords.length &&
+          userWords[userIndex] === originalWords[originalIndex] &&
+          userWords[userIndex + 1] === originalWords[originalIndex + 1] &&
+          userWords[userIndex + 2] === originalWords[originalIndex + 2]) {
+          // Mark all previous words as omissions
+          for (let i = 0; i < originalIndex; i++) {
+            comparisonHTML.push(`<span class="missingword">[${originalWords[i]}]</span>`);
+            omissionCount++;
+          }
+          // Add the matched words
+          comparisonHTML.push(
+            `<span class="correctword">${userWords[userIndex]}</span>`,
+            `<span class="correctword">${userWords[userIndex + 1]}</span>`,
+            `<span class="correctword">${userWords[userIndex + 2]}</span>`
+          );
+          correctWordCount += 3;
+          userIndex += 3;
+          originalIndex += 3;
+        }
+        // Case 4: Word doesn't match - count as mistake
+        else {
+          comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
+          mistakeCount++;
+          userIndex++;
+          // Don't increment originalIndex to check against next user word
+        }
+      }
+
+      // Handle remaining words (either omissions or extra words)
+      while (originalIndex < originalWords.length) {
+        comparisonHTML.push(`<span class="missingword">[${originalWords[originalIndex]}]</span>`);
+        omissionCount++;
+        originalIndex++;
+      }
+
+      while (userIndex < userWords.length) {
+        comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
+        mistakeCount++;
+        userIndex++;
+      }
+
+      comparisonResult = comparisonHTML.join(" ");
+
+      // Calculate metrics based on JCA rules
+      const totalWords = originalWords.length;
+      correctWordCount = totalWords - omissionCount;
+
+      // Calculate key depressions (5 chars per word including space)
+      totalDepressions = originalWords.join(" ").length; // Actual character count
+      const typedDepressions = userWords.join(" ").length;
+
+      // Calculate accuracy
+      accuracy = ((correctWordCount - mistakeCount) / totalWords * 100).toFixed(2);
+      wrongPercentage = (100 - accuracy).toFixed(2);
+
+      // Time calculations
+      if (rmTm !== undefined) {
+        const timeParts = rmTm.split(":");
+        const total_time = `00:${minute}:00`;
+        const totalSecondsUsed = +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
+        const totalTestSeconds = +total_time.split(":")[1] * 60;
+        const timeTaken = totalTestSeconds - totalSecondsUsed; // Time taken in seconds
+
+        // Calculate speed (35 WPM is passing)
+        grossSpeed = Math.round((typedDepressions / 5) / (timeTaken / 60));
+        netSpeed = Math.round(((correctWordCount - mistakeCount) / (timeTaken / 60)));
+
+        // Apply marking formula from PDF (50 marks max)
+        if (mistakeCount > 0) {
+          marks = Math.max(25, 50 - (mistakeCount * 2.27)); // 50 - (mistakes * (50/22))
+        }
+        console.log("marks =>", marks)
+      }
     } else {
+      // Original non-JCA logic
       const diff = diffWords(originalParagraph, userInput);
-      comparisonResult = diff.map((part) => {
-        const text = part.value;
-        if (part.added) return `<span class="wrongword">${text}</span>`;
-        if (part.removed) return `<span class="missingword">${text}</span>`;
-        return `<span class="correctword">${text}</span>`;
-      }).join(" ");
+
+      comparisonResult = diff
+        .map((part) => {
+          const text = part.value;
+          if (part.added) {
+            return `<span class="wrongword">${text}</span>`;
+          } else if (part.removed) {
+            return `<span class="missingword">${text}</span>`;
+          } else {
+            return `<span class="correctword">${text}</span>`;
+          }
+        })
+        .join(" ");
 
       correctChars = diff.reduce((acc, part) => (!part.added && !part.removed ? acc + part.value.length : acc), 0);
       wrongChars = diff.reduce((acc, part) => (part.added ? acc + part.value.length : acc), 0);
       totalDepressions = originalParagraph.length;
+
+      // Time calculations for non-JCA
+      if (rmTm !== undefined) {
+        const timeParts = rmTm.split(":");
+        const total_time = `00:${minute}:00`;
+        const totalSecondsUsed = +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
+        const totalTestSeconds = +total_time.split(":")[1] * 60;
+        const timeTaken = totalTestSeconds - totalSecondsUsed;
+
+        grossSpeed = Math.round((message.length * 60) / (timeTaken * 5));
+        netSpeed = Math.round((correctChars * 60) / (timeTaken * 5));
+        accuracy = ((correctChars / totalDepressions) * 100).toFixed(2);
+        wrongPercentage = (100 - accuracy).toFixed(2);
+      }
     }
 
-    if (rmTm !== undefined) {
-      const timeParts = rmTm.split(":");
-      const total_time = `00:${minute}:00`;
-      const totalSecondsUsed = +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
-      const totalTestSeconds = +total_time.split(":")[1] * 60;
-      const timeTaken = totalTestSeconds - totalSecondsUsed;
+    // Prepare result for submission
+    const typing_performance_result = {
+      email_id: cookies.SSIDCE,
+      paper_code: testcode,
+      student_paragraph: message,
+      paragraph: comparisonResult,
+      accuracy: accuracy,
+      wrong: wrongPercentage,
+      grossspeed: grossSpeed,
+      totaldepres: totalDepressions,
+      accuratedep: exam === "JCA" ? correctWordCount : correctChars,
+      wrongdep: exam === "JCA" ? mistakeCount : wrongChars,
+      testname: testname,
+      speed: netSpeed,
+      time: rmTm,
+      actual_depression: message.length,
+      oldparagraph: oldparagraph,
+      marks: marks
+    };
 
-      grossSpeed = Math.round((message.length * 60) / (timeTaken * 5));
-      netSpeed = Math.round((correctChars * 60) / (timeTaken * 5));
-      accuracy = ((correctChars / totalDepressions) * 100).toFixed(2);
-      wrongPercentage = (100 - accuracy).toFixed(2);
+    // Submit to backend
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/post-user-typing-result`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${cookies.session_id}`,
+      },
+      body: JSON.stringify(typing_performance_result),
+    });
 
-      const typing_performance_result = {
-        email_id: cookies.SSIDCE,
-        paper_code: testcode,
-        student_paragraph: message,
-        paragraph: comparisonResult,
-        accuracy: accuracy,
-        wrong: wrongPercentage,
-        grossspeed: grossSpeed,
-        totaldepres: totalDepressions,
-        accuratedep: correctChars,
-        wrongdep: wrongChars,
-        testname: testname,
-        speed: netSpeed,
-        time: rmTm,
-        actual_depression: message.length,
-        oldparagraph: oldparagraph,
-      };
-
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/post-user-typing-result`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${cookies.session_id}`,
-        },
-        body: JSON.stringify(typing_performance_result),
-      });
-
-      if (response.ok) {
-        navigate(`/${testcode}/${exam}/${testname}/feedback`);
-      }
+    if (response.ok) {
+      navigate(`/${testcode}/${exam}/${testname}/feedback`);
+    } else {
+      console.error("Error submitting typing performance");
     }
   };
 
