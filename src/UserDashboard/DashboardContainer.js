@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import SidebarDashboard from './SidebarDashboard';
 import UserOverallChart from './UserOverallChart';
-import Profile from '../User/Profile'; 
-import Settings from '../User/Settings'; 
+import Profile from '../User/Profile';
+import Settings from '../User/Settings';
 import UserResults from '../User/UserResults';
 import Invoice from '../User/Invoice';
 import './DashboardContainer.css';
@@ -15,6 +15,13 @@ const DashboardContainer = () => {
   const [cookies] = useCookies(['session_id']);
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const mainContentRef = useRef(null);
+  const sidebarRef = useRef(null);
+
+  // The minimum distance required to register as a swipe
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -22,6 +29,10 @@ const DashboardContainer = () => {
 
   const handleMenuClick = (component) => {
     setActiveComponent(component);
+    // Auto-close sidebar on mobile when menu item is clicked
+    if (window.innerWidth < 768) {
+      setSidebarCollapsed(true);
+    }
   };
 
   const checkAccess = async () => {
@@ -52,6 +63,62 @@ const DashboardContainer = () => {
     checkAccess();
   }, []);
 
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (touchStart === null || touchEnd === null) return;
+
+    const distance = touchEnd - touchStart; // Reverse direction
+    const isRightSwipe = distance > minSwipeDistance;
+    const isLeftSwipe = distance < -minSwipeDistance;
+
+    if (isRightSwipe && sidebarCollapsed) {
+      setSidebarCollapsed(false);
+    } else if (isLeftSwipe && !sidebarCollapsed) {
+      setSidebarCollapsed(true);
+    }
+  };
+
+
+  // Add event listeners when component mounts
+  useEffect(() => {
+    const mainContent = mainContentRef.current;
+    const sidebar = sidebarRef.current;
+
+    if (mainContent) {
+      mainContent.addEventListener('touchstart', onTouchStart, { passive: true });
+      mainContent.addEventListener('touchmove', onTouchMove, { passive: true });
+      mainContent.addEventListener('touchend', onTouchEnd, { passive: true });
+    }
+
+    // Add touch area for closed sidebar (10px edge)
+    if (sidebar) {
+      sidebar.addEventListener('touchstart', onTouchStart, { passive: true });
+      sidebar.addEventListener('touchmove', onTouchMove, { passive: true });
+      sidebar.addEventListener('touchend', onTouchEnd, { passive: true });
+    }
+
+    return () => {
+      if (mainContent) {
+        mainContent.removeEventListener('touchstart', onTouchStart);
+        mainContent.removeEventListener('touchmove', onTouchMove);
+        mainContent.removeEventListener('touchend', onTouchEnd);
+      }
+      if (sidebar) {
+        sidebar.removeEventListener('touchstart', onTouchStart);
+        sidebar.removeEventListener('touchmove', onTouchMove);
+        sidebar.removeEventListener('touchend', onTouchEnd);
+      }
+    };
+  }, [touchStart, touchEnd, sidebarCollapsed]);
+
   const renderComponent = () => {
     switch (activeComponent) {
       case 'UserOverallChart':
@@ -74,28 +141,45 @@ const DashboardContainer = () => {
   };
 
   return (
-    <div className="container-fluid p-0 dashboard-container">
-      <div className="row g-0">
-        {/* Sidebar - using col-md-3 for medium screens and up */}
-        <div className={`col-md-3 col-lg-2 d-md-block bg-dark sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-          <SidebarDashboard 
-            onMenuClick={handleMenuClick} 
-            isCollapsed={sidebarCollapsed}
-            toggleCollapse={toggleSidebar}
-          />
-        </div>
-        
-        {/* Main content area */}
-        <div className={`col-md-9 col-lg-10 ms-sm-auto px-0 main-content ${sidebarCollapsed ? 'expanded' : ''}`}>
-          <DashboardHeader toggleSidebar={toggleSidebar} />
-          
-          <div className="right-content-container">
-            {renderComponent()}
-          </div>
+    <div className="container-fluid p-0 dashboard-container mt-5">
+      {/* Sidebar */}
+      <div
+        ref={sidebarRef}
+        className={`sidebar ${window.innerWidth < 768
+            ? (sidebarCollapsed ? '' : 'show')
+            : (sidebarCollapsed ? 'collapsed' : '')
+          }`}
+      >
+        <SidebarDashboard
+          onMenuClick={handleMenuClick}
+          isCollapsed={sidebarCollapsed}
+          toggleCollapse={toggleSidebar}
+        />
+      </div>
+
+      {/* Mobile backdrop */}
+      {!sidebarCollapsed && window.innerWidth < 768 && (
+        <div
+          className="sidebar-backdrop show"
+          onClick={() => setSidebarCollapsed(true)}
+        />
+      )}
+
+      {/* Main content */}
+      <div
+        ref={mainContentRef}
+        className={`main-content ${window.innerWidth >= 768 && sidebarCollapsed ? 'expanded' : ''
+          }`}
+      >
+        <DashboardHeader toggleSidebar={toggleSidebar} />
+        <div className="right-content-container">
+          {renderComponent()}
         </div>
       </div>
     </div>
   );
+
+
 };
 
 export default DashboardContainer;

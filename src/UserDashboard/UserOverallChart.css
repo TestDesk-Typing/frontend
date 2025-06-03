@@ -1,5 +1,10 @@
 /* UserOverallChart.css */
 
+.chart-wrapper {
+    width: 100%;
+    max-width: 100%;
+}
+
 /* Base styles */
 .user-dashboard {
     font-family: Arial, sans-serif;

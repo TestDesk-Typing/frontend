@@ -70,19 +70,10 @@
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
-  .sidebar-dashboard-container {
-    width: 220px;
-  }
   
   .sidebar-item {
     padding: 0.8rem 1rem !important;
     font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar-dashboard-container {
-    width: 200px;
   }
 }
 

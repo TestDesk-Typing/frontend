@@ -9,6 +9,7 @@ import { diffWords } from "diff";
 import "./Main.css";
 import { useAuth } from "../AuthContext/AuthContext";
 import pic3 from "../i/NewCandidateImage.jpg";
+import LoadingSpinner from "../Loading";
 
 const TypingModule = () => {
   const { testcode, exam, UR, testname } = useParams();
@@ -25,6 +26,7 @@ const TypingModule = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [oldparagraph, setoldParagraph] = useState("");
   const { userDetails, isLoggedIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const disableRightClick = (event) => event.preventDefault();
@@ -261,6 +263,7 @@ const TypingModule = () => {
   // };
 
   const messageSubmit = async () => {
+    setIsLoading(true);
     const originalParagraph = paragraph.trim(); // Original paragraph
     const userInput = message.trim(); // User's typed content
 
@@ -444,8 +447,10 @@ const TypingModule = () => {
     });
 
     if (response.ok) {
+      setIsLoading(false);
       navigate(`/${testcode}/${exam}/${testname}/feedback`);
     } else {
+      setIsLoading(false);
       console.error("Error submitting typing performance");
     }
   };
@@ -457,109 +462,75 @@ const TypingModule = () => {
   const showProfile = () => setShowDetails(!showDetails);
 
   return (
-    <div className="typing-module-container">
+    <div className="typing-test-container-exam">
+      {isLoading &&
+        <LoadingSpinner />}
       {/* Header Section */}
-      <div className="typing-header-bar"></div>
-      <div className="typing-exam-info">
+      <div className="header-bar"></div>
+      <div className="exam-info-bar">
         <div className="exam-name">{testname}</div>
-        <div className="exam-instructions">
+        <button className="instructions-btn">
           <FcInfo className="info-icon" />
-          <div className="instructions-text">View Instructions</div>
-        </div>
+          <span>View Instructions</span>
+        </button>
       </div>
 
-      {/* Main Content Area */}
-      <div className="typing-main-content">
-        {/* Left Panel */}
-        <div className="typing-left-panel">
-          <div className="panel-header">
-            <BiSolidLeftArrow className="arrow-icon" />
-            <div className="group-section">
-              <div className="group-header">
-                <div className="group-title">Group A</div>
-                <BiSolidDownArrow className="dropdown-icon" />
-              </div>
-            </div>
-          </div>
-
-          <div className="time-section">
-            <div className="section-title">
-              <b>Sections</b>
-            </div>
-            <div className="time-remaining">
-              <b>
-                Time Left:{" "}
-                <span className="timer-display">
-                  {typing && <TypingTimer hoursMinSecs={hoursMinSecs} rmTimeFun={rmTimeFun} />}
-                </span>
-              </b>
-            </div>
-          </div>
-
-          <div className="subject-section">
-            <BiSolidLeftArrow className="arrow-icon" />
-            <div className="subject-title selected-subject">
-              <span>Section A</span>
-            </div>
+      {/* Main Content */}
+      <div className="typing-content-wrapper">
+        {/* Left Sidebar */}
+        <div className="left-sidebar">
+          <div className="time-display">
+            <span>Time Left: </span>
+            {typing && <TypingTimer hoursMinSecs={hoursMinSecs} rmTimeFun={rmTimeFun} />}
           </div>
         </div>
 
-        {/* Right Panel */}
-        <div className="typing-right-panel">
-          <div className="user-profile" onClick={showProfile}>
-            <div className="profile-image">
-              <img src={pic3} alt="Profile" className="profile-pic" />
+        {/* Typing Area */}
+        <div className="typing-area">
+          <div className="keyboard-info">Keyboard Layout: QWERTY</div>
+
+          <div className="text-display">
+            <div className="original-text">
+              {paragraph}
             </div>
-            <div className="profile-details">
-              <div className="user-name" title={userDetails?.fullName}>
-                {userDetails?.fullName || 'Guest'}
-              </div>
+            <div className="typing-input-container">
+              <textarea
+                className="typing-input"
+                value={message}
+                onChange={handleMessageChange}
+                spellCheck="false"
+                maxLength={contentLength}
+                placeholder="Start typing here..."
+              ></textarea>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Typing Area */}
-      <div className="typing-area-container">
-        <div className="keyboard-info">Keyboard Layout: QWERTY</div>
-        
-        <div className="typing-content-area">
-          {/* Original Paragraph */}
-          <div className="original-paragraph">
-            {paragraph}
+          <div className="keyboard-instructions">
+            To set up the keyboard for Hindi typing,
+            first go to Settings, then Time & Language, and select
+            Language on your laptop. Install Hindi as a preferred language.
+            After that, press <strong>Windows + Space</strong> to switch to the Hindi keyboard,
+            but only switch when Hindi typing is required for the test.
           </div>
-          
-          {/* Typing Input */}
-          <div className="typing-input-container">
-            <textarea
-              className="typing-input"
-              value={message}
-              spellCheck="false"
-              onChange={handleMessageChange}
-              maxLength={contentLength}
-            ></textarea>
+
+          <Button className="submit-btn" onClick={messageSubmit}>
+            Submit
+          </Button>
+        </div>
+
+        {/* Right Sidebar */}
+        <div className="right-sidebar">
+          <div className="user-profile">
+            <img src={pic3} alt="Profile" className="profile-image" />
+            <div className="user-name">{userDetails?.fullName || 'Guest'}</div>
           </div>
         </div>
-
-        {/* Keyboard Instructions */}
-        <div className="keyboard-instructions">
-          To set up the keyboard for Hindi typing,
-          first go to Settings, then Time & Language, and select
-          Language on your laptop. Install Hindi as a preferred language.
-          After that, press <strong>Windows + Space</strong> to switch to the Hindi keyboard,
-          but only switch when Hindi typing is required for the test.
-        </div>
-
-        {/* Submit Button */}
-        <Button className="submit-button" onClick={messageSubmit}>
-          Submit
-        </Button>
       </div>
 
       {/* Footer */}
-      <div className="typing-footer">Version : 17.07.00</div>
+      <div className="footer">Version : 17.07.00</div>
     </div>
   );
-};
+}
 
 export default TypingModule;

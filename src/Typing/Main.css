@@ -1,247 +1,133 @@
-/* Typing Module Styles */
-.typing-module-container {
+/* Base Styles */
+.typing-test-container-exam {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 /* Header Styles */
-.typing-header-bar {
-  background: #2d70b6;
+.header-bar {
+  background-color: #2d70b6;
   height: 50px;
 }
 
-.typing-exam-info {
-  background: #363636;
+.exam-info-bar {
+  background-color: #363636;
   color: #f7f64e;
-  height: 30px;
-  line-height: 30px;
-  padding: 0 10px;
+  padding: 8px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .exam-name {
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-.exam-instructions {
+.instructions-btn {
+  background: none;
+  border: none;
+  color: white;
   display: flex;
   align-items: center;
   cursor: pointer;
-}
-
-.info-icon {
-  margin-right: 7px;
-  font-size: 20px;
-}
-
-.instructions-text {
-  color: #fff;
   font-size: 12px;
   font-weight: bold;
 }
 
-.instructions-text:hover {
+.instructions-btn:hover {
   text-decoration: underline;
 }
 
-/* Main Content Styles */
-.typing-main-content {
+.info-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Main Content Layout */
+.typing-content-wrapper {
   display: flex;
-  width: 100%;
-  min-height: calc(100vh - 180px);
-}
-
-/* Left Panel Styles */
-.typing-left-panel {
-  flex: 3;
-  background: #eeeeee;
-  border-right: 1px solid #c3c3c1;
-}
-
-.panel-header {
-  display: flex;
-  align-items: center;
-  padding: 7px 6px;
-  height: 45px;
-}
-
-.arrow-icon {
-  color: #cacaca;
-  margin-right: 10px;
-}
-
-.group-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.group-header {
-  display: flex;
-  align-items: center;
-}
-
-.group-title {
-  background-color: #38a9eb;
-  color: #fff;
-  border: 1px solid #38a9eb;
-  border-radius: 3px;
-  height: 30px;
-  padding: 5px 18px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.dropdown-icon {
-  color: #38a9eb;
-  font-size: 14px;
-  margin-left: 5px;
-}
-
-.time-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 30px;
-  line-height: 28px;
-  padding: 0 13px;
-  border-bottom: 1px solid #c3c3c1;
-}
-
-.section-title {
-  color: #49525b;
-  font-weight: bold;
-  font-size: 0.9em;
-}
-
-.time-remaining {
-  color: #333;
-  font-size: 0.9em;
-}
-
-.subject-section {
-  display: flex;
-  align-items: center;
-  padding: 10px 6px;
-  height: 40px;
-  border-bottom: 1px solid #c3c3c1;
-}
-
-.selected-subject {
-  background: #4e85c5;
-  color: #fff;
-  border-radius: 3px;
-  font-size: 0.8em;
-  font-weight: bold;
-  padding: 10px;
-  cursor: pointer;
-}
-
-/* Right Panel Styles */
-.typing-right-panel {
   flex: 1;
-  background: #f8fbff;
-  max-width: 271px;
+  min-height: calc(100vh - 110px);
 }
 
-.user-profile {
-  display: flex;
-  padding: 7px;
-  height: 124px;
-  border-left: 1px solid #c3c3c1;
-  cursor: pointer;
+/* Left Sidebar */
+.left-sidebar {
+  width: 200px;
+  background-color: #f0f0f0;
+  padding: 15px;
+  border-right: 1px solid #ddd;
 }
 
-.profile-image {
-  margin-right: 9px;
+.time-display {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
-.profile-pic {
-  width: 89px;
-  height: 99px;
-  border: 1px solid #c3c3c1;
-  border-radius: 1px;
-}
-
-.profile-details {
+/* Typing Area */
+.typing-area {
+  flex: 1;
+  padding: 20px;
+  background-color: #4e85c5;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.user-name {
-  color: #2c363f;
-  font-size: 1.417em;
-  font-weight: bold;
-  padding: 4px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Typing Area Styles */
-.typing-area-container {
-  background: #4e85c5;
-  color: #fff;
-  padding: 10px;
 }
 
 .keyboard-info {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
+  color: white;
+  margin-bottom: 15px;
 }
 
-.typing-content-area {
+.text-display {
+  background-color: white;
+  border: 1px solid #bdbdbd;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  border: 1px solid #bdbdbd;
-  background: white;
-  color: black;
-  margin-top: 2px;
-  height: 350px;
 }
 
-.original-paragraph {
-  flex: 1;
-  padding: 10px;
-  font-size: 1.3em;
-  line-height: 1.9rem;
-  overflow-y: auto;
+.original-text {
+  padding: 15px;
+  font-size: 16px;
+  line-height: 1.8;
   border-bottom: 1px solid #ddd;
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
 .typing-input-container {
+  padding: 15px;
   flex: 1;
+  display: flex;
 }
 
 .typing-input {
   width: 100%;
-  height: 100%;
-  padding: 10px;
-  font-size: 1.4em;
-  line-height: 1.9rem;
-  resize: none;
+  font-size: 16px;
+  line-height: 1.8;
   border: none;
   outline: none;
-  font-family: Arial, Verdana, Helvetica, sans-serif;
+  resize: none;
+  font-family: Arial, sans-serif;
 }
 
 .keyboard-instructions {
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  color: #333;
-  background: white;
+  background-color: white;
   border: 1px solid #cc00ff;
-  padding: 10px 15px;
   border-radius: 5px;
-  margin: 10px 0;
+  padding: 12px 15px;
+  font-size: 13px;
   line-height: 1.5;
+  color: #333;
+  margin-bottom: 15px;
 }
 
 .keyboard-instructions strong {
@@ -249,110 +135,158 @@
   font-weight: bold;
 }
 
-.submit-button {
+.submit-btn {
   background-color: #38aae9;
   border-color: #38aae9;
-  color: #ffffff;
-  font-size: 1.2em;
-  font-weight: 400;
-  padding: 8px 20px;
-  margin: 8px 0;
-  float: right;
+  padding: 8px 25px;
+  font-size: 16px;
+  align-self: flex-end;
 }
 
-.submit-button:hover {
-  background-color: #3a6e9a;
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+.submit-btn:hover {
+  background-color: #2d8ac9;
+  border-color: #2d8ac9;
 }
 
-/* Footer Styles */
-.typing-footer {
+/* Right Sidebar */
+.right-sidebar {
+  width: 200px;
+  background-color: #f8f8f8;
+  padding: 15px;
+  border-left: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-image {
+  width: 90px;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Footer */
+.footer {
   text-align: center;
   padding: 10px;
+  background-color: white;
   color: #6c757d;
   font-size: 14px;
+  border-top: 1px solid #ddd;
 }
 
 /* Responsive Styles */
-@media (max-width: 1024px) {
-  .typing-main-content {
+@media (max-width: 992px) {
+  .typing-content-wrapper {
     flex-direction: column;
   }
   
-  .typing-right-panel {
-    max-width: 100%;
-    margin-top: 20px;
+  .left-sidebar,
+  .right-sidebar {
+    width: 100%;
+    border: none;
+    padding: 10px;
   }
   
-  .profile-pic {
-    width: 80px;
-    height: 80px;
+  .left-sidebar {
+    order: 1;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .typing-area {
+    order: 2;
+  }
+  
+  .right-sidebar {
+    order: 3;
+    border-top: 1px solid #ddd;
+  }
+  
+  .original-text,
+  .typing-input {
+    max-height: 30vh;
   }
 }
 
 @media (max-width: 768px) {
-  .typing-header-bar {
-    height: 60px;
+  .header-bar {
+    height: 40px;
   }
   
-  .typing-exam-info {
+  .exam-info-bar {
     flex-direction: column;
-    height: auto;
-    padding: 10px;
+    align-items: flex-start;
+    padding: 8px 10px;
   }
   
-  .exam-instructions {
-    width: 100%;
-    justify-content: center;
+  .instructions-btn {
     margin-top: 5px;
   }
   
-  .typing-content-area {
-    height: 400px;
-  }
-  
-  .submit-button {
+  .submit-btn {
     width: 100%;
   }
 }
 
-@media (max-width: 480px) {
-  .typing-header-bar {
-    height: 70px;
-  }
-  
-  .typing-exam-info {
-    font-size: 10px;
-  }
-  
-  .original-paragraph,
+@media (max-width: 576px) {
+  .original-text,
   .typing-input {
-    font-size: 1.2em;
+    font-size: 15px;
   }
   
-  .profile-pic {
-    width: 70px;
-    height: 70px;
+  .keyboard-info {
+    font-size: 16px;
+  }
+  
+  .profile-image {
+    width: 80px;
+    height: 90px;
   }
   
   .user-name {
-    font-size: 1.2em;
+    font-size: 15px;
   }
 }
 
-/* Special height adjustment */
-@media (height: 768px) {
-  .typing-content-area {
-    height: 450px;
+/* Landscape Mobile Optimization */
+@media (max-height: 576px) and (orientation: landscape) {
+  .typing-content-wrapper {
+    flex-direction: row;
   }
   
-  .submit-button {
-    margin-top: 20px;
+  .left-sidebar,
+  .right-sidebar {
+    width: 150px;
+  }
+  
+  .original-text,
+  .typing-input {
+    max-height: 60vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  .typing-area {
+    padding: 10px;
   }
 }
 
-/* Typing result classes */
+/* Typing result highlighting */
 .correctword {
   color: green;
 }
