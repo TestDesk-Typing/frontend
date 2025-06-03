@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -12,10 +13,9 @@ const PaymentComponent = () => {
   const [email, setEmail] = useState('');
   const [isRegistered, setIsRegistered] = useState(null);
   const [plan, setPlan] = useState('30 Days');
-  const [orderAmount, setOrderAmount] = useState(0);
-  const [plans, setPlans] = useState([]);
+  const [orderAmount, setOrderAmount] = useState(0); // Ensure this is initialized as a number
+  const [plans, setPlans] = useState([]); // To store fetched plans
   const [cookies] = useCookies(['session_id']);
-  const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
   const { exam, examName, paperCode } = useParams();
@@ -23,65 +23,52 @@ const PaymentComponent = () => {
   useEffect(() => {
     if (isLoggedIn && userDetails) {
       setEmail(userDetails.email);
-      checkProductAccess('999');
+      checkProductAccess('999'); // Use actual product ID
     }
-    setOrderAmount(getPrice());
+
+    // Set the initial order amount based on the default plan
+    setOrderAmount(getPrice());  // Ensure it's set as an integer
   }, [isLoggedIn, userDetails]); 
 
   useEffect(() => {
-    setOrderAmount(getPrice());
+    // Update the order amount whenever the plan changes
+    setOrderAmount(getPrice());  // Ensure it's set as an integer
   }, [plan]);
 
+  // Fetch plans from the API
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        setIsLoading(true);
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/getPlans`, {
-          method: 'GET',
-          headers: {
-            "Authorization": `Bearer ${cookies.session_id}`
-          }
+          method: 'GET', 
+
         });
 
         if (response.ok) {
           const data = await response.json();
-          setPlans(data);
-          setPlan(data[0]?.name || '30 Days');
+          setPlans(data);  // Store the plans fetched from the API
+          setPlan(data[0]?.name || '30 Days'); // Default to the first plan if available
         }
-        setIsLoading(false);
       } catch (error) {
         console.error('Failed to fetch plans:', error);
-        setIsLoading(false);
       }
     };
 
     fetchPlans();
-  }, [cookies.session_id]);
+  }, [cookies.session_id]); // Run when session_id changes
 
   const checkRegistration = async (emailToCheck) => {
-    if (!emailToCheck) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Email Required',
-        text: 'Please enter your email address',
-      });
-      return;
-    }
-
     try {
-      setIsLoading(true);
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/check-registration`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": `Bearer ${cookies.session_id}`
         },
         body: JSON.stringify({ email: emailToCheck }),
       });
   
       const data = await response.json();
       setIsRegistered(data.registered);
-      setIsLoading(false);
   
       if (!data.registered) {
         Swal.fire({
@@ -97,7 +84,6 @@ const PaymentComponent = () => {
       }
     } catch (error) {
       console.error('Error checking registration:', error);
-      setIsLoading(false);
       Swal.fire({
         icon: 'error',
         title: 'Error',
@@ -120,12 +106,19 @@ const PaymentComponent = () => {
 
       if (response.ok) {
         const result = await response.json();
+        // console.log("Access Check Result:", result);
         if (result.access === "access") {
           navigate(`/exam/${exam}/${examName}/${paperCode}/testselect`);
+        } else {
+          navigate(`/exam/${exam}/${examName}/${paperCode}/payment`);
         }
+      } else {
+        console.error("Failed to check product access", response.statusText);
+        navigate(`/exam/${exam}/${examName}/${paperCode}/payment`);
       }
     } catch (error) {
       console.error("Error checking product access", error);
+      navigate(`/exam/${exam}/${examName}/${paperCode}/payment`);
     }
   };
 
@@ -135,27 +128,57 @@ const PaymentComponent = () => {
 
   const getPrice = () => {
     const selectedPlan = plans.find((p) => p.name === plan);
+    
+    // Check if a valid plan is selected and parse the totalAmount as an integer
     if (selectedPlan) {
-      const cleanedAmount = selectedPlan.totalAmount.replace('₹', '').trim();
-      return parseInt(cleanedAmount, 10);
+      const cleanedAmount = selectedPlan.totalAmount.replace('₹', '').trim(); // Remove the ₹ symbol and any extra spaces
+      return parseInt(cleanedAmount, 10); // Convert the cleaned string to an integer
     }
-    return 0;
+  
+    return 0; // Return 0 if no valid plan is found
+  };
+  
+
+  const calculateSubscriptionDates = () => {
+    const startDate = new Date(); 
+    let expiryDate = new Date(startDate); 
+
+    const selectedPlan = plans.find((p) => p.name === plan);
+    if (selectedPlan) {
+      switch (selectedPlan.name) {
+        case '30 Days': expiryDate.setDate(startDate.getDate() + 30); break;
+        case '25 Days': expiryDate.setDate(startDate.getDate() + 25); break;
+        case '3 Days': expiryDate.setDate(startDate.getDate() + 3); break;
+        case '90 Days': expiryDate.setDate(startDate.getDate() + 90); break;
+        case '180 Days': expiryDate.setDate(startDate.getDate() + 180); break;
+        case '365 Days': expiryDate.setDate(startDate.getDate() + 365); break;
+        default: break;
+      }
+    }
+
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      expiryDate: expiryDate.toISOString().split('T')[0],
+    };
   };
 
+  const subscriptionDates = calculateSubscriptionDates();
+
   return (
-    <div className="payment-page">
-      <div className="payment-header">
-        <div className="header-content"></div>
-      </div>
-      
-      <div className="user-profile-section">
-        <div className="user-info-container">
-          <div className="system-info">
-            <div className="system-name">
-              <div className="info-label">System Name:</div>
-              <div className="info-value">{paperCode}</div>
-              <div className="disclaimer">
-                <a href="#" className="disclaimer-link">
+    <>
+      <div id="minwidth">
+        <div id="header" style={{ backgroundColor: 'rgb(45, 112, 182)' }}></div>
+        <div className="userInfo">
+          <div className="system_info">
+            <div className="system_name">
+              <div id="sysName" className="name1">System Name :</div>
+              <div className="details1" id="mockSysNum">{paperCode}</div>
+              <div style={{ fontSize: '15px' }} className="details3">
+                <a
+                  href="#"
+                  style={{ color: 'white', textDecoration: 'none', border: '0 none' }}
+                  id="notMySystem"
+                >
                   Kindly contact the invigilator if there are any discrepancies in the
                   Name and Photograph displayed on the screen or if the photograph is not
                   yours
@@ -163,95 +186,71 @@ const PaymentComponent = () => {
               </div>
             </div>
             
-            <div className="user-details">
-              <div className="info-label">Candidate Name:</div>
-              <div className="info-value">
-                <span title={userDetails?.fullName} className="user-name">{userDetails?.fullName || 'Your name'}</span>
+            <div className="user_name">
+              <div id="indexCandName" className="name2">Candidate Name :</div>
+              <div className="details2">
+                <span title={userDetails?.fullName} className="candOriginalName">{userDetails?.fullName || 'Your name'}</span>
               </div>
-              <div className="subject-info">
-                <span className="info-label">Subject:</span>
-                <span className="info-value">Typing test</span>
+              <div style={{ marginTop: '10px', textAlign: 'right' }}>
+                <span className="name2" id="subName">Subject :</span>
+                <span style={{ fontSize: '15px' }} className="details2" id="mockSubName">Typing test</span>
               </div>
             </div>
-            
-            <div className="user-photo">
-              <img src={pic3} alt="Candidate" className="profile-image" />
+            <div align="center" className="user_pic">
+              <img width="94" height="101" align="absmiddle" className="candidateImg" src={pic3} alt="Candidate" />
             </div>
+            <div className="clear"></div>
           </div>
         </div>
       </div>
+      {/* <div className="scrolling-message">
+  <span>
+    Live Test Schedule: Morning Session 6 AM TO 7 AM And Evening Session 7 PM TO 8 PM - Special For 2024 Typing Test
+  </span>
+</div> */}
+      <div className='check-sub'>
+        <div className='header-for-sub'>Select an option and pay to continue.</div>
+        <div className="payment-component">
+          <input 
+            type="email" 
+            placeholder="Enter your email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            className="email-input"
+          />
+          <button onClick={() => checkRegistration(email)} className="check-button">Check Registration</button>
 
-      <div className="payment-content">
-        <div className="payment-card">
-          <div className="card-header">
-            Select an option and pay to continue
-          </div>
-          
-          <div className="card-body">
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-input"
-                disabled={isLoading}
+          {isRegistered === true && (
+            <div className="plan-selection">
+              <h2>Select Plan:</h2>
+              <select value={plan} onChange={handlePlanChange} className="plan-select">
+                {plans.map((p) => (
+                  <option key={p.name} value={p.name}>
+                    {p.name} - {p.totalAmount}
+                  </option>
+                ))}
+              </select>
+              <BuyTyping
+                userDetails={userDetails}
+                orderAmount={orderAmount}  // This is now an integer
+                buttonText="Pay Now"
+                className="pay-button"
+               
+                examName={examName}
+                paperCode={paperCode}
+                exam={exam}
+                selectedPlan={plan}
               />
             </div>
-            
-            <button 
-              onClick={() => checkRegistration(email)} 
-              className="check-btn"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Checking...' : 'Check Registration'}
-            </button>
-
-            {isRegistered === true && (
-              <div className="plan-section">
-                <h3 className="section-title">Select Subscription Plan</h3>
-                
-                <div className="form-group">
-                  <label htmlFor="plan" className="form-label">Available Plans</label>
-                  <select 
-                    id="plan"
-                    value={plan} 
-                    onChange={handlePlanChange} 
-                    className="form-select"
-                    disabled={isLoading}
-                  >
-                    {plans.map((p) => (
-                      <option key={p.name} value={p.name}>
-                        {p.name} - {p.totalAmount}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                
-                <BuyTyping
-                  userDetails={userDetails}
-                  orderAmount={orderAmount}
-                  buttonText={isLoading ? 'Processing...' : 'Pay Now'}
-                  className="pay-btn"
-                  disabled={isLoading}
-                  examName={examName}
-                  paperCode={paperCode}
-                  exam={exam}
-                  selectedPlan={plan}
-                />
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
-      
-      <div className="footer">
-        Version: 17.07.00
-      </div>
-    </div>
+      <div id="footer">Version : 17.07.00</div>
+    </>
   );
 };
 
 export default PaymentComponent;
+
+
+

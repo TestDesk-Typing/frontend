@@ -1,124 +1,91 @@
-/* DashboardHeader.css */
-
-/* Base styles */
 .dashboard-header {
-  padding: 0.5rem 1rem;
-  background-color: #f9f9f9 !important;
-  z-index: 1030;
-}
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    color: black;
+    position: fixed;
+    top: 0;
+    left: 250px;
+    right: 0;
+    z-index: 20;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  }
+  .dashboard-header-part2{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-/* Brand logo */
-.typing-brand-logo {
-  height: 40px;
-  cursor: pointer;
+  .typing-brand{
+    cursor: pointer;
+  }
+  
+  .header-title {
+    font-size: 24px; /* Size of the dashboard title */
+    font-weight: bold; /* Bold text */
+  }
+  .notification-icon-dash {
+    font-size: 28px;
+  
+    cursor: pointer;
+    color: #ccc;
+    
+  }
+  .notification-content h2{
+    color:#242323;
+  }
+  .static-notification p {
+    color: #333; /* Darker text color for better readability */
+    background-color: #f8f9fa; /* Light background to make the text stand out */
+    border-left: 5px solid purple; /* Add a blue border on the left */
+    padding: 15px 15px; /* Add padding for spacing */
+    border-radius: 5px; /* Rounded corners */
+    font-family: 'Arial', sans-serif; /* Use a clean font */
+    font-size: 16px; /* Slightly larger font size for readability */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    margin: 10px 0; /* Add some space between notifications */
+    transition: all 0.3s ease; /* Smooth transition on hover */
 }
-
-/* Notification styles */
-.typing-help-item-notification {
-  position: relative;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.notification-icon-dash {
-  font-size: 1.4rem;
-  color: #6c757d;
-  transition: color 0.2s;
-}
-
-.typing-help-item-notification:hover .notification-icon-dash {
-  color: #495057;
-}
-
-.typing-help-item-notification.animated {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-/* Notification content overlay */
-.notification-content-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1040;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.notification-content {
-  width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow-y: auto;
-  padding: 1.5rem;
-  position: relative;
-}
-
-.notification-content h5 {
-  color: #242323;
-  margin-bottom: 1.5rem;
-}
-
-/* Static notification styles */
-.static-notification p {
-  color: #333;
-  background-color: #f8f9fa;
-  border-left: 5px solid purple;
-  padding: 0.75rem 1rem;
-  border-radius: 0.25rem;
-  font-family: 'Arial', sans-serif;
-  font-size: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 0.5rem 0;
-  transition: all 0.3s ease;
-}
-
 .static-notification p:hover {
-  background-color: #e9ecef;
-  border-left-color: #6a1b9a;
-  transform: scale(1.02);
+  background-color: #e9ecef; /* Slightly darker background when hovered */
+  border-left-color: purple; /* Change border color on hover */
+  transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
-/* Nav link hover effect */
-.nav-link {
-  transition: color 0.2s;
-}
+  .header-logout{
+    margin-right: 23px;
 
-.nav-link:hover {
-  color: #800080 !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .dashboard-header {
-    padding: 0.5rem;
+  }
+  .header-notification,
+  .header-account,
+  .header-logout {
+    margin-left: 20px; /* Spacing between items */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    position: relative; /* For dropdown positioning */
   }
   
-  .notification-content {
-    width: 95%;
-    padding: 1rem;
+  .header-dropdown {
+    position: absolute; /* Position dropdown absolutely */
+    top: 100%; /* Align below the account item */
+    right: 0; /* Align to the right */
+    background-color: white; /* Dropdown background */
+    color: black; /* Dropdown text color */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow for dropdown */
+    display: block; /* Initially shown if dropdownVisible is true */
+    z-index: 30; /* Ensure it appears above other elements */
   }
   
-  .typing-brand-logo {
-    height: 35px;
+  .header-account:hover .header-dropdown {
+    display: block; /* Show dropdown on hover */
   }
-}
+  
 
-.navbar-menu {
-      display: flex !important;
-    flex-direction: row;
-}
+  .header-notification:hover,
+.header-account:hover,
+.header-logout:hover {
+   color: #800080; /* Purple background on hover */
 
-/* Custom cursor for clickable items */
-.cursor-pointer {
-  cursor: pointer;
 }

@@ -148,7 +148,7 @@ const ExamResult = () => {
         <link rel="canonical" href="https://testdesk.in/typing-test-dest-results" />
       </Helmet>
 
-      <div className="exam-result-container mt-5">
+      <div className="exam-result-container">
         <h2 className='myhead'>Today Live Typing Test Results</h2>
 
         {/* Only show the exam content if results are available */}

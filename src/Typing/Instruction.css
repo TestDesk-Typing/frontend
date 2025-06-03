@@ -1,159 +1,188 @@
-/* Instruction.css */
+.instruction-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .instruction-header {
+    background-color: rgb(45, 112, 182);
+    height: 50px;
+  
+  }
 
-.instruction-wrapper {
+  .instructions-para{
+    height: 74.680%;
+
+    overflow: auto;
+    padding-left: 23px;
+  }
+  .instructions-para2{
+    height: 317px;
+
+    overflow: auto;
+    padding-left: 23px;
+  }
+
+  
+  .instruction-content {
+    display: flex;
+  }
+  
+  .instruction-left {
+    flex: 4 ;
+    float: left;
+    border-right: 1px solid rgb(0, 0, 0);
+    height: 91vh;
+    width: 79%;
+    overflow: hidden;
+    
+  }
+
+  .read-inst{
+    text-align: center;
+    margin-bottom: 0;
+    font-family: auto;
+    font-size: 18px;
+    margin-top: 0;
+
+  }
+  .general-inst {
+    text-align: left;
+    margin-bottom: 0;
+    font-family: auto;
+    font-size: 18px;
+    margin-top: 0;
+    font-weight: bold; /* Makes the text bold */
+    text-decoration: underline; /* Adds an underline */
+  }
+
+  .nextbutton{
+    border: 1px solid #ccc;
+    height: 5rem;
+    display: flex;
+justify-content: end;
+align-items: center;
+  }
+
+  .next-button-arrow{
+
+  }
+  .next-and-previ{
+   line-height: 38px;
+    float: left;
+    font-weight: bold;
+    outline: none;
+    background-color: #fff;
+    color: #252525;
+    border: 1px solid #c8c8c8;
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 400;
+    height: 39px;
+    padding-left: 20px;
+    padding-right: 20px;
+  
+    vertical-align: middle;
+    white-space: nowrap;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    margin-right: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+      }
+  
+
+      .nextbutton2{
+        border: 1px solid #ccc;
+        height: 11rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+
+      .understood{
+        line-height: 16px;
+    margin-bottom: 0;
+    padding-left: 0;
+    display: flex;
+    margin-top: 2%;
+
+      }
+      .understood1{
+        padding-left: 15px;
+        max-height: 120px;
+        font-size: 12px;
+        font-family: sans-serif;
+      }
+      .discl-check{
+        appearance: auto;
+      }
+      
+      .agree{
+        width: 98%;
+        display: block;
+        margin-left: 1.5em;
+        margin-left: 5px;
+      }
+
+.sky-blue-color{
+    padding-left: 10px;
+    text-align: left;
+
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #676568;
+    background: #BCE8F5;
+}
+
+.btnsection{
+  padding: 13px;
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.instruction-header-bar {
-  background-color: rgb(45, 112, 182);
-  height: 50px;
-  width: 100%;
-}
-
-.instruction-main-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.instruction-content-container {
-  display: flex;
-  flex: 1;
-}
-
-/* Left Section Styles */
-.instruction-left-section {
-  flex: 3;
-  border-right: 1px solid rgb(0, 0, 0);
-  display: flex;
-  flex-direction: column;
-}
-
-.instruction-title {
-  padding-left: 10px;
-  height: 40px;
-  line-height: 40px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #676568;
-  background: #BCE8F5;
-}
-
-.instruction-text-content {
-  flex: 1;
-  overflow: auto;
-  padding: 0 23px;
-  margin-bottom: 80px;
-}
-
-.instruction-read-text {
-  text-align: center;
-  margin-bottom: 0;
-  font-family: auto;
-  font-size: 18px;
-  margin-top: 0;
-}
-
-.instruction-general-text {
-  text-align: left;
-  margin-bottom: 0;
-  font-family: auto;
-  font-size: 18px;
-  margin-top: 0;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-/* Next/Previous Button Styles */
-.instruction-next-button-container {
-  border: 1px solid #ccc;
-  height: 5rem;
-  display: flex;
-  justify-content: flex-end;
   align-items: center;
-  padding-right: 18px;
+  padding-top: 27px;
 }
 
-.instruction-next-button, 
-.instruction-previous-button {
+.previousbtn {
+  width: 10%;
+  display: flex;
+  display: flex;
+  font-size: 1em;
+  font-weight: 400;
+  height: 39px;
   line-height: 38px;
-  font-weight: bold;
+  display: flex;
+ 
+  align-items: center;
   outline: none;
   background-color: #fff;
   color: #252525;
   border: 1px solid #c8c8c8;
   border-radius: 2px;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1em;
-  height: 39px;
-  padding: 0 20px;
+ 
+  
+  padding-left: 20px;
+  padding-right: 20px;
+ 
   white-space: nowrap;
-  transition: all 0.3s ease;
+ 
+ 
+ 
 }
 
-.instruction-next-button:hover,
-.instruction-previous-button:hover {
-  border-color: black;
-  background-color: #068fda;
-  color: white;
+.readylinkButton{
+  margin-left: 31%;
+  
 }
 
-.instruction-button-icon {
-  margin-left: 5px;
-}
-
-/* Confirmation Section Styles */
-.instruction-confirmation-section {
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 40px);
-}
-
-.instruction-checkbox-container {
-  padding-left: 15px;
-  max-height: 120px;
-  font-size: 12px;
-  font-family: sans-serif;
-  flex: 1;
-  overflow: auto;
-  padding-right: 15px;
-}
-
-.instruction-checkbox-content {
-  line-height: 16px;
-  margin-bottom: 0;
-  padding-left: 0;
-  display: flex;
-  margin-top: 2%;
-}
-
-.instruction-checkbox {
-  appearance: auto;
-  margin-right: 5px;
-}
-
-.instruction-agreement-text {
-  display: block;
-  margin-left: 5px;
-}
-
-.instruction-button-section {
-  padding: 13px;
-  display: flex;
-  align-items: center;
-  padding-top: 27px;
-  border-top: 1px solid #ccc;
-}
-
-.instruction-ready-button {
-  background-color: #38aae9;
-  border-color: #38aae9;
-  color: #ffffff;
+.imaready {
+    background-color: #38aae9;
+    border-color: #38aae9;
+    color: #ffffff;
   font-size: 12px;
   line-height: 38px;
   display: flex;
@@ -163,109 +192,40 @@
   cursor: pointer;
   font-weight: 400;
   height: 39px;
-  padding: 0 20px;
-  white-space: nowrap;
-  margin-left: auto;
-  transition: background-color 0.3s;
+  padding-left: 20px;
+  padding-right: 20px;
+  white-space: nowrap; 
 }
 
-.instruction-ready-button:hover {
+
+
+.imaready:hover {
   background-color: #168ecf;
+  border-color: black solid 1px;
 }
 
-/* Right Section Styles */
-.instruction-right-section {
-  flex: 1;
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.previousbtn,.next-and-previ:hover{
+  border-color: black solid 1px;
+  background-color: #068fda;
+  color: white;
 }
-
-.instruction-user-image-container {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.instruction-user-image {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.instruction-user-name {
+.userName-declare{
   text-align: center;
   font-weight: bolder;
   color: #555;
   font-family: sans-serif;
   font-size: 1.2rem;
-  margin: 0;
 }
-
-/* Footer Styles */
-.instruction-footer {
-  text-align: center;
-  padding: 10px;
-  color: #6c757d;
-  font-size: 14px;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .instruction-content-container {
-    flex-direction: column;
-  }
-  
-  .instruction-left-section {
-    border-right: none;
-    border-bottom: 1px solid #000;
-    flex: none;
-    height: auto;
-  }
-  
-  .instruction-right-section {
-    padding: 20px;
-    flex: none;
-  }
-  
-  .instruction-next-button-container {
-    height: auto;
-    padding: 15px;
-    justify-content: center;
-  }
-  
-  .instruction-button-section {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .instruction-ready-button {
-    margin-left: 0;
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .instruction-previous-button {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .instruction-text-content,
-  .instruction-checkbox-container {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  
-  .instruction-read-text,
-  .instruction-general-text {
-    font-size: 16px;
+  .instruction-right {
+    flex: 1; 
+    padding: 10px;
+    padding-top: 20px;
   }
   
   .instruction-title {
-    font-size: 18px;
+    padding-left: 10px;
+    text-align: left;
   }
   
-  .instruction-user-name {
-    font-size: 1rem;
-  }
-}
+
+  

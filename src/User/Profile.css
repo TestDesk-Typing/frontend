@@ -1,64 +1,139 @@
 /* Profile.css */
 
-.profile-container {
-  max-width: 1200px;
-  padding: 20px;
-}
-
-.profile-image {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  margin: 0 auto;
-  border: 3px solid #f0f0f0;
-}
-
-.play-btn {
-  padding: 8px 25px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.play-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.form-control-static {
-  padding: 0.375rem 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-  background-color: #f8f9fa;
-  min-height: calc(1.5em + 0.75rem + 2px);
-  display: block;
-  width: 100%;
-}
-
-.card {
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive adjustments */
-@media (max-width: 992px) {
-  .profile-image {
-    width: 120px;
-    height: 120px;
+.profile-page {
+    /* padding: 20px; */
+    display: flex;
+    flex-direction: column;
+    margin-top: 19px;
+    
   }
-}
+  .profile-image {
+    width: 145px;
+    height: 145px;
 
-@media (max-width: 768px) {
-  .profile-container {
-    padding: 15px;
+    border-radius: 50%; /* Makes the image circular */
+    margin-right: 20px; /* Space between image and text */
   }
   
-  .card {
-    margin-bottom: 20px;
+  .profile-header {
+    background-color: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    margin-top: 20px;
+    display: flex;
+    
   }
+  
+  .profile-header h2 {
+    margin: 0;
+    font-size: 39px;
+    color: #333;
+  }
+  
+  .profile-header p {
+    color: #666;
+    margin-top: 4px;
+    font-size: 13px;
+    display: flex;
+    margin-left: 8px;
+  }
+
+  .header-text{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* align-items: center; */
+    justify-content: center;
+  }
+  
+  .edit-profile-btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #4caf50; /* Green */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .edit-profile-btn:hover {
+    background-color: #45a049; /* Darker green */
+  }
+  
+  .profile-content {
+    display: flex;
+    margin-top: 20px;
+  }
+  .info-section{
+    line-height: 2rem;
+  }
+  
+  .profile-info {
+    flex: 3; /* Takes 3 parts of the flex container */
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    /* justify-content: center; */
+    gap: 36vh;
+    padding: 20px;
+  }
+  
+  .profile-info h3 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    color: #333;
+  }
+  
+  .info-section p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .profile-results {
+    flex: 1; /* Takes 1 part of the flex container */
+    margin-left: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .profile-results h4 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .results-summary {
+    font-size: 18px;
+    color: #555;
+  }
+  
+  .result-count {
+    font-size: 36px;
+    color: #4caf50; /* Green */
+    font-weight: bold;
+  }
+  .register-form p {
+    margin-bottom: 0;
+}
+
+.register-test-input-groups label {
+  margin-bottom: 5px;
+  display: block;
+  font-size: 14px;
+}
+
+.register-test-input-groups {
+  margin-bottom: 25px;
+}
+
+.update, .cancle {
+  width: 20%;
+  margin: 5px;
 }

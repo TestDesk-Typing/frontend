@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
+import { Helmet } from "react-helmet-async"; // Import Helmet
+import "./TestSelection.css";
 import TypingHeader from "../component/Header";
 import MainFooter from "../Footermain/Footer";
-import "./TestSelection.css";
 
 const TestSelection = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
-  const [exams, setExams] = useState([]);
+  const [exams, setExams] = useState([]); // Store exam images from backend
 
   const categories = [
     {
@@ -47,16 +46,16 @@ const TestSelection = () => {
     },
   ];
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
 
   useEffect(() => {
     const fetchExams = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/examImages`);
         const data = await response.json();
-        setExams(data);
+        setExams(data); // Set the fetched exams
       } catch (error) {
         console.error("Error fetching exams data:", error);
       }
@@ -81,11 +80,12 @@ const TestSelection = () => {
 
     const govName = categoryMapping[categoryId];
     const exam = exams.find((exam) => exam.govName === govName);
-    return exam ? `${process.env.REACT_APP_API_URL}/${exam.imagePath}` : "https://via.placeholder.com/100";
+    return exam ? `${process.env.REACT_APP_API_URL}/${exam.imagePath}` : null;
   };
 
   return (
     <>
+      {/* Helmet for General Free Typing Tests Page */}
       <Helmet>
         <title>Free Typing Tests - Practice for SSC, RRB, CHSL | Testdesk</title>
         <meta
@@ -116,45 +116,32 @@ const TestSelection = () => {
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://testdesk.in/online-free-typing-test" />
       </Helmet>
-
       <TypingHeader />
-
-      <Container className="py-5 mt-5">
-        <Row className="mb-4 text-center">
-          <Col>
-            <h1 className="fw-bold mb-3">Free Typing Tests</h1>
-            <p className="lead text-muted">
-              Click on a category below to explore exams and start your free typing test.
-            </p>
-          </Col>
-        </Row>
-
-        <Row className="g-4 mb-5">
+      <div className="test-selection-container free-test-select">
+        <h1>Free Typing Tests</h1>
+        <p className="progress-check-free">
+    Click on a category below to explore exams and start your free typing test.
+  </p>
+        <div className="categories free-test-select">
           {categories.map((category) => (
-            <Col key={category.id} md={6} lg={4}>
-              <Card 
-                className="h-100 category-card shadow-sm border-0"
-                onClick={() => handleCardClick(category.id)}
-              >
-                <Card.Body className="d-flex flex-column align-items-center py-4">
-                  <div className="mb-3">
-                    <img
-                      src={getCategoryImage(category.id)}
-                      alt={category.title}
-                      className="img-fluid rounded-circle"
-                      width="100"
-                      height="100"
-                    />
-                  </div>
-                  <h3 className="h5 text-center">{category.title}</h3>
-                </Card.Body>
-              </Card>
-            </Col>
+            <div
+              className="category-card free-test-select"
+              key={category.id}
+              onClick={() => handleCardClick(category.id)}
+            >
+              <img
+                src={getCategoryImage(category.id)}
+                alt={category.title}
+                className="category-image free-test-select"
+              />
+              <h3>{category.title}</h3>
+            </div>
           ))}
-        </Row>
+        </div>
 
         {selectedCategory && (
           <>
+            {/* Helmet for Selected Category */}
             <Helmet>
               <title>{`${selectedCategory.title} - Free Typing Practice | Testdesk`}</title>
               <meta
@@ -176,45 +163,34 @@ const TestSelection = () => {
               />
             </Helmet>
 
-            <Row className="mb-4">
-              <Col>
-                <h2 className="text-center mb-4">{selectedCategory.title}</h2>
-                <Card className="shadow-sm">
-                  <Card.Body className="p-0">
-                    {selectedCategory.tests.map((test) => (
-                      <Row key={test.id} className="g-0 align-items-center border-bottom p-3 test-row">
-                        <Col xs={12} md={4} className="mb-2 mb-md-0">
-                          <div className="fw-medium">{test.name}</div>
-                        </Col>
-                        <Col xs={4} md={2} className="text-md-center mb-2 mb-md-0">
-                          <div className="text-muted small">{test.duration}</div>
-                        </Col>
-                        <Col xs={4} md={3} className="mb-2 mb-md-0">
-                          <Form.Select size="sm" className="w-auto mx-auto">
-                            <option>English</option>
-                          </Form.Select>
-                        </Col>
-                        <Col xs={4} md={3} className="text-md-end">
-                          <Button 
-                            variant="primary" 
-                            size="sm"
-                            onClick={() => handleStartTest(test.id)}
-                            className="w-100 w-md-auto"
-                          >
-                            Start Test
-                          </Button>
-                        </Col>
-                      </Row>
-                    ))}
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
+            <div className="category-details free-test-select">
+              <h2>{selectedCategory.title}</h2>
+              <div className="tests-container free-test-select">
+                {selectedCategory.tests.map((test) => (
+                  <div className="test-row free-test-select" key={test.id}>
+                    <div className="test-name free-test-select">{test.name}</div>
+                    <div className="test-duration free-test-select">{test.duration}</div>
+                    <div className="test-language free-test-select">
+                      <select defaultValue="English" className="free-test-select">
+                        <option value="English">English</option>
+                      </select>
+                    </div>
+                    <div className="test-action free-test-select">
+                      <button
+                        className="free-test-select"
+                        onClick={() => handleStartTest(test.id)}
+                      >
+                        Start Typing Test
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </>
         )}
-      </Container>
-
-      <MainFooter />
+      </div>
+      <MainFooter/>
     </>
   );
 };

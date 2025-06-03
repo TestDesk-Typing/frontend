@@ -1,87 +1,466 @@
-/* TypingLogin.css */
-.typing-container {
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-}
+.typing-container{
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: auto;
+    font-size: 12px;
 
-.user-info {
-  background-color: #495057 !important;
-  border-bottom: 1px solid #444;
 }
-
-.system-name h6, .user-name h6 {
-  font-size: 18px;
-  margin-bottom: 5px;
+.message-for-login{
+    display: flex;
+    justify-content: center;
 }
-
-.system-name h4, .user-name h4 {
-  font-size: 24px;
-  color: #fff200 !important;
-}
-
-.message-for-login a {
-  color: purple;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.message-for-login a:hover {
-  color: darkviolet;
-}
-
-.card {
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.card-header {
-  border-bottom: 1px solid #dbdbdb;
-  font-weight: bold;
-}
-
-.input-group-text {
-  height: 38px;
-}
-
-.keyboardContainer {
-  background: white;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  z-index: 1000;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .user-info {
-    padding: 15px 0;
+.message-for-login p {
+    font-size: 16px; /* Optional: adjust as needed */
+    margin-bottom: 0px;
   }
   
-  .system-name, .user-name {
-    text-align: center !important;
-    margin-bottom: 15px;
+  .message-for-login p a {
+    color: purple;
+    font-weight: bold; /* Optional: make it stand out */
+    text-decoration: none; /* Optional: remove underline */
   }
   
-  .user-name {
-    margin-top: 15px;
+  .message-for-login p a:hover {
+    color: darkviolet; /* Optional: add a hover effect */
   }
   
-  .col-md-2 {
-    order: -1;
-    margin-bottom: 15px;
+.clear {
+	clear: both;
+}
+#wrapper {
+	display: block;
+	min-height: 100%;
+	min-width: 600px;
+	width: 100%;
+}
+#minwidth {
+	min-width: 600px;
+	min-height: 100%;
+	height: 100%;
+}
+.Headr_Banner {
+	height: 32px;
+	padding: 0px 22px 0px 8px;
+}
+
+
+
+#header {
+    background: #2d70b6 none repeat scroll 0 0;
+    border-bottom: 1px solid #7691a2;
+    color: #ffffff;
+    font-family: Arial,Helvetica,sans-serif;
+    height: 50px;
+    padding: 0;
+}
+
+
+
+.exam-heading {
+    float: left;
+    margin-left: 10px;
+    text-align: left;
+}
+
+.exam-heading .big-heading {
+    line-height: 39px;
+}
+.big-heading {
+    font-size: 1.583em;
+    line-height: 0;
+}
+
+.exam-heading .short-heading {
+    line-height: 10px;
+}
+.short-heading {
+    display: block;
+    font-family: arial,helvetica,sans-serif;
+    font-size: 1em;
+    line-height: 39px;
+}
+
+.my-imput-login{
+    display: flex;
+    align-items: center;
+}
+.myinputtext .myinputpass {
+  border: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5em;
+  padding: 0;
+  -webkit-appearance: none;
+  -webkit-text-fill-color:#a9a9a9;
+}
+
+
+
+
+
+#login {
+    margin: 14px auto;
+    width: 370px;
+}
+.fontawesome-user
+{
+	background:url(../i/user.png) no-repeat center center #eee;
+	width:26px;
+	height:26px;
+	
+}
+
+.keyboardInputInitiator {
+    padding: 10px;
+    /* vertical-align: -13px; */
+    cursor: pointer;
+    border: solid 1px #cacaca;
+    border-left: none;
+    border-radius: 0 3px 3px 0;
+    background-color: #eee;
+    float: right;
+    margin-right: 2px;
+    margin-top: -16px;
+}
+
+.keyboardInputInitiator2 {
+    padding: 10px;
+    /* vertical-align: -13px; */
+    cursor: pointer;
+    border: solid 1px #cacaca;
+    border-left: none;
+    border-radius: 0 3px 3px 0;
+    background-color: #eee;
+    float: right;
+    margin-right: 2px;
+    margin-top: -17px;
+}
+.fontawesome-lock
+{
+	background:url(../i/Lock-26.png) no-repeat center center #eee;
+	width:26px;
+	height:26px;
+}
+.userInfo {
+    background: #DDD;
+    height: 149px;
+}
+
+.userInfo .system_info {
+    /* background: #666; */
+    display: flex;
+    height: 149px;
+    background-color: #495057;
+    border-bottom: 1px solid #444;
+}
+.userInfo .system_info .system_name {
+    float: left;
+}
+.userInfo .name1 {
+    color: #ffffff;
+    font-size: 18px;
+    margin-left: 20px;
+    margin-top: 5px;
+    text-align: left;
+}
+
+.userInfo .details1 {
+    color: #fff200;
+    font-size: 36px;
+    margin-left: 20px;
+    text-align: left;
+
+}
+.userInfo .details3 {
+    color: #fff200;
+    font-size: 34px;
+    margin-left: 20px;
+    text-align: left;
+   
+}
+
+.userInfo .system_info .user_pic {
+    background: #fafbfc none repeat scroll 0 0;
+    border-bottom: 1px solid #444;
+    float: right;
+    height: 100%;
+    vertical-align: middle;
+    width: 137px;
+}
+
+.userInfo .user_pic img {
+    border: 1px solid #000;
+    margin-top: 20px;
+}
+
+.userInfo .system_info .user_name {
+    float: right;
+    padding-right: 10px;
+    width: 238px;
+
+
+}
+
+.userInfo .name2 {
+    color: #ffffff;
+    font-size: 18px;
+    margin-left: 20px;
+    margin-top: 10px;
+    text-align: right;
+}
+
+.userInfo .details2 {
+    color: #fff200;
+    font-size: 31px;
+
+    margin-left: 5px;
+    text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#login form {
+ background:#f5f5f5 ;
+    border: 1px solid #dbdbdb;
+    border-radius: 0 0 5px 5px;
+    margin: auto;
+    padding: 25px;
+    width: 320px;
+    border-top:none;
+}
+
+#login form .fontawesome-user {
+  /*background-color: #363b41;*/
+  border:1px solid #cacaca;
+  border-radius: 3px 0px 0px 3px;
+  border-right: 0px solid #434a52;
+  color: #606468;
+  display: block;
+  float: left;
+  line-height: 50px;
+  text-align: center;
+  width: 49px;
+  height: 35px;
+  margin-top: -16px;
+ 
+  
+}
+ #login form .fontawesome-lock {
+    /* background-color: #363b41; */
+    border: 1px solid #cacaca;
+    border-radius: 3px 0px 0px 3px;
+    border-right: 0px solid #434a52;
+    color: #606468;
+    display: block;
+    float: left;
+    line-height: 50px;
+    text-align: center;
+    width: 49px;
+    height: 35px;
+    margin-bottom: 16px;
+
+}
+
+#login form #in {
+ /* background-color: #3b4148;*/
+/*  border-radius: 0px 3px 3px 0px;*/
+  color: #a9a9a9;
+  margin-bottom: 16px;
+
+  padding: 0 16px;
+  width: 186px;
+  height: 35px;
+  border:1px solid #cacaca;
   }
+
+
+
+
+#login form #pass {
+    /* background-color: #3b4148; */
+    /* border-radius: 0px 3px 3px 0px; */
+    /* color: #a9a9a9; */
+    margin-bottom: 16px;
+
+    padding: 0 16px;
+    width: 186px;
+    height: 35px;
+    border: 1px solid #cacaca;
+
 }
 
-/* Custom colors to match original design */
-.bg-primary {
-  background-color: #2d70b6 !important;
+#login form #signInLabel{
+  background: #38aae9;
+  border: 0;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+  width: 321px;
+  height: 40px;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  margin-top: 40px;
 }
 
-.bg-secondary {
-  background-color: #617B8C !important;
+.forpass:focus {
+
+  outline: none !important;  
 }
 
-.text-warning {
-  color: #fff200 !important;
+#login form #signInLabel:hover {
+  background: #0C7CD5;  
 }
+.btn-primary-blue-submit {
+    background-color: #38aae9;
+    border-color: #38aae9;
+    color: #ffffff;
+}
+.btn-primary-blue-submit:hover {
+    background-color: #0c7cd5;
+    border-color: #0a68b4;
+    color: #ffffff;
+    
+}
+
+.keyboardContainer{
+    position: absolute;
+}
+.btn-submit {
+   
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 400;
+    height: 39px;
+    line-height: 39px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.btn-primary-submit-blue-submit {
+    background-color: #fff;
+    color: #252525;
+}
+
+.fontawesome-keybord{
+   background: url("../i/keyboard.png") no-repeat scroll center center #eee;
+    border: 1px solid #cacaca;
+    border-radius: 0 3px 3px 0;
+    color: #606468;
+    display: block;
+    float: right;
+    height: 35px;
+    line-height: 50px;
+    text-align: center;
+    width: 49px;
+    border-left:0px;
+    cursor: pointer;
+}
+.form-header{
+   background: none repeat scroll 0 0 #DDD;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px 5px 0 0;
+    color: #444;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 22px;
+    width: 326px;
+}
+#languageSelect{
+       border: 1px solid #cacaca;
+    border-radius: 3px;
+    height: 35px;
+     height: 25px;
+      height: 25px\9;
+    
+    width: 205px;
+}
+/***************************************/
+/************************footer starts************************/
+
+#footer {    bottom: 0;
+    min-width: 945px;
+    font-size: 11px;
+    background: #617B8C;
+    color: #FFFFFF;
+    display: block;
+    height: 22px;
+    width: 100%;
+    position: fixed;
+    line-height: 21px;
+    display: flex;
+    justify-content: center; }
+#footer a { color: #fff; text-decoration: none; }
+#footer a:hover { color: #fff; text-decoration: underline; }
+#footer .footerTataLogo { float: right; margin: 8px 10px 0 0; }
+#footer .footerCopywright { float: left; margin: 4px 0 0 10px; }
+
+/************************footer ends************************/
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Modal container */
+  .modal-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Modal header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-close {
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  /* Modal body */
+  .modal-body {
+    margin: 15px 0;
+  }
+  
+  /* Modal footer */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .btn-secondary {
+    background-color: #ccc;
+    border: none;
+    padding: 8px 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .btn-primary-blue-submit {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+
