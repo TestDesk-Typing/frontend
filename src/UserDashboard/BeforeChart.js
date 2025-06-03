@@ -1,12 +1,13 @@
+
+
 import React, { useEffect, useState } from 'react';
+import './BeforeChart.css';
 import { useCookies } from 'react-cookie';
 import { IoMdSpeedometer } from "react-icons/io";
 import { FaCalendarDays, FaKeyboard } from "react-icons/fa6";
 import { BsCalendarCheckFill } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
-import Loading from "../Loading";
-import { Card, Container, Row, Col } from 'react-bootstrap';
-import './BeforeChart.css';
+import Loading from "../Loading" // Assuming Loading is in the components folder
 
 const BeforeChart = () => {
   const [cookies] = useCookies(['session_id', 'SSIDCE']);
@@ -15,7 +16,7 @@ const BeforeChart = () => {
   const [overallSpeed, setOverallSpeed] = useState(0);
   const [emailCount, setEmailCount] = useState(0);
   const [subscriptionInfo, setSubscriptionInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // New loading state
 
   const navigate = useNavigate();
 
@@ -94,14 +95,14 @@ const BeforeChart = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoading(true); // Show loading
       await Promise.all([
         fetchSpeedData(),
         fetchSubscriptionData(),
         fetchEmailCount(),
         fetchSubscriptionInfo()
       ]);
-      setLoading(false);
+      setLoading(false); // Hide loading when all data is fetched
     };
 
     fetchData();
@@ -132,95 +133,72 @@ const BeforeChart = () => {
     navigate('/choose-exam');
   };
 
+  // Render the Loading component when loading is true
   if (loading) {
     return <Loading />;
   }
 
   return (
-    <Container fluid className="before-chart-container mt-4">
-      <Row className="g-3">
-        {/* Subscription Card */}
-        <Col xs={12} sm={6} md={3}>
-          <Card 
-            className="h-100 before-chart-card" 
-            onClick={handleSubscriptionClick}
-          >
-            <Card.Body className="d-flex flex-column">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <FaCalendarDays className="days-user" size={30} />
-                <div className="text-end">
-                  <Card.Title className="card-title mb-0">Subscription</Card.Title>
-                  <Card.Text className="card-number">{subscriptionPlan}</Card.Text>
-                </div>
-              </div>
-              <Card.Footer className="card-footer mt-auto">
-                <small className="update-text">↻ Update Now</small>
-              </Card.Footer>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        {/* Typing Speed Card */}
-        <Col xs={12} sm={6} md={3}>
-          <Card className="h-100 before-chart-card">
-            <Card.Body className="d-flex flex-column">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <IoMdSpeedometer className="speed-user" size={30} />
-                <div className="text-end">
-                  <Card.Title className="card-title mb-0">Your typing Speed</Card.Title>
-                  <Card.Text className="card-number">{overallSpeed} (WPM)</Card.Text>
-                </div>
-              </div>
-              <Card.Footer className="card-footer mt-auto">
-                <small className="update-text">↻ Update Now</small>
-              </Card.Footer>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        {/* Total Tests Card */}
-        <Col xs={12} sm={6} md={3}>
-          <Card 
-            className="h-100 before-chart-card" 
-            onClick={handlegivetest}
-          >
-            <Card.Body className="d-flex flex-column">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <FaKeyboard className="typ-user" size={30} />
-                <div className="text-end">
-                  <Card.Title className="card-title mb-0">Total test given</Card.Title>
-                  <Card.Text className="card-number">{emailCount} tests</Card.Text>
-                </div>
-              </div>
-              <Card.Footer className="card-footer mt-auto">
-                <small className="update-text">↻ Update Now</small>
-              </Card.Footer>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        {/* Subscription End Card */}
-        <Col xs={12} sm={6} md={3}>
-          <Card 
-            className="h-100 before-chart-card" 
-            onClick={handlesubendClick}
-          >
-            <Card.Body className="d-flex flex-column">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <BsCalendarCheckFill className="end-user" size={30} />
-                <div className="text-end">
-                  <Card.Title className="card-title mb-0">Subscription ends</Card.Title>
-                  <Card.Text className="card-number">{formatDate(subscriptionInfo?.subscriptionExpiryDate)}</Card.Text>
-                </div>
-              </div>
-              <Card.Footer className="card-footer mt-auto">
-                <small className="update-text">↻ Update Now</small>
-              </Card.Footer>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <div className="before-chart-container">
+      <div className="card-row">
+        <div className="before-chart-card" onClick={handleSubscriptionClick}>
+          <div className="before-chart-card-icon">
+            <div className="card-icon">
+              <FaCalendarDays className='days-user' />
+            </div>
+            <div className="card-content">
+              <span className="card-title">Subscription</span>
+              <span className="card-number">{subscriptionPlan}</span>
+            </div>
+          </div>
+          <div className="card-footer">
+            <span className="update-text">↻ Update Now</span>
+          </div>
+        </div>
+        <div className="before-chart-card">
+          <div className="before-chart-card-icon">
+            <div className="card-icon">
+              <IoMdSpeedometer className='speed-user' />
+            </div>
+            <div className="card-content">
+              <span className="card-title">Your typing Speed</span>
+              <span className="card-number">{overallSpeed} (WPM)</span>
+            </div>
+          </div>
+          <div className="card-footer">
+            <span className="update-text">↻ Update Now</span>
+          </div>
+        </div>
+        <div className="before-chart-card" onClick={handlegivetest}>
+          <div className="before-chart-card-icon">
+            <div className="card-icon">
+              <FaKeyboard className='typ-user' />
+            </div>
+            <div className="card-content">
+              <span className="card-title">Total test given</span>
+              <span className="card-number">{emailCount} tests</span>
+            </div>
+          </div>
+          <div className="card-footer">
+            <span className="update-text">↻ Update Now</span>
+          </div>
+        </div>
+        <div className="before-chart-card" onClick={handlesubendClick}>
+          <div className="before-chart-card-icon">
+            <div className="card-icon">
+              <BsCalendarCheckFill className='end-user' />
+            </div>
+            <div className="card-content">
+              <span className="card-title">Subscription ends</span>
+              <span className="card-number">{formatDate(subscriptionInfo?.subscriptionExpiryDate)}</span>
+            </div>
+          </div>
+          <div className="card-footer">
+            <span className="update-text">↻ Update Now</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

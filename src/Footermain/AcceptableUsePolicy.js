@@ -51,7 +51,7 @@ const AcceptableUsePolicy = () => {
       </p>
 
       <p className="last-revised">
-        Last revised on December 26th, 2025.
+        Last revised on December 26th, 2024.
       </p>
     </div>
         <MainFooter/>

@@ -1,101 +1,442 @@
-/* Base styles */
-body {
-  background-color: #f8f9fa;
+.layout-section {
+  background: #fff;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  padding: 1rem;
+  height: 27rem;
+
+
 }
 
-/* Telegram button animation */
-.telegram-btn {
-  transition: all 0.3s ease;
-  animation: pulse 2s infinite;
+.layout-section-exam {
+
+  width: 0 auto;
+  margin: 0 auto;
+  width: 87%;
 }
 
-.telegram-btn:hover {
-  background-color: #0088cc;
-  color: white !important;
+
+.exam-categories {
+
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 160px);
 }
 
-@keyframes pulse {
-  0% {
+
+
+@media (min-width: 1200px) {
+  .new-catagory-select {
+      width: 240px;
+  }
+}
+
+.div-exam-name-image{
+  padding: 22px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.category-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+
+
+.div-exam-name-image:hover {
+  background-color: #e9ecef;
+}
+
+.exam-details{
+  height: 100%;
+  overflow: auto;
+  background-color: #f6f8f9;
+}
+
+.exam-details::-webkit-scrollbar {
+  width: 12px; /* Set the width of the scrollbar */
+}
+
+/* Scrollbar track */
+.exam-details::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Background of the scrollbar track */
+}
+
+/* Scrollbar thumb */
+.exam-details::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Round the edges of the scrollbar thumb */
+}
+
+/* Scrollbar thumb on hover */
+.exam-details::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color when hovered */
+}
+
+/* For Firefox */
+.exam-details {
+  scrollbar-width: thin; /* Make the scrollbar thin */
+  scrollbar-color: #888 #f0f0f0; /* Thumb color and track color */
+}
+.heading-exam-select h2{
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  margin-top: 3rem;
+}
+
+.div-exam-name-image{
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.exam-cards-count-test{
+  display: flex;
+  flex-direction: column;
+  margin-left: 14px;
+}
+
+.heading-exam-select p{
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #888
+}
+.heading-exam-select{
+  width: 87%;
+  margin: 0 auto;
+}
+
+
+
+
+
+
+
+
+.exam-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  flex-direction: column;
+  width: 93%;
+
+  height: 33rem;
+  padding: 21px;
+
+}
+.myexamnameimg {
+  height: 74%;
+
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+.exam-card {
+cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  border-radius: 7px;
+  background: #fff;
+  padding: 1rem 1.25rem;
+  font-size: .875rem;
+  height: 3rem;
+  box-shadow: -1px 1px 4px #758aac1f;
+  width: 25%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  overflow: hidden;
+  align-items: center;
+}
+.exam-card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card on hover */
+  background-color: #fff; /* Lighter background on hover */
+}
+
+.exam-card img {
+  transition: transform 0.3s ease; /* Image zoom effect */
+}
+
+.exam-card:hover img {
+  transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.exam-card p {
+  margin: 0;
+  
+  font-weight: 600; /* Bold exam name */
+  font-size: 12px;
+  color: #333;
+}
+.examname{
+  margin-left: 7% !important;
+}
+
+.exam-cards-para{
+  width: 127%;
+
+  display: flex;
+}
+.exam-count{
+  margin-top: 5px!important;
+  font-size: 11px !important;
+
+
+  font-weight: normal!important;
+  color: #555!important;
+
+}
+.right-exam-arrow {
+  font-size: 27px;
+  margin-left: 2rem;
+  color: #444;
+}
+.exam-cards-img {
+  height: 39px;
+  width: 39px;
+  border-radius: 50%;
+  background-color: #DFE4E8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.exam-card:hover p {
+  color: #007bff; /* Change text color on hover */
+}
+
+
+.exam-select-search {
+  display: flex; 
+  align-items: center; 
+  background: #fff;
+    box-shadow: -1px 1px 4px #758aac1f;
+  border-radius: 8px; 
+  width: 100%; 
+  max-width: 86%;
+
+  margin: 64px auto;
+  margin-bottom: 0;
+  padding: 10px;
+}
+
+.search-input {
+  flex: 1 1;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 8px 0 0 8px;
+ 
+ 
+}
+
+
+  .exam-select-search-and-input {
+    border: 1px solid #ccc;
+    border: 1px solid #ccc;
+    width: 100%;
+    display: flex;
+}
+
+
+.search-button {
+ 
+  border: none;
+  color: black;
+  padding: 10px 15px;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
+
+
+.search-button svg {
+     font-size: 17px;
+    
+}
+.container-exam-selection {
+  background-color: #f6f8f9;
+  padding: 20px; /* Optional: Add padding for inner spacing */
+  box-sizing: border-box; /* Include padding in the width/height calculations */
+}
+
+
+.examselectmodal.open {
+  opacity: 1;
+  visibility: visible;
+  animation: modalOpen 0.3s ease-in-out forwards;
+}
+
+.examselectmodal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.modal-content-review {
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  max-width: 742px;
+  width: 50%;
+  position: relative;
+  height: 500px;
+  z-index: 2;
+  transform: scale(0.2);
+  animation: modalContentOpen 0.3s ease-in-out forwards;
+}
+
+@keyframes modalContentOpen {
+  from {
+    transform: scale(0.2);
+  }
+  to {
     transform: scale(1);
+  }
+}
+
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.paragraph-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f5f5f5;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.4s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.paragraph-item:hover {
+  background-color: #e8f5e9; /* Light green on hover */
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.exam-instruction-for-select {
+  font-size: 16px; /* Adjust the font size */
+  color: #333; /* Text color */
+  margin-top: 8px; /* Space above the text */
+ display: block;
+  line-height: 1.5; /* Improves readability */
+  font-family: 'Arial', sans-serif; /* Font style */
+}
+
+
+.heading-with-telegram {
+  display: flex
+  ;
+      flex-direction: row;
+      justify-content: space-between;
+  
+
+  
+}
+
+
+.join-now-container {
+  display: flex;
+  align-items: center; /* Align the icon and text horizontally */
+  animation: pump 1.5s ease-out infinite; /* Apply the animation automatically */
+}
+
+.telegram-icon-link {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Space between icon and text */
+}
+
+.telegram-icon {
+  color: #0088cc;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.telegram-icon:hover {
+  color: #006d99; /* Hover color */
+}
+
+.join-now-text {
+  font-weight: bold;
+  color: #0077cc;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.join-now-text:hover {
+  color: #005fa3;
+}
+
+/* Keyframe animation for the "pumping" effect */
+@keyframes pump {
+  0% {
+    transform: scale(1); /* Initial size */
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1); /* Scale up */
   }
   100% {
-    transform: scale(1);
+    transform: scale(1); /* Return to normal size */
   }
 }
 
-/* Exam card hover effect */
-.exam-card-hover {
-  transition: all 0.3s ease;
-  cursor: pointer;
+
+
+.exam-header {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  background: linear-gradient(to right, #4CAF50, #3E9FDF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 10px 20px;
+  /* transition: transform 0.3s ease, color 0.3s ease; */
 }
 
-.exam-card-hover:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+.header-highlight {
+
+  border-radius: 8px;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
 }
 
-/* List group item active state */
-.list-group-item.active {
-  background-color: #f0f7ff;
-  border-left: 3px solid #0d6efd;
-  color: #0d6efd;
-}
-
-/* Modal styles */
-.modal-content {
-  border-radius: 10px;
-  border: none;
-}
-
-.modal-header {
-  border-bottom: 1px solid #e9ecef;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .exam-card-hover {
-    margin-bottom: 1rem;
-  }
-  
-  .list-group-item {
-    padding: 0.75rem 1rem;
-  }
-}
-
-/* Custom scrollbar for exam list */
-.list-group {
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.list-group::-webkit-scrollbar {
-  width: 8px;
-}
-
-.list-group::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.list-group::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 10px;
-}
-
-.list-group::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Loading spinner */
-.spinner-border {
-  width: 3rem;
-  height: 3rem;
-}
-
-/* Button hover effects */
-.btn-outline-primary:hover {
-  color: white !important;
+.exam-header:hover,
+.header-highlight:hover {
+  transform: scale(1.05);
+  color: #007BFF;
 }

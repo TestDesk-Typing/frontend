@@ -1,81 +1,118 @@
-/* BeforeChart.css */
-
 .before-chart-container {
+  /* padding: 20px; */
   background-color: #f9f9f9;
-  padding: 0 15px;
+  margin-bottom: 20px;
+  margin-top: 4%;
 }
 
-/* Card styles */
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-left: 10px;
+  justify-items: stretch;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .before-chart-container {
+    margin-top: 7%;
+  }
+}
+
+@media (max-width: 768px) {
+  .before-chart-container {
+    margin-top: 12%;
+  }
+}
+
 .before-chart-card {
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: white;
+  border: 1px solid #ccc;
+  /* border-radius: 8px; */
+  padding: 13px;
+  /* width: 22%; */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
   cursor: pointer;
-  height: 100%;
 }
 
 .before-chart-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  /* Hover effect */
+  transform: scale(1.05);
+  /* Scale effect on hover */
 }
 
-/* Card content styles */
+
+
+
+
+.card-icon {
+  font-size: 40px;
+  color: #ffa500;
+  /* Orange color */
+  margin-bottom: 10px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 .card-title {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin-bottom: 0.25rem;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 5px;
 }
 
 .card-number {
-  font-size: 1.4rem;
-  color: #343a40;
-  font-weight: 500;
+  font-size: 22px;
+  /* font-weight: bold; */
+  color: #333;
 }
 
 .card-footer {
-  background-color: transparent;
-  border-top: 1px solid #dee2e6;
-  padding: 0.75rem 1.25rem;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
 }
 
 .update-text {
-  font-size: 0.8rem;
-  color: #6c757d;
-  transition: color 0.2s;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
 
 .update-text:hover {
-  color: #343a40;
+  color: #333;
 }
 
-/* Icon colors */
-.days-user {
-  color: orange;
+
+.before-chart-card-icon {
+  display: flex;
+  justify-content: space-between;
 }
 
 .speed-user {
-  color: #4CAF50;
+  color: rgb(71, 189, 71);
+}
+
+.days-user {
+  color: orange;
+  font-size: 33px;
+
 }
 
 .typ-user {
-  color: #E91E63;
+  color: rgb(221, 55, 82);
 }
 
 .end-user {
-  color: #3F51B5;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .card-title {
-    font-size: 0.8rem;
-  }
-  
-  .card-number {
-    font-size: 1.2rem;
-  }
-  
-  .before-chart-container {
-  margin-top: 60px !important;
-}
+  color: darkblue;
+  font-size: 33px;
 }

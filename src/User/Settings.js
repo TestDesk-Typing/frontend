@@ -1,7 +1,8 @@
+// components/Settings.js
 import React, { useState } from 'react';
 import './Settings.css';
 import { useCookies } from 'react-cookie';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importing eye icons
 
 const Settings = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -13,28 +14,8 @@ const Settings = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState('');
 
-  const checkPasswordStrength = (password) => {
-    if (!password) return '';
-    
-    const hasMinLength = password.length >= 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[\W_]/.test(password);
-    
-    const strength = [
-      hasMinLength,
-      hasUpperCase,
-      hasLowerCase,
-      hasNumber,
-      hasSpecialChar
-    ].filter(Boolean).length;
-    
-    return `Strength: ${strength}/5`;
-  };
-
+  // Password strength check
   const passwordValidationMessage = () => {
     if (newPassword.length < 8) {
       return 'Password must be at least 8 characters long.';
@@ -74,7 +55,7 @@ const Settings = () => {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": `Bearer ${cookies.session_id}`,
+          "Authorization": `Bearer ${cookies.session_id}`, // Add Authorization header
         },
         body: JSON.stringify({ 
           email_id: cookies.SSIDCE, 
@@ -86,11 +67,8 @@ const Settings = () => {
       const data = await response.json();
       if (response.ok) {
         setMessage(data.message);
-        setOldPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
       } else {
-        setError(data.error || 'Failed to change password');
+        setError(data.error);
       }
     } catch (error) {
       console.error('Error changing password:', error);
@@ -99,99 +77,82 @@ const Settings = () => {
   };
 
   return (
-    <div className="settings-container">
-      <div className="settings-card">
-        <h2 className="settings-title">User Settings</h2>
-        <p className="user-email">Email: <span>{cookies.SSIDCE}</span></p>
-        
-        <div className="password-change-section">
-          <h3 className="section-title">Change Password</h3>
-          <form onSubmit={handleChangePassword} className="password-form">
-            <div className="form-group">
-              <label htmlFor="oldPassword">Current Password</label>
-              <div className="input-wrapper">
-                <input
-                  id="oldPassword"
-                  type={showOldPassword ? 'text' : 'password'}
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  required
-                  placeholder="Enter current password"
-                />
-                <button 
-                  type="button"
-                  className="toggle-password"
-                  onClick={() => setShowOldPassword(!showOldPassword)}
-                  aria-label={showOldPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showOldPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
+    <div className="settings-page">
+      <h2>User Settings</h2>
+      <p>Email: <strong>{cookies.SSIDCE}</strong></p> {/* Display user's email */}
+      
+      <h2>Change Password</h2>
+      <form onSubmit={handleChangePassword}>
+        <div className="setting-form-group">
+          <label>Old Password:</label>
+          <div className="input-group">
+            <input
+              type={showOldPassword ? 'text' : 'password'}
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              required
+            />
+            <div 
+              className="toggle-password" 
+              onClick={() => setShowOldPassword(!showOldPassword)}
+              role="button"
+              tabIndex="0"
+              onKeyPress={(e) => e.key === 'Enter' && setShowOldPassword(!showOldPassword)}
+            >
+              {showOldPassword ? <FaEyeSlash /> : <FaEye />}
             </div>
-
-            <div className="form-group">
-              <label htmlFor="newPassword">New Password</label>
-              <div className="input-wrapper">
-                <input
-                  id="newPassword"
-                  type={showNewPassword ? 'text' : 'password'}
-                  value={newPassword}
-                  onChange={(e) => {
-                    setNewPassword(e.target.value);
-                    setPasswordStrength(checkPasswordStrength(e.target.value));
-                  }}
-                  required
-                  placeholder="Enter new password"
-                />
-                <button 
-                  type="button"
-                  className="toggle-password"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                  aria-label={showNewPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showNewPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-              {newPassword && (
-                <div className={`password-strength ${passwordStrength.includes('5/5') ? 'strong' : 'weak'}`}>
-                  {passwordStrength}
-                </div>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm New Password</label>
-              <div className="input-wrapper">
-                <input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  placeholder="Confirm new password"
-                />
-                <button 
-                  type="button"
-                  className="toggle-password"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" className="submit-button">
-              Change Password
-            </button>
-          </form>
-
-          {message && <div className="alert success">{message}</div>}
-          {error && <div className="alert error">{error}</div>}
+          </div>
         </div>
-      </div>
+
+        <div className="setting-form-group">
+          <label>New Password:</label>
+          <div className="input-group">
+            <input
+              type={showNewPassword ? 'text' : 'password'}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+            />
+            <div 
+              className="toggle-password" 
+              onClick={() => setShowNewPassword(!showNewPassword)}
+              role="button"
+              tabIndex="0"
+              onKeyPress={(e) => e.key === 'Enter' && setShowNewPassword(!showNewPassword)}
+            >
+              {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
+          </div>
+          <small>{passwordValidationMessage()}</small> {/* Display password validation message */}
+        </div>
+
+        <div className="setting-form-group">
+          <label>Confirm New Password:</label>
+          <div className="input-group">
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            <div 
+              className="toggle-password" 
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              role="button"
+              tabIndex="0"
+              onKeyPress={(e) => e.key === 'Enter' && setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
+          </div>
+        </div>
+
+        <button type="submit">Change Password</button>
+      </form>
+      {message && <p className="success-message">{message}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };
 
-export default Settings;
+export default Settings; // Corrected spelling from "defalt" to "default"

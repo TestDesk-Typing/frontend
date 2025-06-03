@@ -50,7 +50,7 @@ const RefundPolicy = () => {
       <p>
         By using our services, you agree to the terms outlined in this Refund Policy.
       </p>
-      <p>Last updated: November 10, 2025</p>
+      <p>Last updated: November 10, 2024</p>
     </div>
           <MainFooter/>
           </>

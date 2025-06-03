@@ -1,18 +1,19 @@
-/* SidebarDashboard.css */
-
 /* Sidebar container with dark background image */
 .sidebar-dashboard-container {
   background: url('../i/mountain.jpg') no-repeat center center;
   background-size: cover;
-  height: 100vh;
+  height: 100%;
   width: 250px;
   position: fixed;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
   z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   color: white;
-  overflow: hidden;
+  overflow: hidden; /* Prevent overflow */
+  position: fixed; /* To allow the dark overlay to be positioned inside */
 }
 
 /* Adding a dark overlay */
@@ -23,62 +24,36 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.781);
-  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.781); /* Semi-transparent black overlay */
+  z-index: 1; /* Ensures the overlay is behind the content */
 }
 
 /* Sidebar menu */
 .sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
   position: relative;
-  z-index: 2;
-  height: 100%;
-  padding-top: 20px;
+  z-index: 2; /* Ensure the menu items appear above the background and overlay */
 }
 
 /* Sidebar items */
 .sidebar-item {
-  background: transparent !important;
-  border: none !important;
-  color: white !important;
+  padding: 20px;
   text-align: left;
-  font-size: 1rem;
-  padding: 1rem 1.5rem !important;
+  font-size: 18px;
+  color: white;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 0 !important;
-  display: flex;
-  align-items: center;
+  transition: background 0.3s;
 }
 
 .sidebar-item:hover,
 .sidebar-item.active {
-  background-color: rgba(255, 255, 255, 0.2) !important;
-  border-left: 4px solid #ffffff !important;
-}
-
-/* Remove Bootstrap's default active state colors */
-.sidebar-item:active,
-.sidebar-item:focus {
-  color: white !important;
-  background-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.2); /* Highlight the active or hovered item */
+  border-left: 4px solid #ffffff; /* Add an indicator on the active item */
 }
 
 /* Icon styles */
 .icon {
-  font-size: 1.1rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 992px) {
-  
-  .sidebar-item {
-    padding: 0.8rem 1rem !important;
-    font-size: 0.9rem;
-  }
-}
-
-@media (min-width: 769px) {
-  .sidebar-dashboard-container {
-    margin-top: 50px;
-  }
+  margin-right: 10px;
 }

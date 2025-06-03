@@ -39,7 +39,7 @@ const ShippingAndDelivery = () => {
       <p>
         For any issues with utilizing our services or regarding shipping and delivery, you may contact our helpdesk at <strong>6203505821</strong> or <strong>testdesktypingtest@gmail.com</strong>.
       </p>
-      <p>Last updated: November 10, 2025</p>
+      <p>Last updated: November 10, 2024</p>
     </div>
     <MainFooter/>
     </>
