@@ -1,51 +1,49 @@
-
 import React, { useState, useEffect } from 'react';
-import './CandidateForm.css'; // Keep your existing CSS intact
-import { FaChevronRight } from "react-icons/fa6"; 
+import './CandidateForm.css';
+import { FaChevronRight } from "react-icons/fa6";
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCookies } from 'react-cookie'; 
-import pic3 from "../i/NewCandidateImage.jpg"; 
+import { useCookies } from 'react-cookie';
+import pic3 from "../i/NewCandidateImage.jpg";
 import { useAuth } from '../AuthContext/AuthContext';
+import Swal from 'sweetalert2';
 
 const CandidateForm = () => {
-  const {  testcode, exam, testname } = useParams(); // Added exam parameter
-//  console.log(testname)
+  const { testcode, exam, testname } = useParams();
   const [isChecked, setIsChecked] = useState(false);
   const [cookies] = useCookies(['session_id']);
   const navigate = useNavigate();
   const { userDetails } = useAuth();
-  
-  // State to hold responses
+
   const [responses, setResponses] = useState({});
 
   const questions = [
     {
-        id: 'ques1',
-        text: 'How was your experience with the support provided, including the usefulness of the mock typing tests, access to test-related instructions, and helpdesk support?'
+      id: 'ques1',
+      text: 'How was your experience with the support provided, including the usefulness of the mock typing tests, access to test-related instructions, and helpdesk support?'
     },
     {
-        id: 'ques2',
-        text: 'How was your experience navigating the typing test interface, including ease of use and accessibility of the typing portal?'
+      id: 'ques2',
+      text: 'How was your experience navigating the typing test interface, including ease of use and accessibility of the typing portal?'
     },
     {
-        id: 'ques3',
-        text: 'How easy was it to access and locate the typing test portal on your system?'
+      id: 'ques3',
+      text: 'How easy was it to access and locate the typing test portal on your system?'
     },
     {
-        id: 'ques4',
-        text: 'How clear were the instructions provided on the screen to begin the typing test, including guidance on starting and submitting the test?'
+      id: 'ques4',
+      text: 'How clear were the instructions provided on the screen to begin the typing test, including guidance on starting and submitting the test?'
     },
     {
-        id: 'ques5',
-        text: 'How satisfied were you with the test environment provided by the platform (e.g., speed, reliability, absence of technical glitches)?'
+      id: 'ques5',
+      text: 'How satisfied were you with the test environment provided by the platform (e.g., speed, reliability, absence of technical glitches)?'
     },
     {
-        id: 'ques6',
-        text: 'How was your experience with the responsiveness and functionality of the typing input area (e.g., text editor, real-time character count, etc.)?'
+      id: 'ques6',
+      text: 'How was your experience with the responsiveness and functionality of the typing input area (e.g., text editor, real-time character count, etc.)?'
     },
     {
-        id: 'ques7',
-        text: 'Overall, how would you rate your experience of taking the typing test on this platform?'
+      id: 'ques7',
+      text: 'Overall, how would you rate your experience of taking the typing test on this platform?'
     }
   ];
 
@@ -76,7 +74,7 @@ const CandidateForm = () => {
                 "Accept": "application/json",
                 "Authorization": `Bearer ${cookies.session_id}`
               },
-              body: JSON.stringify({ product_id: '999' }) // Replace with actual product ID
+              body: JSON.stringify({ product_id: '999' })
             });
 
             if (productResponse.ok) {
@@ -115,61 +113,63 @@ const CandidateForm = () => {
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
 
-    // Assuming 'date', 'responses', and 'exam' are already defined or need to be passed
     const feedbackData = {
-        email_id: userDetails.email_id, // Correctly references user email
-        testcode: testcode,
-        testname:testname,          // Ensure testcode is correctly referenced
-        date: new Date().toISOString(), // Use your defined date if necessary
-        responses,                   // Ensure responses is already defined
-        exam: exam,                 // Add the exam variable here (ensure it's defined)
+      email_id: userDetails.email_id,
+      testcode: testcode,
+      testname: testname,
+      date: new Date().toISOString(),
+      responses,
+      exam: exam,
     };
 
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submitFeedback`, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${cookies.session_id}` // Sending the session_id in the headers
-            },
-            body: JSON.stringify(feedbackData), // Sending the feedback data
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/submitFeedback`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${cookies.session_id}`
+        },
+        body: JSON.stringify(feedbackData),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          title: 'Success',
+          text: 'Feedback submitted successfully!',
+          icon: 'success',
+          confirmButtonText: 'Continue',
+          willClose: () => {
+            navigate(`/${testcode}/${exam}/${testname}/result`);
+          }
         });
-
-        if (response.ok) {
-            alert("Feedback submitted successfully!");
-            navigate(`/${testcode}/${exam}/${testname}/result`); // Navigate to the specified route
-        } else {
-            alert("Failed to submit feedback. Please try again.");
-        }
+      } else {
+        Swal.fire({
+          title: 'Failed',
+          text: 'Failed to submit feedback. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'Retry'
+        });
+      }
     } catch (error) {
-        console.error("Error submitting feedback:", error);
-        alert("An error occurred while submitting feedback.");
+      
+        Swal.fire({
+          title: 'Failed',
+          text: "Error submitting feedback: ", error,
+          icon: 'error',
+          confirmButtonText: 'Retry'
+        });
     }
-};
-
-
-
-
-//   const handleReadyClick = () => {
-//     if (isChecked) {
-//       navigate(`/${actualdep}/${speed}/${testcode}/${accuracy}/${exam}/${wrongper}/form`);
-//     } else {
-//       alert("Please read and agree to the instructions before proceeding.");
-//     }
-//   };
+  };
 
   return (
     <div className="instruction-container">
-      <div className="instruction-header">
-        {/* Header content */}
-      </div>
+      <div className="instruction-header"></div>
 
       <div className="instruction-content">
-        {/* Left side - larger width */}
         <div className="instruction-left">
           <div className="sky-blue-color">Instructions</div>
 
-                    <form onSubmit={handleFeedbackSubmit} className="instructions-para">
+          <form onSubmit={handleFeedbackSubmit} className="instructions-para">
             <div id="feedback-details-section">
               <span id="feedback-intro-text">
                 Dear <span id="candidate-name">{userDetails.fullName}</span>,
@@ -216,14 +216,12 @@ const CandidateForm = () => {
                       <td id={`question-${question.id}`}>{question.text}</td>
                       <td>
                         {question.id === 'ques8' ? (
-                          <textarea 
-                            id="feedbackTextArea" 
-                            name="feedbackTextArea" 
-                            style={{ height: '50px', width: '95%', resize: 'none', overflow: 'auto' }} 
-                            onKeyDown={(e) => { 
-                              // Custom functions to manage textarea behavior if needed
-                            }}
-                            onChange={(e) => handleResponseChange(question.id, e.target.value)} 
+                          <textarea
+                            id="feedbackTextArea"
+                            name="feedbackTextArea"
+                            style={{ height: '50px', width: '95%', resize: 'none', overflow: 'auto' }}
+                            onKeyDown={(e) => { }}
+                            onChange={(e) => handleResponseChange(question.id, e.target.value)}
                           />
                         ) : (
                           <table className="response-options-table">
@@ -254,41 +252,36 @@ const CandidateForm = () => {
                       </td>
                     </tr>
                   ))}
-                  {/* New feedback question */}
                   <tr>
                     <td className="center-text bold-text">{questions.length + 1}.</td>
                     <td></td>
                     <td id={`question-ques37`}>Overall experience with the typing test:</td>
                     <td>
-                      <textarea 
-                        id="overallFeedbackTextArea" 
-                        name="overallFeedbackTextArea" 
-                        style={{ height: '50px', width: '95%', resize: 'none', overflow: 'auto' }} 
-                        onChange={(e) => handleResponseChange('ques8', e.target.value)} 
+                      <textarea
+                        id="overallFeedbackTextArea"
+                        name="overallFeedbackTextArea"
+                        style={{ height: '50px', width: '95%', resize: 'none', overflow: 'auto' }}
+                        onChange={(e) => handleResponseChange('ques8', e.target.value)}
                       />
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-
           </form>
 
           <div className="nextbutton-submit">
-          <button className="next-and-previ-submit" onClick={handleFeedbackSubmit}>
-        Submit Feedback and Check Result
-    </button>
+            <button className="next-and-previ-submit" onClick={handleFeedbackSubmit}>
+              Submit Feedback and Check Result
+            </button>
           </div>
         </div>
 
-        {/* Right side - smaller width */}
         <div className="instruction-right">
           <div align="center" className="user_pic">
             <img width="100px" src={pic3} alt="Candidate" />
             <h5 id="candidateName">{userDetails.fullName}</h5>
           </div>
-         
-         
         </div>
       </div>
     </div>
@@ -296,4 +289,3 @@ const CandidateForm = () => {
 };
 
 export default CandidateForm;
-

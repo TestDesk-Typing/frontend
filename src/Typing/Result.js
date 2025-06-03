@@ -1,5 +1,3 @@
-
-
 import { Row, Col, Button } from "react-bootstrap";
 import { useNavigate, useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
@@ -9,13 +7,11 @@ import './Result.css';
 import { useCookies } from 'react-cookie';
 import { useAuth } from "../AuthContext/AuthContext";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, registerables } from 'chart.js';
-import { Pie } from 'react-chartjs-2'; // Import Pie from react-chartjs-2
+import { Pie } from 'react-chartjs-2';
 
-// Register the components globally
-ChartJS.register(ArcElement, Tooltip, Legend, ...registerables); // Register necessary components
+ChartJS.register(ArcElement, Tooltip, Legend, ...registerables);
 
 const TypingPerformance = () => {
-    // const { accuracy, wrongper, actualdep, speed, testcode, exam, testname } = useParams();
     const { testcode, exam, testname } = useParams();
     const category = 'UR';
     const [paragraph, setParagraph] = useState('');
@@ -23,13 +19,11 @@ const TypingPerformance = () => {
     const [wrongdep, setWrongdep] = useState('');
     const [grosspeed, setGrossSpeed] = useState('');
     const [wpm, setWpm] = useState('');
-
     const [accuracy, setAccuracy] = useState(0);
     const [wrongper, setWrongPer] = useState(0);
     const [marks, setMarks] = useState('');
     const [actualdep, setActualDep] = useState(0);
     const [speed, setSpeed] = useState(0);
-
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const [correctedword, setCorrectedword] = useState(0);
@@ -37,11 +31,7 @@ const TypingPerformance = () => {
     const [Incorrectedword, setIncorrectedword] = useState(0);
     const [cookies, setCookie, removeCookie] = useCookies(['session_id', 'SSDSD']);
     const { isLoggedIn, userDetails, logout } = useAuth();
-    let tracc = Math.round(accuracy * 3.6);
-    let trwro = Math.round(wrongper * 3.6);
-    let tract = Math.round(actualdep * 3.6);
-    let trspe = Math.round(speed * 3.6);
-
+    
     let emailId = userDetails.email_id;
 
     if (cookies.userData) {
@@ -69,16 +59,9 @@ const TypingPerformance = () => {
         testresult = 'Fail';
     }
 
-
-
-
-
-
-
     useEffect(() => {
         const fetchPerformanceStatus = async () => {
             if (!cookies.session_id) {
-                // console.log("session_id not found in cookies");
                 navigate('/');
                 return;
             }
@@ -103,14 +86,13 @@ const TypingPerformance = () => {
                                 "Accept": "application/json",
                                 "Authorization": `Bearer ${cookies.session_id}`
                             },
-                            body: JSON.stringify({ product_id: '999' }) // Replace with actual product ID
+                            body: JSON.stringify({ product_id: '999' })
                         });
 
                         if (productResponse.ok) {
                             const { access } = await productResponse.json();
                             if (access === "access") {
                                 let dt = { 'paper_code': testcode, 'email_id': emailId, 'exam': exam, 'category': 'UR', 'testname': testname };
-                                // console.log("Request data:", dt);
                                 let state_res = await fetch(`${process.env.REACT_APP_API_URL}/api/result-typing`, {
                                     method: 'POST',
                                     headers: {
@@ -121,11 +103,8 @@ const TypingPerformance = () => {
                                     body: JSON.stringify(dt)
                                 });
 
-                                // console.log("Response status:", state_res.status);
-
                                 if (state_res.ok) {
                                     state_res = await state_res.json();
-                                    // console.log("Response Data:", state_res);
                                     setParagraph(parse(state_res.paragraph));
                                     setoriginalparagraph(state_res.oldparagraph);
                                     setGrossSpeed(state_res.grossspeed);
@@ -168,13 +147,12 @@ const TypingPerformance = () => {
         navigate(`/typingparagraph/${exam}/${category}`);
     };
 
-    // Data for the pie chart
     const pieChartData = {
         labels: ['Correct keystrokes', 'Incorrect keystrokes'],
         datasets: [
             {
                 data: [correctedword, Incorrectedword],
-                backgroundColor: ['#4caf50', '#f44336'], // Green for correct, Red for incorrect
+                backgroundColor: ['#4caf50', '#f44336'],
                 hoverBackgroundColor: ['#66bb6a', '#ef5350']
             }
         ]
@@ -183,114 +161,97 @@ const TypingPerformance = () => {
     return (
         <>
             <Header />
-            <div className="report-container">
+            <div className="report-container mt-5">
                 <div className="heading-container">
-                    <h2 className="report-title">Your Typing Skill Test Report </h2>
+                    <h2 className="report-title">Your Typing Skill Test Report</h2>
                 </div>
 
                 <div className="content-container">
-                    <table className="report-table">
-                        <thead>
-                            <tr>
-                                <th>Skill Test</th>
-                                <th>Your Response with Evaluation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div className="table-wrapper">
+                        <table className="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Skill Test</th>
+                                    <th>Your Response with Evaluation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Your Total Typed Keystrokes</td>
+                                    <td>{totaltyped}</td>
+                                </tr>
+                                <tr>
+                                    <td>Correct Keystrokes</td>
+                                    <td>{correctedword}</td>
+                                </tr>
+                                <tr>
+                                    <td>Incorrect Keystrokes</td>
+                                    <td>{Incorrectedword}</td>
+                                </tr>
+                                <tr>
+                                    <td>Gross (WPM)</td>
+                                    <td>{grosspeed}</td>
+                                </tr>
+                                <tr>
+                                    <td>NET (WPM)</td>
+                                    <td>{speed}</td>
+                                </tr>
+                                <tr>
+                                    <td>Accuracy (%)</td>
+                                    <td>{accuracy}%</td>
+                                </tr>
+                                <tr>
+                                    <td>Wrong Percentage</td>
+                                    <td>{wrongper}%</td>
+                                </tr>
+                                {exam === 'JCA' && (
+                                    <tr>
+                                        <td>Marks Obtained</td>
+                                        <td>{marks}</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
 
-                            <tr>
-                                <td>Your Total Typed Keystrokes</td>
-                                <td>{totaltyped}</td>
-                            </tr>
-                            <tr>
-                                <td>Correct Keystrokes</td>
-                                <td>{correctedword}</td>
-                            </tr>
-                            <tr>
-                                <td>Incorrect Keystrokes</td>
-                                <td>{Incorrectedword}</td>
-                            </tr>
-                            <tr>
-                                <td>Gross (WPM)</td>
-                                <td>{grosspeed}</td>
-                            </tr>
-                            <tr>
-                                <td>NET (WPM)</td>
-                                <td>{speed}</td>
-                            </tr>
-                            <tr>
-                                <td>Accuracy (%)</td>
-                                <td>{accuracy}%</td>
-                            </tr>
-                            <tr>
-                                <td>Wrong Percentage</td>
-                                <td>{wrongper}%</td>
-                            </tr>
-                            {exam === 'JCA' && (<tr>
-                                <td>Marks Obtained</td>
-                                <td>{marks}</td>
-                            </tr>)}
-                            <tr>
-                                {/* <td>Test Result</td> */}
-                                {/* <td style={{ fontWeight: 'bold', textAlign: 'center' }}>
-                        SSC-CGL22: More Try to Pass Under Error @5%, @20%, @25% or @30%
-                    </td> */}
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div className="chart-container">
-                        <h3 className="chart-title">Performance Overview</h3>
-                        <Pie data={pieChartData} /> {/* Use Pie component from react-chartjs-2 */}
+                    <div className="chart-wrapper">
+                        <div className="chart-container">
+                            <h3 className="chart-title">Performance Overview</h3>
+                            <div className="chart-inner">
+                                <Pie data={pieChartData} />
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <div className="info-typing-error">
-                    <strong style={{ color: 'black' }}>
-                        ** Notes:-&gt; In your Typed Paragraph:
-                    </strong>
-                    <strong style={{ color: 'black' }}>
-                        Mistakes like
-                    </strong>
-                    <strong style={{ color: 'purple' }}> "with" </strong>
-                    <strong style={{ color: 'black' }}> typed as </strong>
-                    <strong style={{ color: 'green' }}> "wih" </strong>
-                    <strong style={{ color: 'black' }}> and missed words are highlighted in </strong>
-                    <strong style={{ color: 'purple' }}>purple</strong>.
-                    <strong style={{ color: 'black' }}> Omitted words or lines also appear in </strong>
-                    <strong style={{ color: 'purple' }}>purple</strong>.
-                    <strong style={{ color: 'black' }}> Extra or incorrect entries, such as additional words or substitutions, are shown in </strong>
-                    <strong style={{ color: 'green' }}>green</strong>.
+                    <p>
+                        <strong>** Notes:-&gt; In your Typed Paragraph:</strong><br />
+                        <strong>Mistakes like</strong> <span style={{ color: 'purple' }}>"with"</span> <strong>typed as</strong> <span style={{ color: 'green' }}>"wih"</span> <strong>and missed words are highlighted in</strong> <span style={{ color: 'purple' }}>purple</span>.<br />
+                        <strong>Omitted words or lines also appear in</strong> <span style={{ color: 'purple' }}>purple</span>.<br />
+                        <strong>Extra or incorrect entries, such as additional words or substitutions, are shown in</strong> <span style={{ color: 'green' }}>green</span>.
+                    </p>
                 </div>
+
                 <div className="butndash">
-                    <Button className="student-dashboard" onClick={() => navigate(`/user-dashboard`)}>Student dashboard</Button>
+                    <Button className="student-dashboard" onClick={() => navigate(`/user-dashboard`)}>
+                        Student dashboard
+                    </Button>
                 </div>
-                <div className="row-container">
-                    <div className="left-column">
+
+                <div className="paragraphs-container">
+                    <div className="paragraph-box original-paragraph">
                         <h4>Original Paragraph</h4>
-                        <p>{Originalparagraph}</p> {/* Replace with your actual data */}
+                        <div className="paragraph-content">{Originalparagraph}</div>
                     </div>
-                    <div className="right-column">
-                        {/* <h4>Paragraph</h4> */}
-                        <h4 class="typing-result-description">Here is a detailed breakdown of your typing performance</h4>
-                        <p>{paragraph}</p> {/* Replace with your actual data */}
+                    <div className="paragraph-box typed-paragraph">
+                        <h4 className="typing-result-description">Here is a detailed breakdown of your typing performance</h4>
+                        <div className="paragraph-content">{paragraph}</div>
                     </div>
                 </div>
-
-
-
-
             </div>
         </>
     );
 };
 
 export default TypingPerformance;
-
-
-
-
-
-
-
-
-

@@ -1,23 +1,76 @@
-.right-content-container {
-    margin-top: 40px;
-    margin-left: 249px;
-    /* padding: 20px; */
-    /* width: calc(100% - 263px); */
-    width: 100%;
-    padding-right: 26px;
-    padding-left: 26px;
-    /* background-color: #f9f9f9; */
-    background: linear-gradient(135deg, #ffffff, #f0f0f0);
-    /* Linear gradient from white to light grey */
-    /* height: 100vh; */
-}
-
-@media (max-width: 768px) {
-    .right-content-container {
-        overflow: visible;
-    }
-}
-
+/* Dashboard Container */
 .dashboard-container {
-    display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background-color: #343a40;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.collapsed {
+  transform: translateX(-250px);
+}
+
+/* Main content */
+.main-content {
+  flex-grow: 1;
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+  width: 100%;
+}
+
+.main-content.expanded {
+  margin-left: 0;
+}
+
+/* Right content inside main */
+.right-content-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
+  min-height: calc(100vh - 56px);
+  transition: padding 0.3s ease;
+}
+
+/* Responsive: on small screens sidebar overlays */
+@media (max-width: 767.98px) {
+  .sidebar {
+    transform: translateX(-250px);
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* Optional: Backdrop for mobile overlay */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  display: none;
+}
+
+.sidebar-backdrop.show {
+  display: block;
 }

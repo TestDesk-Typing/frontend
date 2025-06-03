@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import './Profile.css';
 import { useCookies } from 'react-cookie';
+import { Container, Row, Col, Card, Form, Button, Image, Spinner, Alert } from 'react-bootstrap';
 import pic from '../i/profile.png';
 import Swal from 'sweetalert2';
+import './Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const userId = 'user-id'; // Replace with the actual user ID
   const [cookies] = useCookies(['session_id', 'SSIDCE']);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const Profile = () => {
         console.error('Error fetching user data:', error);
         setLoading(false);
       });
-  }, [userId]);
+  }, []);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -97,157 +97,192 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
   }
 
   if (!user) {
-    return <p>No user data found.</p>;
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger">No user data found.</Alert>
+      </Container>
+    );
   }
 
   return (
-    <div className="register-container">
-      <div className="register-content">
-        <div className="register-left">
-          <img src={pic} className="profile-image" alt="Profile" />
-          <h1>{user.full_name}</h1>
-          <p>Welcome to your profile page</p>
-          {!isEditing && (
-            <button onClick={handleEditClick} className="play-btn">Edit</button>
-          )}
-        </div>
-
-        <div className="register-right">
-          <div className="register-form">
-            <h2>Personal Information</h2>
-            <div className="register-form-grid">
-              <div className="register-test-input-groups">
-                <label>Full Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={user.full_name}
-                    onChange={(e) => setUser({ ...user, full_name: e.target.value })}
-                    className="editable-input"
-                  />
-                ) : (
-                  <p>{user.full_name}</p>
-                )}
-              </div>
-              <div className="register-test-input-groups">
-                <label>Date of Birth</label>
-                {isEditing ? (
-                  <input
-                    type="date"
-                    value={new Date(user.dob).toLocaleDateString('en-CA')}
-                    onChange={(e) => setUser({ ...user, dob: e.target.value })}
-                    className="editable-input"
-                  />
-                ) : (
-                  <p>{new Date(user.dob).toLocaleDateString('en-GB')}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="register-form-grid">
-              <div className="register-test-input-groups">
-                <label>Gender</label>
-                {isEditing ? (
-                  <select
-                    value={user.gender}
-                    onChange={(e) => setUser({ ...user, gender: e.target.value })}
-                    className="editable-input"
-                  >
-                    <option className="input-status-option" value="Male">Male</option>
-                    <option className="input-status-option" value="Female">Female</option>
-                    <option className="input-status-option" value="Other">Other</option>
-                  </select>
-                ) : (
-                  <p>{user.gender}</p>
-                )}
-              </div>
-              <div className="register-test-input-groups">
-                <label>City</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={user.city_name}
-                    onChange={(e) => setUser({ ...user, city_name: e.target.value })}
-                    className="editable-input"
-                  />
-                ) : (
-                  <p>{user.city_name}</p>
-                )}
-              </div>
-            </div>
-
-            <h2>Contact Information</h2>
-            <div className="register-form-grid">
-              <div className="register-test-input-groups">
-                <label>Email</label>
-                <p>{user.email_id}</p>
-              </div>
-              <div className="register-test-input-groups">
-                <label>Mobile Number</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={user.mobile_number}
-                    onChange={(e) => setUser({ ...user, mobile_number: e.target.value })}
-                    className="editable-input"
-                    disabled
-                  />
-                ) : (
-                  <p>{user.mobile_number}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="register-form-grid">
-              <div className="register-test-input-groups">
-                <label>Status</label>
-                <p>{user.status}</p>
-              </div>
-              <div className="register-test-input-groups">
-                <label>Membership</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={user.membership}
-                    onChange={(e) => setUser({ ...user, membership: e.target.value })}
-                    className="editable-input"
-                  />
-                ) : (
-                  <p>{user.membership}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="register-form-grid">
-              <div className="register-test-input-groups">
-                <label>Exam Shortcut</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={user.exam_shortcut}
-                    onChange={(e) => setUser({ ...user, exam_shortcut: e.target.value })}
-                    className="editable-input"
-                  />
-                ) : (
-                  <p>{user.exam_shortcut}</p>
-                )}
-              </div>
-            </div>
-
-            {isEditing && (
-              <div className="button-group">
-                <button onClick={handleUpdateClick} className="register-btn update">Update</button>
-                <button onClick={handleCancelClick} className="register-btn cancle">Cancel</button>
-              </div>
+    <Container className="profile-container mt-4">
+      <Row className="g-4">
+        {/* Profile Image and Basic Info */}
+        <Col lg={4}>
+          <Card className="h-100 text-center p-4">
+            <Image src={pic} roundedCircle className="profile-image mb-3" />
+            <Card.Title className="mb-2">{user.full_name}</Card.Title>
+            <Card.Text className="text-muted mb-4">Welcome to your profile page</Card.Text>
+            {!isEditing && (
+              <Button variant="primary" onClick={handleEditClick} className="play-btn">
+                Edit Profile
+              </Button>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Card>
+        </Col>
+
+        {/* Profile Details */}
+        <Col lg={8}>
+          <Card className="h-100">
+            <Card.Body>
+              <Card.Title className="mb-4">Personal Information</Card.Title>
+              
+              <Row className="mb-4">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Full Name</Form.Label>
+                    {isEditing ? (
+                      <Form.Control
+                        type="text"
+                        value={user.full_name}
+                        onChange={(e) => setUser({ ...user, full_name: e.target.value })}
+                      />
+                    ) : (
+                      <p className="form-control-static">{user.full_name}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Date of Birth</Form.Label>
+                    {isEditing ? (
+                      <Form.Control
+                        type="date"
+                        value={new Date(user.dob).toLocaleDateString('en-CA')}
+                        onChange={(e) => setUser({ ...user, dob: e.target.value })}
+                      />
+                    ) : (
+                      <p className="form-control-static">{new Date(user.dob).toLocaleDateString('en-GB')}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-4">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Gender</Form.Label>
+                    {isEditing ? (
+                      <Form.Select
+                        value={user.gender}
+                        onChange={(e) => setUser({ ...user, gender: e.target.value })}
+                      >
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </Form.Select>
+                    ) : (
+                      <p className="form-control-static">{user.gender}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>City</Form.Label>
+                    {isEditing ? (
+                      <Form.Control
+                        type="text"
+                        value={user.city_name}
+                        onChange={(e) => setUser({ ...user, city_name: e.target.value })}
+                      />
+                    ) : (
+                      <p className="form-control-static">{user.city_name}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Card.Title className="mb-4">Contact Information</Card.Title>
+              
+              <Row className="mb-4">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Email</Form.Label>
+                    <p className="form-control-static">{user.email_id}</p>
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Mobile Number</Form.Label>
+                    {isEditing ? (
+                      <Form.Control
+                        type="text"
+                        value={user.mobile_number}
+                        onChange={(e) => setUser({ ...user, mobile_number: e.target.value })}
+                        disabled
+                      />
+                    ) : (
+                      <p className="form-control-static">{user.mobile_number}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className="mb-4">
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Status</Form.Label>
+                    <p className="form-control-static">{user.status}</p>
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Membership</Form.Label>
+                    {isEditing ? (
+                      <Form.Control
+                        type="text"
+                        value={user.membership}
+                        onChange={(e) => setUser({ ...user, membership: e.target.value })}
+                      />
+                    ) : (
+                      <p className="form-control-static">{user.membership}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Exam Shortcut</Form.Label>
+                    {isEditing ? (
+                      <Form.Control
+                        type="text"
+                        value={user.exam_shortcut}
+                        onChange={(e) => setUser({ ...user, exam_shortcut: e.target.value })}
+                      />
+                    ) : (
+                      <p className="form-control-static">{user.exam_shortcut}</p>
+                    )}
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              {isEditing && (
+                <div className="d-flex justify-content-end gap-2 mt-4">
+                  <Button variant="secondary" onClick={handleCancelClick}>
+                    Cancel
+                  </Button>
+                  <Button variant="primary" onClick={handleUpdateClick}>
+                    Update Profile
+                  </Button>
+                </div>
+              )}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

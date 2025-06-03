@@ -9,7 +9,7 @@ const ExamList = () => {
   // Static names for redirection and display
   const staticNames = {
     "SSC CHSL": {
-      displayName: "SSC CHSL 2024 Dest Typing test",
+      displayName: "SSC CHSL 2025 Dest Typing test",
       redirectName: "ssc-chsl-typing-test",
     },
     "DSSSB": {
@@ -38,7 +38,7 @@ const ExamList = () => {
       redirectName: "bsf-hcm-typing-skill-tests",
     },
     "SSC": {
-      displayName: "SSC CGL 2024 Dest Typing test",
+      displayName: "SSC CGL 2025 Dest Typing test",
       redirectName: "ssc-cgl-typing-test",
     },
     "Supreme Court": {

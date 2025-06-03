@@ -1,8 +1,7 @@
-import { Row, Col, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import TypingTimer from "./TypingTimer";
 import { useNavigate, useParams } from "react-router-dom";
-import parse from "html-react-parser";
 import { BiSolidLeftArrow, BiSolidDownArrow } from "react-icons/bi";
 import { FcInfo } from "react-icons/fc";
 import { useCookies } from "react-cookie";
@@ -10,6 +9,7 @@ import { diffWords } from "diff";
 import "./Main.css";
 import { useAuth } from "../AuthContext/AuthContext";
 import pic3 from "../i/NewCandidateImage.jpg";
+import LoadingSpinner from "../Loading";
 
 const TypingModule = () => {
   const { testcode, exam, UR, testname } = useParams();
@@ -26,48 +26,33 @@ const TypingModule = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [oldparagraph, setoldParagraph] = useState("");
   const { userDetails, isLoggedIn } = useAuth();
-
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Function to prevent right-click
-    const disableRightClick = (event) => {
-      event.preventDefault();
-    };
-
-    // Function to prevent cut, copy, and paste
+    const disableRightClick = (event) => event.preventDefault();
     const disableCutCopyPaste = (event) => {
-      if (event.ctrlKey || event.metaKey) {
-        // Allow Ctrl or Command key
-        return;
-      }
-
-      event.preventDefault();
+      if (!(event.ctrlKey || event.metaKey)) event.preventDefault();
     };
-
     const disableKeyCombinations = (event) => {
-      if (
-        (event.ctrlKey && event.shiftKey && event.code === "KeyI") ||
-        (event.ctrlKey && event.shiftKey && event.code === "KeyC") ||
-        (event.ctrlKey && event.shiftKey && event.code === "KeyJ") ||
-        (event.ctrlKey && event.shiftKey && event.code === "KeyS") ||
-        (event.keyCode === 121 && event.shiftKey === true) ||
-        (event.ctrlKey && event.code === "KeyU") ||
-        (event.ctrlKey && event.code === "KeyP") || // Add Ctrl+P check
-
+      const blockedCombos = [
+        (event.ctrlKey && event.shiftKey && event.code === "KeyI"),
+        (event.ctrlKey && event.shiftKey && event.code === "KeyC"),
+        (event.ctrlKey && event.shiftKey && event.code === "KeyJ"),
+        (event.ctrlKey && event.shiftKey && event.code === "KeyS"),
+        (event.keyCode === 121 && event.shiftKey === true),
+        (event.ctrlKey && event.code === "KeyU"),
+        (event.ctrlKey && event.code === "KeyP"),
         (event.code === "F12")
-      ) {
-        event.preventDefault();
-      }
+      ];
+      if (blockedCombos.some(Boolean)) event.preventDefault();
     };
 
-    // Add event listeners when the component mounts
     document.addEventListener("contextmenu", disableRightClick);
     document.addEventListener("cut", disableCutCopyPaste);
     document.addEventListener("copy", disableCutCopyPaste);
     document.addEventListener("paste", disableCutCopyPaste);
     document.addEventListener("keydown", disableKeyCombinations);
 
-    // Remove event listeners when the component unmounts
     return () => {
       document.removeEventListener("contextmenu", disableRightClick);
       document.removeEventListener("cut", disableCutCopyPaste);
@@ -77,39 +62,34 @@ const TypingModule = () => {
     };
   }, []);
 
-
-
   const fetchParagraph = async () => {
-    let dt = { paper_code: testcode, examName: exam, testName: testname };
-    // console.log(dt);
-    let state_res = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/typingParagraph-get`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${cookies.session_id}`,
-        },
-        body: JSON.stringify(dt),
-      }
-    );
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/typingParagraph-get`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${cookies.session_id}`,
+          },
+          body: JSON.stringify({ paper_code: testcode, examName: exam, testName: testname }),
+        }
+      );
 
-    if (state_res.ok) {
-      state_res = await state_res.json();
-      setParagraph(state_res.paragraph);
-      setoldParagraph(state_res.paragraph);
-      setContentLength(state_res.paragraph.length);
-      setMinute(state_res.time);
-    } else {
-      console.error("Failed to fetch paragraph", state_res.statusText);
+      if (response.ok) {
+        const data = await response.json();
+        setParagraph(data.paragraph);
+        setoldParagraph(data.paragraph);
+        setContentLength(data.paragraph.length);
+        setMinute(data.time);
+      }
+    } catch (error) {
+      console.error("Failed to fetch paragraph", error);
     }
   };
 
   useEffect(() => {
-    if (isLoggedIn && userDetails) {
-      // Additional logic if needed
-    }
     const checkAccess = async () => {
       if (!cookies.session_id) {
         navigate("/login");
@@ -141,7 +121,7 @@ const TypingModule = () => {
                   Accept: "application/json",
                   Authorization: `Bearer ${cookies.session_id}`,
                 },
-                body: JSON.stringify({ product_id: "999" }), // Replace with actual product ID
+                body: JSON.stringify({ product_id: "999" }),
               }
             );
 
@@ -167,38 +147,14 @@ const TypingModule = () => {
     };
 
     checkAccess();
-  }, [testcode, exam, cookies.session_id, userDetails, navigate]);
-  // console.log("all details here => ", { testcode, exam, userDetails })
-  // all details here => {
-  //   "testcode": "SC-JCA-TYPING-02-2025",
-  //   "exam": "JCA",
-  //   "userDetails": {
-  //       "id": "6738cf6ae62469acc03a12e8",
-  //       "fullName": "prashant kumar sinha",
-  //       "email_id": "meekuprashant@gmail.com",
-  //       "mobile_number": "7209822149"
-  //   }
-  // }
-  let d = paragraph;
+  }, [testcode, exam, cookies.session_id, navigate]);
 
   const handleMessageChange = (event) => {
-    if (!typing) {
-      setTyping(true);
-    }
-
-    // Get the user's input and replace multiple spaces with a single space
-    let input = event.target.value;
-
-    // Replace multiple spaces between words with a single space
-    // input = input.replace(/\s+/g, " ").trimStart(); // trimStart prevents leading spaces
-
-    // Update the state with the cleaned input
-    setMessage(input);
+    if (!typing) setTyping(true);
+    setMessage(event.target.value);
   };
 
-  const rmTimeFun = (rTm) => {
-    setrmTm(rTm);
-  };
+  const rmTimeFun = (rTm) => setrmTm(rTm);
 
   // const messageSubmit = async () => {
   //   const originalParagraph = paragraph.trim(); // Original paragraph
@@ -307,12 +263,14 @@ const TypingModule = () => {
   // };
 
   const messageSubmit = async () => {
+    setIsLoading(true);
     const originalParagraph = paragraph.trim(); // Original paragraph
     const userInput = message.trim(); // User's typed content
 
     // Declare all variables at the top
     let comparisonResult, correctChars = 0, wrongChars = 0, totalDepressions, accuracy, wrongPercentage, netSpeed, grossSpeed;
     let correctWordCount = 0, mistakeCount = 0, omissionCount = 0; // For JCA evaluation
+
     let marks = 50;
     if (exam === "JCA") {
       // JCA-specific evaluation logic based on Supreme Court instructions
@@ -489,187 +447,90 @@ const TypingModule = () => {
     });
 
     if (response.ok) {
+      setIsLoading(false);
       navigate(`/${testcode}/${exam}/${testname}/feedback`);
     } else {
+      setIsLoading(false);
       console.error("Error submitting typing performance");
     }
   };
 
-  function parseTime(timeString) {
-    const [hours, minutes, seconds] = timeString.split(":").map(Number);
-    return hours * 3600 + minutes * 60 + seconds;
-  }
-
-  if (rmTm == "00:00:00") {
+  if (rmTm === "00:00:00") {
     messageSubmit();
   }
 
-  const showProfile = () => {
-    // Toggle profile details or modal
-    setShowDetails(!showDetails);
-  };
+  const showProfile = () => setShowDetails(!showDetails);
 
   return (
-    <>
-      <div className="xyte"></div>
-      <div className="xyot">
-        <div className="xyot-examname">{testname}</div>
-        <div className="xypt-instructon">
-          <FcInfo className="into" />
-          <div className="test-instruct">View Instructions</div>
-        </div>
+    <div className="typing-test-container-exam">
+      {isLoading &&
+        <LoadingSpinner />}
+      {/* Header Section */}
+      <div className="header-bar"></div>
+      <div className="exam-info-bar">
+        <div className="exam-name">{testname}</div>
+        <button className="instructions-btn">
+          <FcInfo className="info-icon" />
+          <span>View Instructions</span>
+        </button>
       </div>
-      <div className="cloumn-group">
-        <div className="cloumn-group-left">
-          <div className="cloumn-group-left-container">
-            <div className="arrowbar">
-              <BiSolidLeftArrow
-                style={{ color: "#cacaca" }}
-                className="left-arrao-group"
-              />
-              <div className="main-group">
-                {" "}
-                <div className="arrwo-down">
-                  <div className="examheader2section" title="Group A">
-                    <span>Group A</span>
-                  </div>
-                  <BiSolidDownArrow className="dow-arrow-icon" />
-                </div>
-                <div>
-                  {/* <div className="examheader2section" title="Group B">
-            {/* Add content for Group B or another section here if needed */}
-                  {/* </div>  */}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="secure-time-panel">
-            <div className="secure-section-details" id="unique-sections-field">
-              <span className="secure-section-title">
-                <b>Sections</b>
-              </span>
-            </div>
-            <div className="secure-time-details">
-              <div id="unique-show-time" style={{ float: "right" }}>
-                <b>
-                  Time Left:{" "}
-                  <span id="unique-time-in-mins">
-                    {" "}
-                    {typing === true ? (
-                      <TypingTimer
-                        hoursMinSecs={hoursMinSecs}
-                        rmTimeFun={rmTimeFun}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </span>
-                </b>
-              </div>
-              <div
-                id="unique-show-time-for-opt-sec"
-                style={{ float: "right", display: "none" }}
-              >
-                &nbsp;
-              </div>
-            </div>
-          </div>
-          <div className="my-subject-se">
-            <div className="select-subject">
-              <BiSolidLeftArrow
-                style={{ color: "#cacaca" }}
-                className="left-arrao-group-2"
-              />
-              <div id="mysection">
-                <div
-                  className="subject-name selectedsubject"
-                  id="s0"
-                  title="Section A"
-                >
-                  <span style={{ verticalAlign: "middle" }}>Section A</span>
-                </div>
-              </div>
-            </div>
+      {/* Main Content */}
+      <div className="typing-content-wrapper">
+        {/* Left Sidebar */}
+        <div className="left-sidebar">
+          <div className="time-display">
+            <span>Time Left: </span>
+            {typing && <TypingTimer hoursMinSecs={hoursMinSecs} rmTimeFun={rmTimeFun} />}
           </div>
         </div>
 
-        <div className="column-group-right-unique">
-          <div
-            id="User_Hldr_Unique"
-            onClick={showProfile}
-            style={{ borderLeft: "1px solid rgb(195, 195, 193)" }}
-          >
-            <div className="singleImageDivUnique">
-              <div className="profile_image_unique">
-                <img
-                  width="94"
-                  height="101"
-                  alt="Profile"
-                  className="candidateImgUnique"
-                  src={pic3}
-                />
-              </div>
-              <div className="profile_details_unique">
-                <div
-                  id="Username_Unique"
-                  className="candOriginalNameUnique"
-                  title="Annamalai"
-                >
-                  {userDetails.fullName}
-                </div>
-              </div>
-            </div>
+        {/* Typing Area */}
+        <div className="typing-area">
+          <div className="keyboard-info">Keyboard Layout: QWERTY</div>
 
-            <div className="clear_unique"></div>
-          </div>
-        </div>
-      </div>
-      <div id="unique-question-inner-div">
-        <div id="unique-subject-div"></div>
-        <span className="unique-keyboard-layout" id="unique-keyboard-layout">
-          Keyboard Layout: QWERTY
-        </span>
-        <div
-
-          className="unique-left-container"
-        >
-          {/* <br /> */}
-          <div id="unique-typing-div" className="unique-typing-question-div">
-            <div id="unique-row-1" style={{}}>
-              {d}
+          <div className="text-display">
+            <div className="original-text">
+              {paragraph}
             </div>
-          </div>
-          <div id="unique-typing-div" className="unique-typing-question-div">
-            <div class="textAreaDiv-typed-div" onpaste="return false">
+            <div className="typing-input-container">
               <textarea
-                className="typedAnswer-typed-answr"
-                style={{}}
+                className="typing-input"
                 value={message}
-                spellCheck="false"
                 onChange={handleMessageChange}
+                spellCheck="false"
                 maxLength={contentLength}
+                placeholder="Start typing here..."
               ></textarea>
             </div>
           </div>
+
+          <div className="keyboard-instructions">
+            To set up the keyboard for Hindi typing,
+            first go to Settings, then Time & Language, and select
+            Language on your laptop. Install Hindi as a preferred language.
+            After that, press <strong>Windows + Space</strong> to switch to the Hindi keyboard,
+            but only switch when Hindi typing is required for the test.
+          </div>
+
+          <Button className="submit-btn" onClick={messageSubmit}>
+            Submit
+          </Button>
         </div>
-        <div className="keyboard-selector-message">
-          To set up the keyboard for Hindi typing,
-          first go to Settings, then Time & Language, and select
-          Language on your laptop. Install Hindi as a preferred language.
-          After that, press <strong>Windows + Space</strong> to switch to the Hindi keyboard,
-          but only switch when Hindi typing is required for the test.
+
+        {/* Right Sidebar */}
+        <div className="right-sidebar">
+          <div className="user-profile">
+            <img src={pic3} alt="Profile" className="profile-image" />
+            <div className="user-name">{userDetails?.fullName || 'Guest'}</div>
+          </div>
         </div>
-        <Button className="button-submit-typing" onClick={messageSubmit}>
-          Submit
-        </Button>
       </div>
 
-
-
-      <div id="footer">Version : 17.07.00</div>
-    </>
+      {/* Footer */}
+      <div className="footer">Version : 17.07.00</div>
+    </div>
   );
-};
+}
 
 export default TypingModule;
