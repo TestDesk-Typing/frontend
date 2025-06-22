@@ -211,7 +211,7 @@ const AfterBanner = () => {
           </div>
 
           <div className="test-list">
-            {filteredTests.slice(0, 10).map((test, index) => (
+            {filteredTests?.slice(0, 10)?.map((test, index) => (
               <div key={index} className="test-item">
                 <div className="test-list-user">
                   <div className="test-list-user-number">
