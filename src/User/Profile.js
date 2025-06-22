@@ -1,121 +1,163 @@
+// Updated Profile.js (React Component with Image Upload, Compression, and Pencil Icon)
 import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import { useCookies } from 'react-cookie';
 import pic from '../i/profile.png';
 import Swal from 'sweetalert2';
+import { FaPencilAlt } from 'react-icons/fa';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const userId = 'user-id'; // Replace with the actual user ID
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [cookies] = useCookies(['session_id', 'SSIDCE']);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/api/users/profile/${cookies.SSIDCE}`, {
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${cookies.session_id}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${cookies.session_id}`,
       },
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
       })
       .then((data) => {
         setUser(data);
+        setPreviewImage(data.profile_pic ? `${process.env.REACT_APP_API_URL}${data.profile_pic}` : pic);
         setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
         setLoading(false);
       });
-  }, [userId]);
+  }, [cookies]);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const handleEditClick = () => setIsEditing(true);
+  const handleCancelClick = () => setIsEditing(false);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = 300;
+        const scale = Math.min(maxSize / img.width, maxSize / img.height);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+          const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+          setSelectedImage(compressedFile);
+          setPreviewImage(URL.createObjectURL(blob));
+        }, 'image/jpeg', 0.7);
+      };
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleCancelClick = () => {
-    setIsEditing(false);
+  const uploadProfileImage = async () => {
+    if (!selectedImage) return;
+
+    const formData = new FormData();
+    formData.append('profileImage', selectedImage);
+
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/upload-profile-picture/${user.email_id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${cookies.session_id}`,
+      },
+      body: formData,
+    });
+
+    const result = await response.json();
+    if (result.status === '1') {
+      setPreviewImage(`${process.env.REACT_APP_API_URL}${result.path}`);
+      return true;
+    } else {
+      Swal.fire('Error', 'Image upload failed.', 'error');
+      return false;
+    }
   };
 
   const handleUpdateClick = async () => {
     if (!user.full_name || !user.mobile_number) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Validation Error',
-        text: 'Please fill in all the required fields.',
-      });
+      Swal.fire('Error', 'Please fill in all required fields.', 'error');
       return;
     }
 
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/update/${user.email_id}`, {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": `Bearer ${cookies.session_id}`,
-        },
-        body: JSON.stringify({
-          full_name: user.full_name,
-          dob: user.dob,
-          city_name: user.city_name,
-          gender: user.gender,
-          membership: user.membership,
-          exam_shortcut: user.exam_shortcut,
-        }),
-      });
+    await uploadProfileImage();
 
-      const data = await response.json();
-      if (data.status === "1") {
-        Swal.fire({
-          icon: 'success',
-          title: 'Profile Updated',
-          text: 'Your profile has been updated successfully.',
-        });
-        setIsEditing(false);
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Update Error',
-          text: 'There was an error updating your profile. Please try again.',
-        });
-      }
-    } catch (error) {
-      console.error('Error updating user data:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Update Error',
-        text: 'There was an error updating your profile. Please try again.',
-      });
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/update/${user.email_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${cookies.session_id}`,
+      },
+      body: JSON.stringify({
+        full_name: user.full_name,
+        dob: user.dob,
+        city_name: user.city_name,
+        gender: user.gender,
+        membership: user.membership,
+        exam_shortcut: user.exam_shortcut,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.status === '1') {
+      Swal.fire('Success', 'Profile updated successfully.', 'success');
+      setIsEditing(false);
+    } else {
+      Swal.fire('Error', 'Profile update failed.', 'error');
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!user) {
-    return <p>No user data found.</p>;
-  }
+  if (loading) return <p>Loading...</p>;
+  if (!user) return <p>No user data found.</p>;
 
   return (
     <div className="register-container">
       <div className="register-content">
         <div className="register-left">
-          <img src={pic} className="profile-image" alt="Profile" />
+          <div className="image-wrapper">
+            <img
+              src={previewImage || pic}
+              className="profile-image"
+              alt="Profile"
+              onClick={() => isEditing && document.getElementById('imageInput').click()}
+            />
+            {isEditing && <FaPencilAlt className="edit-icon" onClick={() => document.getElementById('imageInput').click()} />}
+            {isEditing && (
+              <input
+                id="imageInput"
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleImageChange}
+              />
+            )}
+          </div>
           <h1>{user.full_name}</h1>
           <p>Welcome to your profile page</p>
           {!isEditing && (
             <button onClick={handleEditClick} className="play-btn">Edit</button>
           )}
         </div>
-
         <div className="register-right">
           <div className="register-form">
             <h2>Personal Information</h2>
