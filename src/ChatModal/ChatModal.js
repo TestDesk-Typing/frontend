@@ -23,29 +23,48 @@ const ChatModal = ({ open, onClose }) => {
   const [replyingTo, setReplyingTo] = useState(null);
 
   const messageContainerRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const loadingRef = useRef(false);
 
-  // Lazy loading older messages when scrolled near top
+  // const scrollToBottom = () => {
+  //   setTimeout(() => {
+  //     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  //   }, 100);
+  // };
+
+  // useEffect(() => {
+  //   if (open) scrollToBottom();
+  // }, [open, messages.length]);
+
+  useEffect(() => {
+  if (open) {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }, 100);
+  }
+}, [open]);
+
   const handleScroll = useCallback(() => {
     if (!messageContainerRef.current || loadingRef.current || !hasMore) return;
 
     if (messageContainerRef.current.scrollTop < 100) {
       loadingRef.current = true;
+      const previousScrollHeight = messageContainerRef.current.scrollHeight;
       loadMessages();
       setTimeout(() => {
+        const newScrollHeight = messageContainerRef.current.scrollHeight;
+        messageContainerRef.current.scrollTop = newScrollHeight - previousScrollHeight;
         loadingRef.current = false;
-      }, 1000);
+      }, 500);
     }
   }, [hasMore, loadMessages]);
 
   useEffect(() => {
     if (!open) return;
-
     const container = messageContainerRef.current;
     if (!container) return;
 
     container.addEventListener("scroll", handleScroll);
-
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll, open]);
 
@@ -140,6 +159,7 @@ const ChatModal = ({ open, onClose }) => {
               </ListItem>
             );
           })}
+          <div ref={messagesEndRef} />
         </List>
       </DialogContent>
       <DialogActions sx={{ p: 1, bgcolor: "#f3e8ff" }}>
