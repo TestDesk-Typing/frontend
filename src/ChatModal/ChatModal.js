@@ -281,9 +281,9 @@ const ChatModal = ({ open, onClose }) => {
                   sx={{ width: 80, height: 80, mx: "auto", mb: 1 }}
                 />
                 <Typography variant="h6">{selectedUser.full_name}</Typography>
-                <Typography variant="body2" color="text.secondary">
+                {/* <Typography variant="body2" color="text.secondary">
                   {selectedUser.email_id}
-                </Typography>
+                </Typography> */}
               </Box>
               <Divider sx={{ mb: 2 }} />
               <Grid container spacing={1}>
