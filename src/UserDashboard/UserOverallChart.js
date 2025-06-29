@@ -230,7 +230,7 @@ const UserOverallChart = () => {
                     <DayPicker
                       month={new Date(selectedYear, selectedMonth)}
                       selected={new Date()}
-                      onDayClick={() => {}}
+                      onDayClick={() => { }}
                       className="mt-3"
                     />
                   </div>
