@@ -1,16 +1,15 @@
+// Updated Typing Component
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './VirtualKeyboard.css';
-import pic1 from '../i/keyboard.png';
 import pic2 from '../i/keyboard.png';
 import pic3 from "../i/NewCandidateImage.jpg";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
-import 'jbox/dist/jBox.all.min.css';
 import Swal from 'sweetalert2';
-import LoadingSpinner from "../Loading";
+import './Typinglogin.css';
 
 const Typing = () => {
   const navigate = useNavigate();
@@ -27,7 +26,6 @@ const Typing = () => {
   const passwordInputRef = useRef(null);
   const keyboardContainerRef = useRef(null);
   const [keyboardPosition, setKeyboardPosition] = useState({ top: 0, left: 0 });
-  const [keyboardDirection, setKeyboardDirection] = useState('bottom'); // default position
 
   useEffect(() => {
     return () => {
@@ -46,9 +44,9 @@ const Typing = () => {
   const onKeyPress = (button) => {
     if (button === "{backspace}") {
       if (activeInput === 'emailId') {
-        setEmailId(prev => prev?.slice(0, -1));
+        setEmailId(prev => prev.slice(0, -1));
       } else if (activeInput === 'password') {
-        setPassword(prev => prev?.slice(0, -1));
+        setPassword(prev => prev.slice(0, -1));
       }
     } else if (button === "{clear}") {
       if (activeInput === 'emailId') {
@@ -61,7 +59,6 @@ const Typing = () => {
 
   const toggleKeyboard = (inputType) => {
     if (activeInput === inputType && showKeyboard) {
-      // If clicking the same input again, just close the keyboard
       setShowKeyboard(false);
       setActiveInput(null);
       return;
@@ -79,62 +76,46 @@ const Typing = () => {
 
     if (inputElement) {
       const rect = inputElement.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const viewportWidth = window.innerWidth;
-
-      let direction = 'bottom';
-      if (rect.bottom + 250 > viewportHeight && rect.top > 250) {
-        direction = 'top';
-        setKeyboardPosition({ top: rect.top + window.scrollY, left: rect.left + window.scrollX });
-      } else if (rect.left + 300 > viewportWidth && rect.right > 300) {
-        direction = 'left';
-        setKeyboardPosition({ top: rect.top + window.scrollY, left: rect.left + window.scrollX });
-      } else if (rect.right + 300 > viewportWidth && rect.left > 300) {
-        direction = 'right';
-        setKeyboardPosition({ top: rect.top + window.scrollY, left: rect.right + window.scrollX });
-      } else {
-        direction = 'bottom';
-        setKeyboardPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
-      }
-
-      setKeyboardDirection(direction);
+      setKeyboardPosition({
+        top: rect.bottom + window.scrollY + 5,
+        left: rect.left + window.scrollX
+      });
     }
   };
 
   const userSubmit = async (event) => {
-    setIsLoading(true);
     event.preventDefault();
+    setIsLoading(true);
 
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ email_id: emailId, password })
-    });
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ email_id: emailId, password })
+      });
 
-    if (response.ok) {
-      const { message, session_id, userDetails } = await response.json();
+      const data = await response.json();
       setIsLoading(false);
-      if (userDetails) {
+
+      if (response.ok && data.userDetails) {
         Swal.fire({
           title: 'Login Successful',
-          text: message,
+          text: data.message,
           icon: 'success',
           confirmButtonText: 'Continue',
           willClose: () => {
             setCookie("SSIDCE", emailId, { path: "/", maxAge: 24 * 60 * 60 });
-            setCookie("session_id", session_id, { path: "/", maxAge: 24 * 60 * 60 });
-            setCookie("SSDSD", JSON.stringify(userDetails), { path: "/", maxAge: 24 * 60 * 60 });
+            setCookie("session_id", data.session_id, { path: "/", maxAge: 24 * 60 * 60 });
+            setCookie("SSDSD", JSON.stringify(data.userDetails), { path: "/", maxAge: 24 * 60 * 60 });
             window.location.href = '/';
           }
         });
       } else {
-        setIsLoading(false);
-        Swal.fire({ title: 'Login Failed', text: 'User details not found', icon: 'error', confirmButtonText: 'Retry' });
+        Swal.fire({ title: 'Login Failed', text: data.message || 'User not found', icon: 'error', confirmButtonText: 'Retry' });
       }
-    } else {
+    } catch (error) {
       setIsLoading(false);
-      const { message } = await response.json();
-      Swal.fire({ title: 'Login Failed', text: message, icon: 'error', confirmButtonText: 'Retry' });
+      Swal.fire({ title: 'Login Failed', text: 'Network Error', icon: 'error', confirmButtonText: 'Retry' });
     }
   };
 
@@ -169,9 +150,7 @@ const Typing = () => {
       }
     };
 
-    if (cookies.session_id) {
-      checkAccess();
-    }
+    checkAccess();
   }, [cookies.session_id]);
 
   return (
@@ -217,35 +196,49 @@ const Typing = () => {
         <div className="selection-controls">
           <form onSubmit={userSubmit}>
             <div className="mb-3 input-group">
-              <span className="input-group-text bg-light border-end-0"><i className="bi bi-person-fill"></i></span>
+              <span className="fontawesome-user"></span>
               <input
                 ref={emailInputRef}
+                id="in"
                 type="text"
-                className="form-control"
+                name="email"
+                className="keyboardInput"
                 value={emailId}
                 onChange={(e) => setEmailId(e.target.value)}
                 placeholder="Username"
                 required
               />
-              <button type="button" className="btn btn-light border" onClick={() => toggleKeyboard('emailId')}>
-                <img src={pic1} alt="Keyboard" width="20" />
-              </button>
+              <div className='myimagekeyboard m-0'>
+                <img
+                  src={pic2}
+                  alt="Display virtual keyboard interface"
+                  className="keyboardInputInitiator"
+                  title="Select keyboard layout"
+                  onClick={() => toggleKeyboard('emailId')}
+                />
+              </div>
             </div>
 
             <div className="mb-3 input-group">
-              <span className="input-group-text bg-light border-end-0"><i className="bi bi-lock-fill"></i></span>
+              <span className="fontawesome-lock"></span>
               <input
                 ref={passwordInputRef}
                 type="password"
-                className="form-control"
+                className="keyboardInput"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 required
               />
-              <button type="button" className="btn btn-light border" onClick={() => toggleKeyboard('password')}>
-                <img src={pic2} alt="Keyboard" width="20" />
-              </button>
+              <div className='myimagekeyboard m-0'>
+                <img
+                  src={pic2}
+                  alt="Display virtual keyboard interface"
+                  className="keyboardInputInitiator"
+                  title="Select keyboard layout"
+                  onClick={() => toggleKeyboard('password')}
+                />
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary w-100 py-2 login-button-primary mt-4">Sign In</button>
@@ -254,7 +247,7 @@ const Typing = () => {
           {showKeyboard && (
             <div
               ref={keyboardContainerRef}
-              className={`keyboardContainer position-absolute keyboard-${keyboardDirection}`}
+              className="keyboardContainer position-absolute"
               style={{ top: `${keyboardPosition.top}px`, left: `${keyboardPosition.left}px`, zIndex: 1000 }}
               id="keyboardInputMaster"
             >

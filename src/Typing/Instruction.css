@@ -29,6 +29,7 @@
   border-right: 1px solid rgb(0, 0, 0);
   display: flex;
   flex-direction: column;
+  position: relative; /* Important: Make this the positioned parent */
 }
 
 .instruction-title {
@@ -109,9 +110,15 @@
 
 /* Confirmation Section Styles */
 .instruction-confirmation-section {
+  position: absolute; /* Stick to bottom of parent */
+  bottom: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 40px);
+  padding: 15px;
+  background-color: #fff; /* Optional: for visual clarity */
+  border-top: 1px solid #ccc; /* Optional: to separate visually */
 }
 
 .instruction-checkbox-container {
@@ -147,7 +154,6 @@
   display: flex;
   align-items: center;
   padding-top: 27px;
-  border-top: 1px solid #ccc;
 }
 
 .instruction-ready-button {
@@ -211,6 +217,17 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+  .instruction-confirmation-section {
+    position: static !important;
+    border-top: 1px solid #ccc;
+    padding: 15px;
+    width: 100%;
+  }
+  
+  .instruction-left-section {
+    position: static; /* Optional, but you can reset if needed */
+  }
+  
   .instruction-content-container {
     flex-direction: column;
   }
