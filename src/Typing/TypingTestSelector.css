@@ -139,11 +139,16 @@
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .user-typing-info-container {
+  /* .user-typing-info-container {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
 
+  } */
+   
+
+  .user-typing-info-container {
+    display: none;
   }
 
   .info-section {

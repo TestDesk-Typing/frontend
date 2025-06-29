@@ -198,14 +198,14 @@ const DashboardHeader = () => {
               textTransform: "none",
               fontWeight: "bold",
               fontSize: 12,
-              padding: "8px 20px",
+              padding: "8px 8px",
               "&:hover": {
                 backgroundColor: "#1976d2cc",
               },
             }}
             className="me-3"
           >
-            Open Chat
+            Chat
           </Button>
 
           {/* Give Tests Button */}
