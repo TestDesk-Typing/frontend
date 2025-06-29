@@ -1,0 +1,24 @@
+.extractor-container {
+  padding: 1rem;
+}
+
+.pdf-preview,
+.image-preview {
+  margin-top: 2rem;
+}
+
+.extracted-questions {
+  margin-top: 2rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.question-block {
+  margin-bottom: 1rem;
+}
+
+.navigation-buttons {
+  margin-top: 1rem;
+}

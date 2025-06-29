@@ -42,6 +42,7 @@ import TestSelection from "./FreeTyping/TestSelection";
 import StudentDetail from "./Forms/Students/StudentDetail";
 import RefundPolicy from "./Footermain/RefundPolicy";
 import ShippingAndDelivery from "./Footermain/ShippingAndDelivery";
+import MCQTest from "./MockTest";
 
 const App = () => {
   const [cookies] = useCookies(["SSIDCE", "session_id"]);
@@ -180,6 +181,9 @@ const App = () => {
                 path="/:testcode/:exam/:testname/typing-test-result"
                 element={<TypingPerformanceDashboard />}
               />
+
+              
+              <Route path="/mockup" element={<MCQTest />} />
             </Routes>
           </Router>
         </HelmetProvider>

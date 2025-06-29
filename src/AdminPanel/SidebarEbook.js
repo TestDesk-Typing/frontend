@@ -109,7 +109,32 @@ const SidebarEbook = ({ setComponent }) => {
           )}
         </div>
 
+        <div className="sidebar-ebook__group">
+          <h3
+            className={`sidebar-ebook__group-title ${openGroups["Mock"] ? "open" : ""
+              }`}
+            onClick={() => toggleGroup("Mock")}
+          >
+            Mock {openGroups["Mock"] ? <FaChevronUp /> : <FaChevronDown />}
+          </h3>
+          {openGroups["Mock"] && (
+            <div className="sidebar-ebook__subitems">
+              <button
+                className="sidebar-ebook__link"
+                onClick={() => setComponent("AddMock")}
+              >
+                Add Mock{" "}
+              </button>
 
+              <button
+                className="sidebar-ebook__link"
+                onClick={() => setComponent("UpdateMock")}
+              >
+                Edit Mock{" "}
+              </button>
+            </div>
+          )}
+        </div>
         <div className="sidebar-ebook__group">
           <h3
             className={`sidebar-ebook__group-title ${openGroups["Student"] ? "open" : ""
@@ -150,18 +175,6 @@ const SidebarEbook = ({ setComponent }) => {
             </div>
           )}
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
       </nav>
     </div>
   );

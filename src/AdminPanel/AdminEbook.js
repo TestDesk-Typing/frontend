@@ -22,10 +22,11 @@ import StudentTable from "../Forms/Students/StudentTable";
 import AdminContactUs from "../Forms/AdminContactUs";
 import TypingInfoFormUpdate from "../Forms/TypingInfoFormUpdate";
 import PlansTable from "../Forms/UpdatePlanForm";
-import TypingCategoryErrorTable from "../Forms/TypingCategoryErrorTable"; 
+import TypingCategoryErrorTable from "../Forms/TypingCategoryErrorTable";
 import StudentPurchase from "../Forms/Students/StudentPurchase";
 import NotificationTable from "../Forms/NotificationTable";
 import EmailSender from "../Forms/Mails/SendMail";
+import AddMock from "../Forms/Mock/AddMock";
 
 const AdminTyping = () => {
   const [activeComponent, setActiveComponent] = useState(
@@ -91,22 +92,24 @@ const AdminTyping = () => {
         return <ManageStatusTypingParagraph />;
       case "TypingInfo":
         return <TypingInfo />;
-        case "StudentTable":
-          return <StudentTable />;
-          case "StudentPurchase":
-            return <StudentPurchase />;
-          case "AdminContactUs":
-            return <AdminContactUs />;
-            case "TypingInfoFormUpdate":
-              return <TypingInfoFormUpdate />;
-              case "PlansTable":
-                return <PlansTable />;
-                case "TypingCategoryErrorTable":
-                  return <TypingCategoryErrorTable />;
-                  case "NotificationTable":
-                    return <NotificationTable />;
-                    case "EmailSender":
-                      return <EmailSender />;
+      case "StudentTable":
+        return <StudentTable />;
+      case "StudentPurchase":
+        return <StudentPurchase />;
+      case "AdminContactUs":
+        return <AdminContactUs />;
+      case "TypingInfoFormUpdate":
+        return <TypingInfoFormUpdate />;
+      case "PlansTable":
+        return <PlansTable />;
+      case "TypingCategoryErrorTable":
+        return <TypingCategoryErrorTable />;
+      case "NotificationTable":
+        return <NotificationTable />;
+      case "EmailSender":
+        return <EmailSender />
+      case "AddMock":
+        return <AddMock />;
       default:
         return <AddTypingParagraph />;
     }
@@ -120,9 +123,8 @@ const AdminTyping = () => {
         sidebarVisible={sidebarVisible}
       />
       <div
-        className={`admin-ebook__container ${
-          sidebarVisible ? "" : "sidebar-hidden"
-        }`}
+        className={`admin-ebook__container ${sidebarVisible ? "" : "sidebar-hidden"
+          }`}
       >
         {sidebarVisible && <SidebarEbook setComponent={setActiveComponent} />}
         <div className="admin-ebook__main-content">{renderComponent()}</div>

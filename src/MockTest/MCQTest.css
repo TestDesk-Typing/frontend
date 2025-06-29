@@ -1,0 +1,78 @@
+.mcq-test-container {
+  display: flex;
+}
+.sidebar {
+  width: 250px;
+  padding: 1rem;
+  background: #f0f0f0;
+}
+.palette {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.palette .btn {
+  width: 35px;
+  height: 35px;
+  border: none;
+  cursor: pointer;
+}
+.btn.answered {
+  background: green;
+  color: white;
+}
+.btn.not-answered {
+  background: red;
+  color: white;
+}
+.btn.marked {
+  background: orange;
+  color: white;
+}
+.btn.not-visited {
+  background: #ddd;
+}
+.btn.answered-marked {
+  background: purple;
+  color: white;
+}
+.btn.current {
+  border: 2px solid blue;
+}
+.legend {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+.legend-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border: 1px solid #000;
+}
+.legend .answered .legend-box { background: green; }
+.legend .not-answered .legend-box { background: red; }
+.legend .not-visited .legend-box { background: #ddd; }
+.legend .marked .legend-box { background: orange; }
+.legend .answered-marked .legend-box { background: purple; }
+.main-content {
+  flex: 1;
+  padding: 1rem;
+}
+.question-card ul {
+  list-style: none;
+  padding: 0;
+}
+.question-card .nav-buttons button {
+  margin-right: 10px;
+}
+.result ol {
+  padding-left: 20px;
+}
+.submit-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: blue;
+  color: white;
+  border: none;
+}
