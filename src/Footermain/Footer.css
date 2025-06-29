@@ -52,7 +52,7 @@
 
 .contact-info i {
     margin-right: 10px;
-    color: #4CAF50;
+    color: #6f42c1;
 }
 
 .newsletter {
@@ -70,7 +70,7 @@
 }
 
 .newsletter button {
-    background: #4CAF50;
+    background: #6f42c1;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -100,7 +100,7 @@
     bottom: 0;
     width: 40px;
     height: 2px;
-    background: #4CAF50;
+    background: #6f42c1;
 }
 
 .mainfooter-links ul {
@@ -121,7 +121,7 @@
 }
 
 .mainfooter-links ul li a:hover {
-    color: #4CAF50;
+    color: #6f42c1;
     padding-left: 5px;
 }
 
@@ -138,7 +138,7 @@
 }
 
 .social-icons a:hover {
-    color: #4CAF50;
+    color: #6f42c1;
     transform: translateY(-3px);
 }
 
@@ -198,7 +198,7 @@
 }
 
 .mainfooter-policies a:hover {
-    color: #4CAF50;
+    color: #6f42c1;
 }
 
 .copyright {
