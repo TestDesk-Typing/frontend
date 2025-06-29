@@ -286,3 +286,77 @@ cursor: pointer;
   .register-test-input-groups {
     width: 100%; 
   }
+
+  /* Responsive Design */
+@media (max-width: 1200px) {
+  .register-form {
+    width: 500px;
+  }
+}
+
+@media (max-width: 780px) {
+  .register-container {
+    flex-direction: column; /* Stack sections vertically */
+    height: auto; /* Allow flexible height */
+  }
+
+  .register-content {
+    flex-direction: column;
+  }
+
+  .register-left, .register-right {
+    flex: none;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .register-form {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .register-form-grid {
+    grid-template-columns: 1fr; /* Stack all inputs */
+  }
+
+  .register-logo {
+    width: 180px;
+  }
+
+  .register-btn {
+    width: 70%; /* Slightly smaller button */
+  }
+}
+
+@media (max-width: 576px) {
+  .register-form h2 {
+    font-size: 24px;
+  }
+
+  .register-form p {
+    font-size: 12px;
+  }
+
+  .play-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .register-logo {
+    width: 150px;
+  }
+
+  .register-btn {
+    width: 90%;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .terms span {
+    font-size: 10px;
+  }
+
+  .signin-link {
+    font-size: 12px;
+  }
+}
