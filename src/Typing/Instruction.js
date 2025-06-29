@@ -192,9 +192,9 @@ const Instruction = () => {
         </div>
       </div>
       
-      <div className="instruction-footer">
+      {/* <div className="instruction-footer">
         Version : 17.07.00
-      </div>
+      </div> */}
     </div>
   );
 };
