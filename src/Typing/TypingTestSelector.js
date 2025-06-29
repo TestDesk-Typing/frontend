@@ -297,9 +297,9 @@ const TypingTestSelector = () => {
           on the <strong>Results</strong> page.
         </p>
       </div>
-      <div className="version-footer">
+      {/* <div className="version-footer">
         Version: 17.07.00
-      </div>
+      </div> */}
     </div>
   );
 };

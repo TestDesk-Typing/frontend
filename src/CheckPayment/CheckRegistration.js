@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useAuth } from '../AuthContext/AuthContext';
 import './PaymentComponent.css';
-import pic3 from "../i/NewCandidateImage.jpg"; 
+import pic3 from "../i/NewCandidateImage.jpg";
 import BuyTyping from './Payment';
 import { useCookies } from 'react-cookie';
 
@@ -16,7 +16,7 @@ const PaymentComponent = () => {
   const [plans, setPlans] = useState([]);
   const [cookies] = useCookies(['session_id']);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const navigate = useNavigate();
   const { exam, examName, paperCode } = useParams();
 
@@ -26,7 +26,7 @@ const PaymentComponent = () => {
       checkProductAccess('999');
     }
     setOrderAmount(getPrice());
-  }, [isLoggedIn, userDetails]); 
+  }, [isLoggedIn, userDetails]);
 
   useEffect(() => {
     setOrderAmount(getPrice());
@@ -78,11 +78,11 @@ const PaymentComponent = () => {
         },
         body: JSON.stringify({ email: emailToCheck }),
       });
-  
+
       const data = await response.json();
       setIsRegistered(data.registered);
       setIsLoading(false);
-  
+
       if (!data.registered) {
         Swal.fire({
           icon: 'error',
@@ -147,46 +147,40 @@ const PaymentComponent = () => {
       <div className="payment-header">
         <div className="header-content"></div>
       </div>
-      
-      <div className="user-profile-section">
-        <div className="user-info-container">
-          <div className="system-info">
-            <div className="system-name">
-              <div className="info-label">System Name:</div>
-              <div className="info-value">{paperCode}</div>
-              <div className="disclaimer">
-                <a href="#" className="disclaimer-link">
-                  Kindly contact the invigilator if there are any discrepancies in the
-                  Name and Photograph displayed on the screen or if the photograph is not
-                  yours
-                </a>
-              </div>
+
+        <div className="user-typing-info-container">
+          <div className="info-section mt-0">
+            <div className="info-item">
+              <span className="info-label">System Name :</span><br />
+              <span className="info-value">Typing Test Name</span>
             </div>
-            
-            <div className="user-details">
-              <div className="info-label">Candidate Name:</div>
-              <div className="info-value">
-                <span title={userDetails?.fullName} className="user-name">{userDetails?.fullName || 'Your name'}</span>
-              </div>
-              <div className="subject-info">
-                <span className="info-label">Subject:</span>
-                <span className="info-value">Typing test</span>
-              </div>
-            </div>
-            
-            <div className="user-photo">
-              <img src={pic3} alt="Candidate" className="profile-image" />
+            <div className="disclaimer">
+              Kindly contact the invigilator if there are any discrepancies in the Name and Photograph displayed on the screen or if the photograph is not yours
             </div>
           </div>
+
+          <div className="info-section-one me-2">
+            <div className="info-item">
+              <span className="info-label">Candidate Name :</span><br />
+              <span className="info-value">{'Your name'}</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Subject :</span>
+              <span className="info-label-value">Typing Test</span>
+            </div>
+          </div>
+
+          <div className="user-image-container">
+            <img src={pic3} alt="Candidate" className="user-image" />
+          </div>
         </div>
-      </div>
 
       <div className="payment-content">
         <div className="payment-card">
           <div className="card-header">
             Select an option and pay to continue
           </div>
-          
+
           <div className="card-body">
             <div className="form-group">
               <label htmlFor="email" className="form-label">Email Address</label>
@@ -200,9 +194,9 @@ const PaymentComponent = () => {
                 disabled={isLoading}
               />
             </div>
-            
-            <button 
-              onClick={() => checkRegistration(email)} 
+
+            <button
+              onClick={() => checkRegistration(email)}
               className="check-btn"
               disabled={isLoading}
             >
@@ -212,13 +206,13 @@ const PaymentComponent = () => {
             {isRegistered === true && (
               <div className="plan-section">
                 <h3 className="section-title">Select Subscription Plan</h3>
-                
+
                 <div className="form-group">
                   <label htmlFor="plan" className="form-label">Available Plans</label>
-                  <select 
+                  <select
                     id="plan"
-                    value={plan} 
-                    onChange={handlePlanChange} 
+                    value={plan}
+                    onChange={handlePlanChange}
                     className="form-select"
                     disabled={isLoading}
                   >
@@ -229,7 +223,7 @@ const PaymentComponent = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <BuyTyping
                   userDetails={userDetails}
                   orderAmount={orderAmount}
@@ -246,10 +240,10 @@ const PaymentComponent = () => {
           </div>
         </div>
       </div>
-      
-      <div className="footer">
+
+      {/* <div className="footer">
         Version: 17.07.00
-      </div>
+      </div> */}
     </div>
   );
 };

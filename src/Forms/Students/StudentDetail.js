@@ -88,7 +88,7 @@ const StudentDetail = () => {
           }
         }
       };
-      
+
 
       fetchTypingData();
     }
@@ -126,15 +126,15 @@ const StudentDetail = () => {
       Swal.fire("Error", "Please select a plan before granting access", "error");
       return;
     }
-  
+
     // Find the selected plan details
     const planDetails = plans.find((plan) => plan._id === selectedPlan);
-  
+
     if (!planDetails) {
       Swal.fire("Error", "Invalid plan selected", "error");
       return;
     }
-  
+
     Swal.fire({
       title: "Are you sure?",
       text: `Do you want to grant typing access to this user for the plan: ${planDetails.name}?`,
@@ -161,7 +161,7 @@ const StudentDetail = () => {
               }),
             }
           );
-  
+
           if (response.ok) {
             const data = await response.json();
             setMessage(data.message || "Typing product added successfully");
@@ -176,7 +176,7 @@ const StudentDetail = () => {
       }
     });
   };
-  
+
 
   // Remove typing access
   const handleDeleteTyping = async () => {
@@ -338,41 +338,40 @@ const StudentDetail = () => {
           </button>
 
           <div className="box-typing">
-  <h3>Typing</h3>
-  <ul>
-    {typingData?.length > 0 ? (
-      typingData.map((item) => (
-        <li key={item._id} className="typing-item">
-          <div className="typing-info">
-            <p>
-              <strong>Product ID:</strong> {item.product_id}
-            </p>
-            <p>
-              <strong>Plan:</strong> {item.selectedPlan}
-            </p>
-            <p>
-              <strong>Subscription Start Date:</strong>{" "}
-              {new Date(item.subscriptionStartDate).toLocaleDateString()}
-            </p>
-            <p>
-              <strong>Subscription Expiry Date:</strong>{" "}
-              {new Date(item.subscriptionExpiryDate).toLocaleDateString()}
-            </p>
+            <h3>Typing</h3>
+            <ul>
+              {typingData?.length > 0 ? (
+                typingData.map((item) => (
+                  <li key={item._id} className="typing-item">
+                    <div className="typing-info">
+                      <p>
+                        <strong>Product ID:</strong> {item.product_id}
+                      </p>
+                      <p>
+                        <strong>Plan:</strong> {item.selectedPlan}
+                      </p>
+                      <p>
+                        <strong>Subscription Start Date:</strong>{" "}
+                        {new Date(item.subscriptionStartDate).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Subscription Expiry Date:</strong>{" "}
+                        {new Date(item.subscriptionExpiryDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="delete-icon-container">
+                      <FaTrash
+                        className="delete-icon-access"
+                        onClick={handleDeleteTyping}
+                      />
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p>No typing product purchased</p>
+              )}
+            </ul>
           </div>
-          <div className="delete-icon-container">
-            <FaTrash
-              className="delete-icon-access"
-              onClick={handleDeleteTyping}
-            />
-          </div>
-        </li>
-      ))
-    ) : (
-      <p>No typing product purchased</p>
-    )}
-  </ul>
-</div>;
-
           {error && <p className="error-message">{error}</p>}
           {message && <p className="success-message">{message}</p>}
         </>

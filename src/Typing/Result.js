@@ -31,7 +31,7 @@ const TypingPerformance = () => {
     const [Incorrectedword, setIncorrectedword] = useState(0);
     const [cookies, setCookie, removeCookie] = useCookies(['session_id', 'SSDSD']);
     const { isLoggedIn, userDetails, logout } = useAuth();
-    
+
     let emailId = userDetails.email_id;
 
     if (cookies.userData) {
@@ -225,12 +225,21 @@ const TypingPerformance = () => {
                 </div>
 
                 <div className="info-typing-error">
-                    <p>
-                        <strong>** Notes:-&gt; In your Typed Paragraph:</strong><br />
-                        <strong>Mistakes like</strong> <span style={{ color: 'purple' }}>"with"</span> <strong>typed as</strong> <span style={{ color: 'green' }}>"wih"</span> <strong>and missed words are highlighted in</strong> <span style={{ color: 'purple' }}>purple</span>.<br />
-                        <strong>Omitted words or lines also appear in</strong> <span style={{ color: 'purple' }}>purple</span>.<br />
-                        <strong>Extra or incorrect entries, such as additional words or substitutions, are shown in</strong> <span style={{ color: 'green' }}>green</span>.
-                    </p>
+                    <strong style={{ color: 'black' }}>
+                        ** Notes:-&gt; In your Typed Paragraph:
+                    </strong>
+                    <strong style={{ color: 'black' }}>
+                        Mistakes like
+                    </strong>
+                    <strong style={{ color: 'purple' }}> "with" </strong>
+                    <strong style={{ color: 'black' }}> typed as </strong>
+                    <strong style={{ color: 'green' }}> "wih" </strong>
+                    <strong style={{ color: 'black' }}> and missed words are highlighted in </strong>
+                    <strong style={{ color: 'purple' }}>purple</strong>.
+                    <strong style={{ color: 'black' }}> Omitted words or lines also appear in </strong>
+                    <strong style={{ color: 'purple' }}>purple</strong>.
+                    <strong style={{ color: 'black' }}> Extra or incorrect entries, such as additional words or substitutions, are shown in </strong>
+                    <strong style={{ color: 'green' }}>green</strong>.
                 </div>
 
                 <div className="butndash">
