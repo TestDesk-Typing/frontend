@@ -35,9 +35,17 @@
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Notification content overlay */
@@ -101,21 +109,22 @@
 @media (max-width: 768px) {
   .dashboard-header {
     padding: 0.5rem;
+    z-index: 5;
   }
-  
+
   .notification-content {
     width: 95%;
     padding: 1rem;
   }
-  
+
   .typing-brand-logo {
     height: 35px;
   }
 }
 
 .navbar-menu {
-      display: flex !important;
-    flex-direction: row;
+  display: flex !important;
+  flex-direction: row;
 }
 
 /* Custom cursor for clickable items */

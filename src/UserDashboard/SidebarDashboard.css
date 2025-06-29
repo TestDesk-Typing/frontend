@@ -70,10 +70,18 @@
 
 /* Responsive adjustments */
 @media (max-width: 992px) {
-  
+
   .sidebar-item {
     padding: 0.8rem 1rem !important;
     font-size: 0.9rem;
+  }
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar-menu {
+    z-index: 6;
   }
 }
 

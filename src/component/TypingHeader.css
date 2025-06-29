@@ -1,13 +1,11 @@
-
-
 .typing-header-container {
-  background-color: #495057; 
+  background-color: #495057;
   padding: 4px;
   color: rgb(7, 7, 7);
-  position: fixed; 
-  top: 0; 
-  left: 0; 
-  width: 100%; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 4;
 }
 
@@ -20,7 +18,7 @@
   color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
- 
+
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
 }
@@ -32,9 +30,9 @@
 }
 
 .user-icon {
-  font-size: 24px; 
-  margin-right: 12px; 
-  color: #fff; 
+  font-size: 24px;
+  margin-right: 12px;
+  color: #fff;
 }
 
 
@@ -57,13 +55,14 @@
   margin-left: 38px;
 
 }
+
 .socalIcon {
   position: relative;
-    display: flex;
-    width: 5%;
-    justify-content: space-between;
-    margin-left: 20px;
-    margin-right: 10px;
+  display: flex;
+  width: 5%;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 10px;
 }
 
 .typing-nav-menu {
@@ -73,23 +72,24 @@
   align-items: center;
   /* justify-content: space-between; */
 }
+
 .typing-nav-item {
   cursor: pointer;
   font-size: 17px;
   font-weight: 500;
-  color: white; 
- 
+  color: white;
+
   position: relative;
   padding: 13px;
- 
-  transition: background-color 0.3s ease, transform 0.2s ease; 
-  
+
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
 }
 
 .typing-nav-item:hover {
-  background-color: purple; 
-  transform: scale(1.05); 
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
+  background-color: purple;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -99,7 +99,7 @@
 
   left: 0;
   width: 133%;
-  
+
   border-radius: 8px;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   padding: 0;
@@ -115,28 +115,36 @@
 .typing-dropdown-menu.show {
   max-height: 300px;
   overflow: auto;
-  transform: translateX(0%) translateY(5px) scale(1); 
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #6c757d #f8f9fa; /* For Firefox */
+  transform: translateX(0%) translateY(5px) scale(1);
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: #6c757d #f8f9fa;
+  /* For Firefox */
 }
 
 /* Webkit-based browsers (Chrome, Edge, Safari) */
 .typing-dropdown-menu.show::-webkit-scrollbar {
-  width: 6px; /* Thin scrollbar */
+  width: 6px;
+  /* Thin scrollbar */
 }
 
 .typing-dropdown-menu.show::-webkit-scrollbar-track {
-  background: #f8f9fa; /* Light background for track */
-  border-radius: 10px; /* Rounded track */
+  background: #f8f9fa;
+  /* Light background for track */
+  border-radius: 10px;
+  /* Rounded track */
 }
 
 .typing-dropdown-menu.show::-webkit-scrollbar-thumb {
-  background: #6c757d; /* Darker thumb for contrast */
-  border-radius: 10px; /* Rounded thumb */
+  background: #6c757d;
+  /* Darker thumb for contrast */
+  border-radius: 10px;
+  /* Rounded thumb */
 }
 
 .typing-dropdown-menu.show::-webkit-scrollbar-thumb:hover {
-  background: #495057; /* Slightly darker on hover */
+  background: #495057;
+  /* Slightly darker on hover */
 }
 
 
@@ -163,7 +171,7 @@
 
 .typing-help-item {
 
-  color: white; 
+  color: white;
 
 }
 
@@ -171,8 +179,8 @@
 
 .typing-buy-now-item {
 
-  color: white; 
- 
+  color: white;
+
 }
 
 
@@ -233,24 +241,32 @@
 
 /* Animation applied only when there is a notification or message */
 .typing-help-item-notification.animated {
-  animation: rotateIcon 1s infinite ease-in-out; /* Apply rotation animation */
+  animation: rotateIcon 1s infinite ease-in-out;
+  /* Apply rotation animation */
 }
+
 .notification-icon {
   font-size: 28px;
 
   cursor: pointer;
   color: white;
-  
+
 }
+
 @keyframes rotateIcon {
   0% {
-    transform: rotate(-15deg); /* Start with a slight tilt to the left */
+    transform: rotate(-15deg);
+    /* Start with a slight tilt to the left */
   }
+
   50% {
-    transform: rotate(15deg); /* Rotate to the right */
+    transform: rotate(15deg);
+    /* Rotate to the right */
   }
+
   100% {
-    transform: rotate(-15deg); /* Return to the left tilt */
+    transform: rotate(-15deg);
+    /* Return to the left tilt */
   }
 }
 
@@ -286,6 +302,7 @@
 .notification-content-overlay.fade-in {
   opacity: 1;
 }
+
 .notification-content {
   position: relative;
   width: 80%;
@@ -297,29 +314,38 @@
   text-align: center;
   animation: slide-down 0.5s ease;
   height: 23rem;
-  overflow: auto; /* Changed to auto to allow scroll when content overflows */
-  
+  overflow: auto;
+  /* Changed to auto to allow scroll when content overflows */
+
   /* Custom scrollbar styles */
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #888 #f1f1f1; /* Thumb and track color for Firefox */
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: #888 #f1f1f1;
+  /* Thumb and track color for Firefox */
 }
 
 .notification-content::-webkit-scrollbar {
-  width: 8px; /* width of the scrollbar */
+  width: 8px;
+  /* width of the scrollbar */
 }
 
 .notification-content::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Track color */
-  border-radius: 10px; /* Rounded track corners */
+  background: #f1f1f1;
+  /* Track color */
+  border-radius: 10px;
+  /* Rounded track corners */
 }
 
 .notification-content::-webkit-scrollbar-thumb {
-  background: #888; /* Thumb color */
-  border-radius: 10px; /* Rounded thumb corners */
+  background: #888;
+  /* Thumb color */
+  border-radius: 10px;
+  /* Rounded thumb corners */
 }
 
 .notification-content::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Darken thumb color on hover */
+  background: #555;
+  /* Darken thumb color on hover */
 }
 
 
@@ -327,13 +353,14 @@
 
   padding: 2px;
 
-  
+
 }
 
 @keyframes slide-down {
   0% {
     transform: translateY(-30px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -363,7 +390,7 @@
 }
 
 .typing-search-popup button {
- 
+
   padding: 10px;
   background-color: #3b3b98;
   width: 100%;
@@ -379,38 +406,37 @@
 }
 
 .hamburger {
-  display: none; /* Initially hidden */
+  display: none;
+  /* Initially hidden */
   cursor: pointer;
 }
 
 
 .social-icon-header {
   width: 24px;
-  
- /* Add spacing between icon and text */
+
+  /* Add spacing between icon and text */
 }
 
-.typing-help-item-social{
+.typing-help-item-social {
   margin: 3px;
   background-color: white;
   border-radius: 76%;
   padding: 5px;
-  display: flex
-;
-cursor: pointer;
+  display: flex;
+  cursor: pointer;
   justify-content: center;
   align-items: center;
 
 }
 
 
-.typing-help-item-notification{
+.typing-help-item-notification {
   /* background-color: white; */
   border-radius: 76%;
-  
-  display: flex
-;
-cursor: pointer;
+
+  display: flex;
+  cursor: pointer;
   justify-content: center;
   align-items: center;
 
@@ -443,15 +469,20 @@ cursor: pointer;
     height: 44px;
     width: auto;
     margin-left: 0px;
-}
+  }
+
   .hamburger {
-    display: block; /* Show hamburger menu on smaller screens */
-    font-size: 24px; /* Adjust size */
-    color: white; /* Hamburger color */
+    display: block;
+    /* Show hamburger menu on smaller screens */
+    font-size: 24px;
+    /* Adjust size */
+    color: white;
+    /* Hamburger color */
   }
 
   .typing-nav-menu {
-    display: none; /* Hide the normal nav menu */
+    display: none;
+    /* Hide the normal nav menu */
   }
 
   .mobile-menu {
@@ -465,40 +496,44 @@ cursor: pointer;
     display: flex;
     flex-direction: column;
     transform: translateX(-100%);
-    animation: slideOut 0.3s forwards; /* Start with slide-out animation */
+    animation: slideOut 0.3s forwards;
+    /* Start with slide-out animation */
     z-index: 7;
   }
 
-  
+
   /* Show sidebar when active */
   .mobile-menu.show {
-    animation: slideIn 0.3s forwards; /* Apply slide-in animation */
+    animation: slideIn 0.3s forwards;
+    /* Apply slide-in animation */
   }
-  
+
   /* Slide-in animation */
   @keyframes slideIn {
     from {
       transform: translateX(-100%);
     }
+
     to {
       transform: translateX(0);
     }
   }
-  
+
   /* Slide-out animation */
   @keyframes slideOut {
     from {
       transform: translateX(0);
     }
+
     to {
       transform: translateX(-100%);
     }
   }
-  
-  
 
 
-  
+
+
+
   /* Sidebar Menu Links */
   .mobile-menu a {
     color: white;
@@ -508,7 +543,7 @@ cursor: pointer;
     transition: color 0.2s ease;
   }
 
-  
+
   /* Sidebar Menu Links */
   .mobile-menu a {
     color: white;
@@ -517,22 +552,24 @@ cursor: pointer;
     margin: 15px 0;
     transition: color 0.2s ease;
   }
+
   .mobile-menu a:hover {
-    color: #ffdd57; /* Highlight on hover */
+    color: #ffdd57;
+    /* Highlight on hover */
   }
 }
+
 @media (max-width: 1200px) {
   .typing-nav-menu {
     position: relative;
     width: 76%;
 
-    display: flex
-;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     /* margin-right: 34rem; */
-  
-}
+
+  }
 }
 
 
@@ -541,18 +578,18 @@ cursor: pointer;
     position: relative;
 
 
-    display: flex
-;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     /* margin-right: 34rem; */
-   
 
-}
-.typing-nav-item {
-  cursor: pointer;
-  font-size: 14px;
-}
+
+  }
+
+  .typing-nav-item {
+    cursor: pointer;
+    font-size: 14px;
+  }
 
 }
 
@@ -565,14 +602,13 @@ cursor: pointer;
     position: relative;
     width: 80%;
 
-    display: flex
-;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     /* margin-right: 34rem; */
-   
 
-}
+
+  }
 
 }
 
@@ -581,7 +617,8 @@ cursor: pointer;
 
 @media (max-width: 992px) {
   .hamburger {
-    display: block; /* Show hamburger menu for small devices */
+    display: block;
+    /* Show hamburger menu for small devices */
     font-size: 24px;
     color: white;
 
@@ -590,7 +627,8 @@ cursor: pointer;
 
 
   .typing-nav-menu {
-    display: none; /* Hide navigation menu */
+    display: none;
+    /* Hide navigation menu */
   }
 
   .mobile-menu {
@@ -625,7 +663,8 @@ cursor: pointer;
 
 @media (max-width: 950px) {
   .hamburger {
-    display: block; /* Show hamburger menu for small devices */
+    display: block;
+    /* Show hamburger menu for small devices */
     font-size: 24px;
     color: white;
 
@@ -636,7 +675,8 @@ cursor: pointer;
   }
 
   .typing-nav-menu {
-    display: none; /* Hide navigation menu */
+    display: none;
+    /* Hide navigation menu */
   }
 
   .mobile-menu {
@@ -662,22 +702,27 @@ cursor: pointer;
 
 @media (max-width: 576px) {
   .typing-brand-logo {
-    height: 36px; /* Further reduce logo size */
+    height: 36px;
+    /* Further reduce logo size */
   }
 
   .typing-header-container {
     flex-wrap: wrap;
-    padding: 10px; /* Adjust header padding */
+    padding: 10px;
+    /* Adjust header padding */
   }
 
   .typing-auth-buttons {
-    margin: 0 auto; /* Center align buttons */
-    gap: 0.25rem; /* Reduce spacing between buttons */
+    margin: 0 auto;
+    /* Center align buttons */
+    gap: 0.25rem;
+    /* Reduce spacing between buttons */
   }
 
   .typing-login-btn,
   .typing-signup-btn {
-    font-size: 12px; /* Reduce button font size */
+    font-size: 12px;
+    /* Reduce button font size */
     padding: 11px 12px;
   }
 
@@ -688,42 +733,54 @@ cursor: pointer;
 }
 
 @media (max-width: 480px) {
+  .socalIcon, .typing-brand-logo {
+    display: none;
+  }
+
   .typing-nav-menu {
-    display: none; /* Ensure nav menu stays hidden */
+    display: none;
+    /* Ensure nav menu stays hidden */
   }
 
   .typing-login-btn,
   .typing-signup-btn {
-   
+
     text-align: center;
   }
 
   .mobile-menu {
-    font-size: 14px; /* Adjust font size for links */
-    padding: 15px; /* Reduce padding */
+    font-size: 14px;
+    /* Adjust font size for links */
+    padding: 15px;
+    /* Reduce padding */
   }
 
   .mobile-menu a {
-    font-size: 14px; /* Reduce font size for smaller links */
-    margin: 10px 0; /* Adjust spacing between links */
+    font-size: 14px;
+    /* Reduce font size for smaller links */
+    margin: 10px 0;
+    /* Adjust spacing between links */
   }
 }
 
 @media (max-width: 360px) {
   .typing-header-container {
-    flex-direction: column; /* Stack elements vertically */
+    flex-direction: column;
+    /* Stack elements vertically */
   }
 
   .typing-auth-buttons {
-   
+
     gap: 0.5rem;
   }
 
   .typing-brand-logo {
-    margin: 0 auto; /* Center logo */
+    margin: 0 auto;
+    /* Center logo */
   }
 
   .mobile-menu {
-    font-size: 12px; /* Further reduce font size */
+    font-size: 12px;
+    /* Further reduce font size */
   }
 }

@@ -156,11 +156,42 @@ const UserOverallChart = () => {
                       ]
                     }}
                     options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
                       scales: {
                         y: {
                           min: 0,
                           max: 130,
-                          ticks: { stepSize: 10 }
+                          ticks: {
+                            stepSize: 10,
+                            font: {
+                              size: 10 // <-- Y-axis label size
+                            }
+                          }
+                        },
+                        x: {
+                          ticks: {
+                            font: {
+                              size: 10 // <-- X-axis label size
+                            }
+                          }
+                        }
+                      },
+                      plugins: {
+                        legend: {
+                          labels: {
+                            font: {
+                              size: 10 // <-- Legend text size
+                            }
+                          }
+                        },
+                        tooltip: {
+                          bodyFont: {
+                            size: 10 // <-- Tooltip font size
+                          },
+                          titleFont: {
+                            size: 12 // <-- Tooltip title size
+                          }
                         }
                       }
                     }}
@@ -178,11 +209,42 @@ const UserOverallChart = () => {
                       ]
                     }}
                     options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
                       scales: {
                         y: {
                           min: 0,
                           max: 130,
-                          ticks: { stepSize: 10 }
+                          ticks: {
+                            stepSize: 10,
+                            font: {
+                              size: 10 // <-- Y-axis label size
+                            }
+                          }
+                        },
+                        x: {
+                          ticks: {
+                            font: {
+                              size: 10 // <-- X-axis label size
+                            }
+                          }
+                        }
+                      },
+                      plugins: {
+                        legend: {
+                          labels: {
+                            font: {
+                              size: 10 // <-- Legend text size
+                            }
+                          }
+                        },
+                        tooltip: {
+                          bodyFont: {
+                            size: 10 // <-- Tooltip font size
+                          },
+                          titleFont: {
+                            size: 12 // <-- Tooltip title size
+                          }
                         }
                       }
                     }}
