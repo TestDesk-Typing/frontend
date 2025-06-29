@@ -149,10 +149,10 @@ const UserOverallChart = () => {
                     data={{
                       labels: averages.labels,
                       datasets: [
-                        { label: 'Net Speed (WPM)', borderColor: 'green', backgroundColor: 'rgba(0,255,0,0.1)', data: averages.speed, fill: true },
-                        { label: 'Gross Speed (WPM)', borderColor: 'orange', backgroundColor: 'rgba(255,165,0,0.1)', data: averages.grossSpeed, fill: true },
-                        { label: 'Accuracy (%)', borderColor: 'purple', backgroundColor: 'rgba(128,0,128,0.1)', data: averages.accuracy, fill: false },
-                        { label: 'Key Efficiency (%)', borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', data: averages.keyEfficiency, fill: false },
+                        { label: 'Net Speed (WPM)', borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.2)', data: averages.speed, fill: true },
+                        { label: 'Gross Speed (WPM)', borderColor: 'rgb(255, 159, 64)', backgroundColor: 'rgba(255, 159, 64, 0.2)', data: averages.grossSpeed, fill: true },
+                        { label: 'Accuracy (%)', borderColor: 'rgb(153, 102, 255)', backgroundColor: 'rgba(153, 102, 255, 0.2)', data: averages.accuracy, fill: false },
+                        { label: 'Key Efficiency (%)', borderColor: 'blue', backgroundColor: 'rgba(54, 162, 235, 0.2)', data: averages.keyEfficiency, fill: false },
                       ]
                     }}
                     options={{
@@ -171,10 +171,10 @@ const UserOverallChart = () => {
                     data={{
                       labels: yearly.labels,
                       datasets: [
-                        { label: 'Net Speed (WPM)', borderColor: 'green', backgroundColor: 'rgba(0,255,0,0.1)', data: yearly.speed, fill: true },
-                        { label: 'Gross Speed (WPM)', borderColor: 'orange', backgroundColor: 'rgba(255,165,0,0.1)', data: yearly.grossSpeed, fill: true },
-                        { label: 'Accuracy (%)', borderColor: 'purple', backgroundColor: 'rgba(128,0,128,0.1)', data: yearly.accuracy, fill: false },
-                        { label: 'Key Efficiency (%)', borderColor: 'blue', backgroundColor: 'rgba(0,0,255,0.1)', data: yearly.keyEfficiency, fill: false },
+                        { label: 'Net Speed (WPM)', borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.2)', data: yearly.speed, fill: true },
+                        { label: 'Gross Speed (WPM)', borderColor: 'rgb(255, 159, 64)', backgroundColor: 'rgba(255, 159, 64, 0.2)', data: yearly.grossSpeed, fill: true },
+                        { label: 'Accuracy (%)', borderColor: 'rgb(153, 102, 255)', backgroundColor: 'rgba(153, 102, 255, 0.2)', data: yearly.accuracy, fill: false },
+                        { label: 'Key Efficiency (%)', borderColor: 'rgb(54, 162, 235)', backgroundColor: 'rgba(54, 162, 235, 0.2)', data: yearly.keyEfficiency, fill: false },
                       ]
                     }}
                     options={{
