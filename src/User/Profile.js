@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { Container, Row, Col, Card, Form, Button, Image, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, Image as RBImage, Spinner, Alert } from 'react-bootstrap';
 import pic from '../i/profile.png';
 import Swal from 'sweetalert2';
+import { FaPencilAlt } from 'react-icons/fa';
 import './Profile.css';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [cookies] = useCookies(['session_id', 'SSIDCE']);
 
   useEffect(() => {
@@ -20,38 +23,83 @@ const Profile = () => {
       },
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
       })
       .then((data) => {
         setUser(data);
+        setPreviewImage(data.profile_pic ? `${process.env.REACT_APP_API_URL}${data.profile_pic}` : pic);
         setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching user data:', error);
         setLoading(false);
       });
-  }, []);
+  }, [cookies]);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const handleEditClick = () => setIsEditing(true);
+  const handleCancelClick = () => setIsEditing(false);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const img = new window.Image();
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = 300;
+        const scale = Math.min(maxSize / img.width, maxSize / img.height);
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+          const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+          setSelectedImage(compressedFile);
+          setPreviewImage(URL.createObjectURL(blob));
+        }, 'image/jpeg', 0.7);
+      };
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleCancelClick = () => {
-    setIsEditing(false);
+  const uploadProfileImage = async () => {
+    if (!selectedImage) return;
+
+    const formData = new FormData();
+    formData.append('profileImage', selectedImage);
+
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/upload-profile-picture/${user.email_id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${cookies.session_id}`,
+      },
+      body: formData,
+    });
+
+    const result = await response.json();
+    if (result.status === '1') {
+      setPreviewImage(`${process.env.REACT_APP_API_URL}${result.path}`);
+      return true;
+    } else {
+      Swal.fire('Error', 'Image upload failed.', 'error');
+      return false;
+    }
   };
 
   const handleUpdateClick = async () => {
     if (!user.full_name || !user.mobile_number) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Validation Error',
-        text: 'Please fill in all the required fields.',
-      });
+      Swal.fire('Error', 'Please fill in all required fields.', 'error');
       return;
     }
+
+    await uploadProfileImage();
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/update/${user.email_id}`, {
@@ -73,26 +121,14 @@ const Profile = () => {
 
       const data = await response.json();
       if (data.status === "1") {
-        Swal.fire({
-          icon: 'success',
-          title: 'Profile Updated',
-          text: 'Your profile has been updated successfully.',
-        });
+        Swal.fire('Success', 'Profile updated successfully.', 'success');
         setIsEditing(false);
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Update Error',
-          text: 'There was an error updating your profile. Please try again.',
-        });
+        Swal.fire('Error', 'Profile update failed.', 'error');
       }
     } catch (error) {
       console.error('Error updating user data:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Update Error',
-        text: 'There was an error updating your profile. Please try again.',
-      });
+      Swal.fire('Error', 'There was an error updating your profile.', 'error');
     }
   };
 
@@ -117,10 +153,31 @@ const Profile = () => {
   return (
     <Container className="profile-container mt-4">
       <Row className="g-4">
-        {/* Profile Image and Basic Info */}
         <Col lg={4}>
           <Card className="h-100 text-center p-4">
-            <Image src={pic} roundedCircle className="profile-image mb-3" />
+            <div className="position-relative d-inline-block mt-4 profile-image-wrapper">
+              <RBImage
+                src={previewImage || pic}
+                roundedCircle
+                className="profile-image mb-3 mt-4"
+                onClick={() => isEditing && document.getElementById('imageInput').click()}
+              />
+              {isEditing && (
+                <>
+                  <FaPencilAlt
+                    className="edit-icon"
+                    onClick={() => document.getElementById('imageInput').click()}
+                  />
+                  <input
+                    id="imageInput"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleImageChange}
+                  />
+                </>
+              )}
+            </div>
             <Card.Title className="mb-2">{user.full_name}</Card.Title>
             <Card.Text className="text-muted mb-4">Welcome to your profile page</Card.Text>
             {!isEditing && (
@@ -131,12 +188,10 @@ const Profile = () => {
           </Card>
         </Col>
 
-        {/* Profile Details */}
         <Col lg={8}>
           <Card className="h-100">
             <Card.Body>
               <Card.Title className="mb-4">Personal Information</Card.Title>
-              
               <Row className="mb-4">
                 <Col md={6}>
                   <Form.Group className="mb-3">
@@ -203,7 +258,6 @@ const Profile = () => {
               </Row>
 
               <Card.Title className="mb-4">Contact Information</Card.Title>
-              
               <Row className="mb-4">
                 <Col md={6}>
                   <Form.Group className="mb-3">
@@ -218,7 +272,6 @@ const Profile = () => {
                       <Form.Control
                         type="text"
                         value={user.mobile_number}
-                        onChange={(e) => setUser({ ...user, mobile_number: e.target.value })}
                         disabled
                       />
                     ) : (
@@ -270,12 +323,8 @@ const Profile = () => {
 
               {isEditing && (
                 <div className="d-flex justify-content-end gap-2 mt-4">
-                  <Button variant="secondary" onClick={handleCancelClick}>
-                    Cancel
-                  </Button>
-                  <Button variant="primary" onClick={handleUpdateClick}>
-                    Update Profile
-                  </Button>
+                  <Button variant="secondary" onClick={handleCancelClick}>Cancel</Button>
+                  <Button variant="primary" onClick={handleUpdateClick}>Update Profile</Button>
                 </div>
               )}
             </Card.Body>
