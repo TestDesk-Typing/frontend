@@ -733,7 +733,7 @@
 }
 
 @media (max-width: 480px) {
-  .socalIcon, .typing-brand-logo {
+  .socalIcon {
     display: none;
   }
 
