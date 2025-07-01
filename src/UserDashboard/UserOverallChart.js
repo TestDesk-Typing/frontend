@@ -151,13 +151,24 @@ const UserOverallChart = () => {
                       datasets: [
                         { label: 'Net Speed (WPM)', borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.2)', data: averages.speed, fill: true },
                         { label: 'Gross Speed (WPM)', borderColor: 'rgb(255, 159, 64)', backgroundColor: 'rgba(255, 159, 64, 0.2)', data: averages.grossSpeed, fill: true },
-                        { label: 'Accuracy (%)', borderColor: 'rgb(153, 102, 255)', backgroundColor: 'rgba(153, 102, 255, 0.2)', data: averages.accuracy, fill: false },
-                        { label: 'Key Efficiency (%)', borderColor: 'blue', backgroundColor: 'rgba(54, 162, 235, 0.2)', data: averages.keyEfficiency, fill: false },
+                        { label: 'Accuracy (%)', borderColor: 'rgb(153, 102, 255)', backgroundColor: 'rgba(153, 102, 255, 0.2)', data: averages.accuracy, fill: true },
+                        { label: 'Key Efficiency (%)', borderColor: 'blue', backgroundColor: 'rgba(54, 162, 235, 0.2)', data: averages.keyEfficiency, fill: true },
                       ]
                     }}
                     options={{
                       responsive: true,
                       maintainAspectRatio: false,
+                      interaction: {
+                        mode: 'index',
+                        intersect: false,
+                      },
+                      elements: {
+                        point: {
+                          radius: 3, // visible point size
+                          hoverRadius: 7, // makes the hover area larger
+                          hitRadius: 10,  // expands clickable/hoverable area
+                        }
+                      },
                       scales: {
                         y: {
                           min: 0,
@@ -165,14 +176,14 @@ const UserOverallChart = () => {
                           ticks: {
                             stepSize: 10,
                             font: {
-                              size: 10 // <-- Y-axis label size
+                              size: 10
                             }
                           }
                         },
                         x: {
                           ticks: {
                             font: {
-                              size: 10 // <-- X-axis label size
+                              size: 10
                             }
                           }
                         }
@@ -181,16 +192,16 @@ const UserOverallChart = () => {
                         legend: {
                           labels: {
                             font: {
-                              size: 10 // <-- Legend text size
+                              size: 10
                             }
                           }
                         },
                         tooltip: {
                           bodyFont: {
-                            size: 10 // <-- Tooltip font size
+                            size: 10
                           },
                           titleFont: {
-                            size: 12 // <-- Tooltip title size
+                            size: 12
                           }
                         }
                       }
@@ -204,13 +215,24 @@ const UserOverallChart = () => {
                       datasets: [
                         { label: 'Net Speed (WPM)', borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.2)', data: yearly.speed, fill: true },
                         { label: 'Gross Speed (WPM)', borderColor: 'rgb(255, 159, 64)', backgroundColor: 'rgba(255, 159, 64, 0.2)', data: yearly.grossSpeed, fill: true },
-                        { label: 'Accuracy (%)', borderColor: 'rgb(153, 102, 255)', backgroundColor: 'rgba(153, 102, 255, 0.2)', data: yearly.accuracy, fill: false },
-                        { label: 'Key Efficiency (%)', borderColor: 'rgb(54, 162, 235)', backgroundColor: 'rgba(54, 162, 235, 0.2)', data: yearly.keyEfficiency, fill: false },
+                        { label: 'Accuracy (%)', borderColor: 'rgb(153, 102, 255)', backgroundColor: 'rgba(153, 102, 255, 0.2)', data: yearly.accuracy, fill: true },
+                        { label: 'Key Efficiency (%)', borderColor: 'rgb(54, 162, 235)', backgroundColor: 'rgba(54, 162, 235, 0.2)', data: yearly.keyEfficiency, fill: true },
                       ]
                     }}
                     options={{
                       responsive: true,
                       maintainAspectRatio: false,
+                      interaction: {
+                        mode: 'index',
+                        intersect: false,
+                      },
+                      elements: {
+                        point: {
+                          radius: 3, // visible point size
+                          hoverRadius: 7, // makes the hover area larger
+                          hitRadius: 10,  // expands clickable/hoverable area
+                        }
+                      },
                       scales: {
                         y: {
                           min: 0,
@@ -218,14 +240,14 @@ const UserOverallChart = () => {
                           ticks: {
                             stepSize: 10,
                             font: {
-                              size: 10 // <-- Y-axis label size
+                              size: 10
                             }
                           }
                         },
                         x: {
                           ticks: {
                             font: {
-                              size: 10 // <-- X-axis label size
+                              size: 10
                             }
                           }
                         }
@@ -234,16 +256,16 @@ const UserOverallChart = () => {
                         legend: {
                           labels: {
                             font: {
-                              size: 10 // <-- Legend text size
+                              size: 10
                             }
                           }
                         },
                         tooltip: {
                           bodyFont: {
-                            size: 10 // <-- Tooltip font size
+                            size: 10
                           },
                           titleFont: {
-                            size: 12 // <-- Tooltip title size
+                            size: 12
                           }
                         }
                       }
