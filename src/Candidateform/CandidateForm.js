@@ -133,6 +133,9 @@ const CandidateForm = () => {
       });
 
       if (response.ok) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        }
         Swal.fire({
           title: 'Success',
           text: 'Feedback submitted successfully!',
@@ -143,6 +146,9 @@ const CandidateForm = () => {
           }
         });
       } else {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        }
         Swal.fire({
           title: 'Failed',
           text: 'Failed to submit feedback. Please try again.',
@@ -151,13 +157,13 @@ const CandidateForm = () => {
         });
       }
     } catch (error) {
-      
-        Swal.fire({
-          title: 'Failed',
-          text: "Error submitting feedback: ", error,
-          icon: 'error',
-          confirmButtonText: 'Retry'
-        });
+
+      Swal.fire({
+        title: 'Failed',
+        text: "Error submitting feedback: ", error,
+        icon: 'error',
+        confirmButtonText: 'Retry'
+      });
     }
   };
 
