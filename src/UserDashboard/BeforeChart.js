@@ -32,7 +32,7 @@ const BeforeChart = () => {
       const data = await response.json();
       setSpeedData(data);
 
-      const totalSpeed = data.reduce((sum, entry) => sum + entry.speed, 0);
+      const totalSpeed = data.reduce((sum, entry) => sum + (entry?.speed ?? 0), 0);
       const averageSpeed = data.length > 0 ? Math.round(totalSpeed / data.length) : 0;
       setOverallSpeed(averageSpeed);
     } catch (error) {
