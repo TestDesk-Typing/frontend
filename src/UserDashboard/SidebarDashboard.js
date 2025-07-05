@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaTachometerAlt, FaUser, FaHome, FaCog, FaSignOutAlt, FaFileInvoice } from 'react-icons/fa';
-import { TbReport } from "react-icons/tb";
+import { TbReport, TbDeviceGamepad2 } from "react-icons/tb";
 import { Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Nav, ListGroup } from 'react-bootstrap';
@@ -89,6 +89,15 @@ const SidebarDashboard = ({ onMenuClick }) => {
             onClick={() => handleMenuClick('Settings')}
           >
             <FaCog className="icon me-2" /> Settings
+          </ListGroup.Item>
+
+          {/* Typing Game */}
+          <ListGroup.Item 
+            action 
+            className={`sidebar-item ${activeMenu === 'TypingGame' ? 'active' : ''}`}
+            onClick={() => handleMenuClick('TypingGame')}
+          >
+            <TbDeviceGamepad2 className="icon me-2" /> Type In Game
           </ListGroup.Item>
 
           {/* Invoice */}

@@ -6,6 +6,7 @@ import UserOverallChart from './UserOverallChart';
 import Profile from '../User/Profile';
 import Settings from '../User/Settings';
 import UserResults from '../User/UserResults';
+import TypingGame from '../Typing/TypingGame';
 import Invoice from '../User/Invoice';
 import './DashboardContainer.css';
 import DashboardHeader from './DashboardHeader';
@@ -131,6 +132,8 @@ const DashboardContainer = () => {
         return <Invoice />;
       case 'UserResults':
         return <UserResults />;
+      case 'TypingGame':
+        return <TypingGame />;
       default:
         return <UserOverallChart />;
     }
