@@ -182,7 +182,6 @@ const Typing = () => {
           <img src={pic3} alt="Candidate" className="user-image" />
         </div>
       </div>
-
       <div className="message-for-login text-center mb-4">
         <p className="mb-0">
           If you are not logged in, <a href="/register" className="text-purple fw-bold">Signup</a>.
@@ -241,7 +240,21 @@ const Typing = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-100 py-2 login-button-primary mt-4">Sign In</button>
+            <button type="submit" className="btn btn-primary w-100 py-2 login-button-primary mt-4" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span
+                    className="spinner-border me-2"
+                    role="status"
+                    aria-hidden="true"
+                    style={{ width: '1rem', height: '1rem', borderWidth: '0.15em' }}
+                  ></span>
+                  Signing In...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </button>
           </form>
 
           {showKeyboard && (
