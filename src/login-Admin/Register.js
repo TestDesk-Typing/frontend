@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
 const RegisterAdminTyping = () => {
   const [full_name, setFullName] = useState('');
   const [email_id, setEmailId] = useState('');
   const [password, setPassword] = useState('');
   const [mobile_number, setMobileNumber] = useState('');
+  const [role, setRole] = useState('admin'); // Default role
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -19,7 +20,7 @@ const RegisterAdminTyping = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ full_name, password, email_id, mobile_number }),
+        body: JSON.stringify({ full_name, password, email_id, mobile_number, role }),
       });
 
       if (response.ok) {
@@ -29,7 +30,7 @@ const RegisterAdminTyping = () => {
           title: 'Registration Successful',
           text: message,
         });
-        navigate('/operator-login'); // Redirect to login page
+        navigate('/operator-login');
       } else {
         const { error } = await response.json();
         Swal.fire({
@@ -110,6 +111,21 @@ const RegisterAdminTyping = () => {
           onChange={(e) => setMobileNumber(e.target.value)}
           required
         />
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="role-select-label">Select Role</InputLabel>
+          <Select
+            labelId="role-select-label"
+            value={role}
+            label="Select Role"
+            onChange={(e) => setRole(e.target.value)}
+            required
+          >
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="typer">Typer</MenuItem>
+            <MenuItem value="caller">Caller</MenuItem>
+          </Select>
+        </FormControl>
 
         <Button
           fullWidth
