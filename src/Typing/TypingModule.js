@@ -201,54 +201,26 @@ const TypingModule = () => {
       let originalIndex = 0;
       let userIndex = 0;
 
-      correctWordCount = 0;
-      mistakeCount = 0;
-      omissionCount = 0;
-
       while (userIndex < userWords.length && originalIndex < originalWords.length) {
         if (userWords[userIndex] === originalWords[originalIndex]) {
           comparisonHTML.push(`<span class="correctword">${userWords[userIndex]}</span>`);
           correctWordCount++;
-          userIndex++;
-          originalIndex++;
-        } else if (originalIndex + 1 < originalWords.length &&
-          userWords[userIndex] === originalWords[originalIndex + 1]) {
-          comparisonHTML.push(`<span class="missingword">${originalWords[originalIndex]}</span>`);
-          omissionCount++;
-          originalIndex++;
-        } else if (userIndex + 2 < userWords.length &&
-          originalIndex + 2 < originalWords.length &&
-          userWords[userIndex] === originalWords[originalIndex] &&
-          userWords[userIndex + 1] === originalWords[originalIndex + 1] &&
-          userWords[userIndex + 2] === originalWords[originalIndex + 2]) {
-
-          for (let i = 0; i < originalIndex; i++) {
-            comparisonHTML.push(`<span class="missingword">${originalWords[i]}</span>`);
-            omissionCount++;
-          }
-
-          comparisonHTML.push(
-            `<span class="correctword">${userWords[userIndex]}</span>`,
-            `<span class="correctword">${userWords[userIndex + 1]}</span>`,
-            `<span class="correctword">${userWords[userIndex + 2]}</span>`
-          );
-
-          correctWordCount += 3;
-          userIndex += 3;
-          originalIndex += 3;
         } else {
           comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
           mistakeCount++;
-          userIndex++;
         }
-      }
-
-      while (originalIndex < originalWords.length) {
-        comparisonHTML.push(`<span class="missingword">${originalWords[originalIndex]}</span>`);
-        omissionCount++;
+        userIndex++;
         originalIndex++;
       }
 
+      // Handle remaining original words as missing
+      while (originalIndex < originalWords.length) {
+        comparisonHTML.push(`<span class="missingword">${originalWords[originalIndex]}</span>`);
+        mistakeCount++;
+        originalIndex++;
+      }
+
+      // Handle extra typed words
       while (userIndex < userWords.length) {
         comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
         mistakeCount++;
@@ -260,9 +232,8 @@ const TypingModule = () => {
       const totalWords = originalWords.length;
 
       totalDepressions = originalWords.join(" ").length;
-      const typedDepressions = userWords.join(" ").length;
 
-      accuracy = ((correctWordCount - mistakeCount) / totalWords * 100).toFixed(2);
+      accuracy = ((correctWordCount / totalWords) * 100).toFixed(2);
       wrongPercentage = (100 - accuracy).toFixed(2);
 
       if (rmTm !== undefined) {
@@ -271,8 +242,8 @@ const TypingModule = () => {
         const totalTestSeconds = (+minute) * 60;
         const timeTaken = totalTestSeconds - totalSecondsUsed;
 
-        grossSpeed = Math.round((totalTypedWords) / (timeTaken / 60));
-        netSpeed = Math.round(((correctWordCount - mistakeCount) / (timeTaken / 60)));
+        grossSpeed = Math.round(totalTypedWords / (timeTaken / 60));
+        netSpeed = Math.round((correctWordCount / (timeTaken / 60)));
 
         if (mistakeCount > 0) {
           marks = Math.max(25, 50 - (mistakeCount * 2.27));
