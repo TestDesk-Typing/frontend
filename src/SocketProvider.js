@@ -52,7 +52,6 @@ export const SocketProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("cookies => ", cookies)
     if (isLoggedIn && !socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL, {
         transports: ["websocket", "polling"],
