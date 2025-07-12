@@ -13,21 +13,26 @@ const UserOnline = () => {
     fetchConnectedUsers();
   }, [fetchConnectedUsers]);
 
+  // ✅ Filter unique users by `id`
+  const uniqueUsers = Array.from(
+    new Map(connectedUsers.map(user => [user.id, user])).values()
+  );
+
   return (
     <Card className="mt-3 shadow-sm">
       <Card.Header>
         <h5 className="mb-0">
-          🟢 Online Users <Badge bg="success">{userCount}</Badge>
+          🟢 Online Users <Badge bg="success">{uniqueUsers.length}</Badge>
         </h5>
       </Card.Header>
       <ListGroup variant="flush">
-        {connectedUsers.length > 0 ? (
-          connectedUsers.map((user, index) => (
-            <ListGroup.Item key={index}>
+        {uniqueUsers.length > 0 ? (
+          uniqueUsers.map((user, index) => (
+            <ListGroup.Item key={user.id || index}>
               <div className="d-flex align-items-center">
                 {user.profile_pic && (
                   <Image
-                    src={user.profile_pic}
+                    src={`${process.env.REACT_APP_API_URL}${user.profile_pic}`}
                     alt="User"
                     roundedCircle
                     width={40}

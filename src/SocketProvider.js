@@ -52,6 +52,7 @@ export const SocketProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    console.log("cookies => ", cookies)
     if (isLoggedIn && !socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL, {
         transports: ["websocket", "polling"],
@@ -65,7 +66,7 @@ export const SocketProvider = ({ children }) => {
 
       // ✅ Immediately register the user on socket connection
       if (cookies.session_id) {
-        socketRef.current.emit("registerUser", { userId: cookies.SSDSD.id });
+        socketRef.current.emit("registerUser", { userId: cookies?.SSDSD?.id || 0 });
       }
 
       // ✅ Get list of connected users
