@@ -8,13 +8,14 @@ import React, {
 } from "react";
 import io from "socket.io-client";
 import { useAuth } from "./AuthContext/AuthContext";
+import { useCookies } from "react-cookie";
 
 const SocketContext = createContext(null);
-
 const BATCH_SIZE = 12;
 
 export const SocketProvider = ({ children }) => {
   const { isLoggedIn, userDetails } = useAuth();
+  const [cookies] = useCookies(["session_id"]);
 
   const socketRef = useRef(null);
   const loadingRef = useRef(false);
@@ -26,7 +27,6 @@ export const SocketProvider = ({ children }) => {
   const [connectedUsers, setConnectedUsers] = useState([]);
   const [userCount, setUserCount] = useState(0);
 
-  // ✅ Fetch connected users manually
   const fetchConnectedUsers = () => {
     if (socketRef.current) {
       socketRef.current.emit("getConnectedUsers");
@@ -37,7 +37,6 @@ export const SocketProvider = ({ children }) => {
     }
   };
 
-  // ✅ Listen for live user count updates
   useEffect(() => {
     const socket = socketRef.current;
     if (!socket) return;
@@ -52,7 +51,6 @@ export const SocketProvider = ({ children }) => {
     };
   }, []);
 
-  // ✅ Initialize socket connection once on login
   useEffect(() => {
     if (isLoggedIn && !socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL, {
@@ -60,24 +58,21 @@ export const SocketProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      // ✅ Register user on connect
-      if (userDetails?.id) {
-        socketRef.current.emit("registerUser", {
-          userId: userDetails.id,
-        });
+      socketRef.current.on("receiveMessage", (message) => {
+        setMessages((prev) => [...prev, message]);
+        setSkip((prev) => prev + 1);
+      });
+
+      // ✅ Immediately register the user on socket connection
+      if (cookies.session_id) {
+        socketRef.current.emit("registerUser", { userId: cookies.SSDSD.id });
       }
 
-      // ✅ Fetch user list on connect
+      // ✅ Get list of connected users
       socketRef.current.emit("getConnectedUsers");
       socketRef.current.once("connectedUsers", ({ count, users }) => {
         setUserCount(count);
         setConnectedUsers(users || []);
-      });
-
-      // ✅ Listen for new messages
-      socketRef.current.on("receiveMessage", (message) => {
-        setMessages((prev) => [...prev, message]);
-        setSkip((prev) => prev + 1);
       });
     }
 
@@ -87,9 +82,8 @@ export const SocketProvider = ({ children }) => {
         socketRef.current = null;
       }
     };
-  }, [isLoggedIn, userDetails]);
+  }, [isLoggedIn, cookies.session_id]);
 
-  // ✅ Load messages with pagination
   const loadMessages = useCallback(() => {
     if (!socketRef.current || loadingRef.current || !hasMore) return;
 
@@ -113,14 +107,12 @@ export const SocketProvider = ({ children }) => {
     });
   }, [skip, hasMore]);
 
-  // ✅ Load messages on login
   useEffect(() => {
     if (isLoggedIn) {
       loadMessages();
     }
   }, [isLoggedIn, loadMessages]);
 
-  // ✅ Send message
   const sendMessage = (messageData) => {
     if (socketRef.current) {
       socketRef.current.emit("sendMessage", messageData);
@@ -135,8 +127,6 @@ export const SocketProvider = ({ children }) => {
         sendMessage,
         loadMessages,
         hasMore,
-
-        // ✅ Connected user info
         fetchConnectedUsers,
         connectedUsers,
         userCount,
