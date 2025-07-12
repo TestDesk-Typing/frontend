@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import io from "socket.io-client";
 import { useAuth } from "./AuthContext/AuthContext";
 
@@ -7,7 +14,7 @@ const SocketContext = createContext(null);
 const BATCH_SIZE = 12;
 
 export const SocketProvider = ({ children }) => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, userDetails } = useAuth();
 
   const socketRef = useRef(null);
   const loadingRef = useRef(false);
@@ -16,7 +23,36 @@ export const SocketProvider = ({ children }) => {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  // Initialize socket connection once on login
+  const [connectedUsers, setConnectedUsers] = useState([]);
+  const [userCount, setUserCount] = useState(0);
+
+  // ✅ Fetch connected users manually
+  const fetchConnectedUsers = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("getConnectedUsers");
+      socketRef.current.once("connectedUsers", ({ count, users }) => {
+        setUserCount(count);
+        setConnectedUsers(users || []);
+      });
+    }
+  };
+
+  // ✅ Listen for live user count updates
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (!socket) return;
+
+    const handleCountUpdate = (count) => setUserCount(count);
+    socket.on("updateUserCount", handleCountUpdate);
+
+    return () => {
+      if (socket) {
+        socket.off("updateUserCount", handleCountUpdate);
+      }
+    };
+  }, []);
+
+  // ✅ Initialize socket connection once on login
   useEffect(() => {
     if (isLoggedIn && !socketRef.current) {
       socketRef.current = io(process.env.REACT_APP_API_URL, {
@@ -24,22 +60,36 @@ export const SocketProvider = ({ children }) => {
         withCredentials: true,
       });
 
+      // ✅ Register user on connect
+      if (userDetails?.id) {
+        socketRef.current.emit("registerUser", {
+          userId: userDetails.id,
+        });
+      }
+
+      // ✅ Fetch user list on connect
+      socketRef.current.emit("getConnectedUsers");
+      socketRef.current.once("connectedUsers", ({ count, users }) => {
+        setUserCount(count);
+        setConnectedUsers(users || []);
+      });
+
+      // ✅ Listen for new messages
       socketRef.current.on("receiveMessage", (message) => {
         setMessages((prev) => [...prev, message]);
         setSkip((prev) => prev + 1);
       });
     }
 
-    // Cleanup on logout or unmount
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
       }
     };
-  }, [isLoggedIn]);
+  }, [isLoggedIn, userDetails]);
 
-  // Function to load messages with pagination (skip, limit)
+  // ✅ Load messages with pagination
   const loadMessages = useCallback(() => {
     if (!socketRef.current || loadingRef.current || !hasMore) return;
 
@@ -50,8 +100,9 @@ export const SocketProvider = ({ children }) => {
       if (Array.isArray(newMessages) && newMessages.length > 0) {
         const orderedMessages = [...newMessages].reverse();
 
-        // For initial load, replace messages, for later loads prepend older messages
-        setMessages((prev) => (skip === 0 ? orderedMessages : [...orderedMessages, ...prev]));
+        setMessages((prev) =>
+          skip === 0 ? orderedMessages : [...orderedMessages, ...prev]
+        );
 
         setSkip((prev) => prev + newMessages.length);
         setHasMore(newMessages.length === BATCH_SIZE);
@@ -62,14 +113,14 @@ export const SocketProvider = ({ children }) => {
     });
   }, [skip, hasMore]);
 
-  // Initial load on login (or could be triggered from ChatModal when it opens)
+  // ✅ Load messages on login
   useEffect(() => {
     if (isLoggedIn) {
       loadMessages();
     }
   }, [isLoggedIn, loadMessages]);
 
-  // Function to send message
+  // ✅ Send message
   const sendMessage = (messageData) => {
     if (socketRef.current) {
       socketRef.current.emit("sendMessage", messageData);
@@ -84,6 +135,11 @@ export const SocketProvider = ({ children }) => {
         sendMessage,
         loadMessages,
         hasMore,
+
+        // ✅ Connected user info
+        fetchConnectedUsers,
+        connectedUsers,
+        userCount,
       }}
     >
       {children}
