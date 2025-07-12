@@ -31,6 +31,7 @@ const TypingGame = () => {
   const [showModal, setShowModal] = useState(false);
   const [cookies] = useCookies(['session_id']);
   const [userAccess, setUserAccess] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const wordId = useRef(0);
   const explosionId = useRef(0);
@@ -63,6 +64,7 @@ const TypingGame = () => {
 
   useEffect(() => {
     const checkAccess = async () => {
+      setLoading(true)
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/api/code-234`, {
           method: 'POST',
@@ -79,14 +81,18 @@ const TypingGame = () => {
 
         if (data.access === "access") {
           setUserAccess(true);
+          setLoading(false)
         } else {
           setUserAccess(false)
+          setLoading(false)
           Swal.fire({
             title: 'Access Denied',
             text: 'You need to purchase a plan to access this feature.',
             icon: 'error',
-            confirmButtonText: 'Buy Plan',
-            showCloseButton: true
+            confirmButtonText: 'Buy Now',
+            showCloseButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false
           }).then((result) => {
             if (result.isConfirmed) {
               window.location.href = '/ssc-typing-test/buy-now';
@@ -252,78 +258,83 @@ const TypingGame = () => {
 
   return (
     <div className="game-container" style={{ height: '100vh' }}>
-      {userAccess ? (
-        <>
-          {!gameStarted ? (
-            <div className="start-screen">
-              <h1>Typing Master</h1>
-              <Button variant="success" size="lg" onClick={startGame}>
-                Start Game
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="game-header">
-                <div>Score: {score}</div>
-                <div>Combo: {combo}x (Max: {maxCombo}x)</div>
-                <div>Accuracy: {calculateAccuracy()}%</div>
-                <div>Level: {difficulty}</div>
-              </div>
-
-              {fallingWords.map(word => (
-                <div
-                  key={word.id}
-                  className={`falling-word ${word.y > 70 ? 'danger' : ''}`}
-                  style={{ left: `${word.x}%`, top: `${word.y}vh` }}
-                >
-                  {word.text}
-                </div>
-              ))}
-
-              {explosions.map(exp => (
-                <Explosion key={exp.id} position={exp.position} />
-              ))}
-
-              {feedback.show && (
-                <div className="success-feedback">{feedback.text}</div>
-              )}
-
-              <input
-                id="typing-input"
-                ref={inputRef}
-                type="text"
-                className="typing-input"
-                value={inputValue}
-                onChange={handleInputChange}
-                disabled={gameOver}
-                autoFocus
-              />
-            </>
-          )}
-
-          <Modal show={showModal} centered>
-            <Modal.Header>
-              <Modal.Title>Game Over</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div>Final Score: {score}</div>
-              <div>Typing Speed: {calculateTypingSpeed()} WPM</div>
-              <div>Max Combo: {maxCombo}x</div>
+      {loading ? (
+        <div className="loader"></div>
+      ) : userAccess ? (
+        !gameStarted ? (
+          <div className="start-screen">
+            <h1>Typing Master</h1>
+            <Button variant="success" size="lg" onClick={startGame}>
+              Start Game
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="game-header">
+              <div>Score: {score}</div>
+              <div>Combo: {combo}x (Max: {maxCombo}x)</div>
               <div>Accuracy: {calculateAccuracy()}%</div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="primary" onClick={startGame}>
-                Play Again
-              </Button>
-              <Button variant="secondary" onClick={closeModal}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </>
-      ) : <div className="start-screen">
-        <h1>Purchase a Plan To Play Game</h1>
-      </div>}
+              <div>Level: {difficulty}</div>
+            </div>
+
+            {fallingWords.map((word) => (
+              <div
+                key={word.id}
+                className={`falling-word ${word.y > 70 ? 'danger' : ''}`}
+                style={{ left: `${word.x}%`, top: `${word.y}vh` }}
+              >
+                {word.text}
+              </div>
+            ))}
+
+            {explosions.map((exp) => (
+              <Explosion key={exp.id} position={exp.position} />
+            ))}
+
+            {feedback.show && (
+              <div className="success-feedback">{feedback.text}</div>
+            )}
+
+            <input
+              id="typing-input"
+              ref={inputRef}
+              type="text"
+              className="typing-input"
+              value={inputValue}
+              onChange={handleInputChange}
+              disabled={gameOver}
+              autoFocus
+            />
+
+            <Modal show={showModal} centered>
+              <Modal.Header>
+                <Modal.Title>Game Over</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div>Final Score: {score}</div>
+                <div>Typing Speed: {calculateTypingSpeed()} WPM</div>
+                <div>Max Combo: {maxCombo}x</div>
+                <div>Accuracy: {calculateAccuracy()}%</div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="primary" onClick={startGame}>
+                  Play Again
+                </Button>
+                <Button variant="secondary" onClick={closeModal}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </>
+        )
+      ) : (!loading &&
+        <div className="start-screen">
+          <h1>Purchase a Plan To Play Game</h1>
+          <Button variant="success" size="lg" href='/ssc-typing-test/buy-now'>
+            Buy Now
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
