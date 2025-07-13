@@ -53,36 +53,52 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (isLoggedIn && !socketRef.current) {
-      socketRef.current = io(process.env.REACT_APP_API_URL, {
+      const socket = io(process.env.REACT_APP_API_URL, {
         transports: ["websocket", "polling"],
         withCredentials: true,
       });
+      socketRef.current = socket;
 
-      socketRef.current.on("receiveMessage", (message) => {
+      const handleNewMessage = (message) => {
         setMessages((prev) => [...prev, message]);
         setSkip((prev) => prev + 1);
-      });
+      };
 
-      // ✅ Immediately register the user on socket connection
-      if (cookies.session_id) {
-        socketRef.current.emit("registerUser", { userId: cookies?.SSDSD?.id || 0 });
-      }
-
-      // ✅ Get list of connected users
-      socketRef.current.emit("getConnectedUsers");
-      socketRef.current.once("connectedUsers", ({ count, users }) => {
+      const handleConnectedUsers = ({ count, users }) => {
         setUserCount(count);
         setConnectedUsers(users || []);
-      });
-    }
+      };
 
+      const handleCountUpdate = (count) => setUserCount(count);
+
+      socket.on("receiveMessage", handleNewMessage);
+      socket.on("connectedUsers", handleConnectedUsers);
+      socket.on("updateUserCount", handleCountUpdate);
+
+      // Register user
+      if (cookies.session_id) {
+        socket.emit("registerUser", {
+          userId: userDetails?.id || cookies?.userId || 0
+        });
+      }
+
+      return () => {
+        socket.off("receiveMessage", handleNewMessage);
+        socket.off("connectedUsers", handleConnectedUsers);
+        socket.off("updateUserCount", handleCountUpdate);
+        // Don't disconnect here - we want to maintain the connection
+      };
+    }
+  }, [isLoggedIn, cookies.session_id, userDetails]);
+
+  useEffect(() => {
     return () => {
-      if (socketRef.current) {
+      if (socketRef.current && !isLoggedIn) {
         socketRef.current.disconnect();
         socketRef.current = null;
       }
     };
-  }, [isLoggedIn, cookies.session_id]);
+  }, [isLoggedIn]);
 
   const loadMessages = useCallback(() => {
     if (!socketRef.current || loadingRef.current || !hasMore) return;
