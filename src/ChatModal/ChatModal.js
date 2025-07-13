@@ -291,7 +291,7 @@ const ChatModal = ({ open, onClose }) => {
                   <Typography variant="body2" color="text.secondary">Gender:</Typography>
                   <Typography variant="body1">{selectedUser.gender}</Typography>
                 </Grid>
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">DOB:</Typography>
                   <Typography variant="body1">{new Date(selectedUser.dob).toLocaleDateString()}</Typography>
                 </Grid>
@@ -302,7 +302,7 @@ const ChatModal = ({ open, onClose }) => {
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Category:</Typography>
                   <Typography variant="body1">{selectedUser.category}</Typography>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Membership:</Typography>
                   <Typography variant="body1">{selectedUser.membership}</Typography>
