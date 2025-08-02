@@ -138,8 +138,8 @@ const ChatModal = ({ open, onClose }) => {
         <List>
           {messages.map((msg) => {
             const isOwnMessage =
-              msg.userId === userDetails.id ||
-              (typeof msg.userId === "object" && msg.userId._id === userDetails.id);
+              msg?.userId === userDetails?.id ||
+              (typeof msg?.userId === "object" && msg?.userId?._id === userDetails?.id);
 
             return (
               <ListItem
