@@ -127,6 +127,8 @@ const Typing = () => {
 
       const data = await response.json();
       if (response.ok && data.userData) {
+        setEmailId(data?.userData?.email_id);
+        setPassword(data?.userData?.password);
         userSubmit(null, data.userData)
       } else {
         setIsLoading(false);
