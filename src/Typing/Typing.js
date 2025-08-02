@@ -127,9 +127,44 @@ const Typing = () => {
 
       const data = await response.json();
       if (response.ok && data.userData) {
-        setEmailId(data?.userData?.email_id);
-        setPassword(data?.userData?.password);
-        userSubmit()
+        try {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({ email_id: data?.userData?.email_id, password: data?.userData?.password })
+          });
+
+          const data = await response.json();
+          setIsLoading(false);
+
+          if (response.ok && data.userDetails) {
+            Swal.fire({
+              title: 'Login Successful',
+              text: data.message,
+              icon: 'success',
+              confirmButtonText: 'Continue',
+              willClose: () => {
+                setCookie("SSIDCE", emailId, { path: "/", maxAge: 24 * 60 * 60 });
+                setCookie("session_id", data.session_id, { path: "/", maxAge: 24 * 60 * 60 });
+                setCookie("SSDSD", JSON.stringify(data.userDetails), { path: "/", maxAge: 24 * 60 * 60 });
+                window.location.href = '/';
+              }
+            });
+          } else {
+            Swal.fire({ title: 'Login Failed', text: data.message || 'User not found', icon: 'error', confirmButtonText: 'Retry' });
+          }
+        } catch (error) {
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Login Failed',
+            text: 'Network Error',
+            icon: 'error',
+            confirmButtonText: 'Retry'
+          });
+        }
       } else {
         setIsLoading(false);
         Swal.fire({
