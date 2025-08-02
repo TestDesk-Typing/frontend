@@ -71,8 +71,8 @@ const Typing = () => {
     }
   };
 
-  const userSubmit = async (event) => {
-    event.preventDefault();
+  const userSubmit = async (event = null) => {
+    event && event.preventDefault();
     setIsLoading(true);
 
     try {
@@ -107,7 +107,7 @@ const Typing = () => {
     } catch (error) {
       setIsLoading(false);
       Swal.fire({
-        title: 'Login Failed 2',
+        title: 'Login Failed',
         text: 'Network Error',
         icon: 'error',
         confirmButtonText: 'Retry'
@@ -116,41 +116,33 @@ const Typing = () => {
   };
 
   const handleGoogleLogin = async (credentialResponse) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/google-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ token: credentialResponse.credential })
+        body: JSON.stringify({ credential: credentialResponse.credential })
       });
 
       const data = await response.json();
-      // debugger
-      if (response.ok && data.user) {
-        setCookie("SSIDCE", data.user.email_id, { path: "/", maxAge: 86400 });
-        setCookie("session_id", data.session_id, { path: "/", maxAge: 86400 });
-        setCookie("SSDSD", JSON.stringify(data.user), { path: "/", maxAge: 86400 });
-
-        Swal.fire({
-          title: 'Login Successful',
-          text: data.message,
-          icon: 'success',
-          confirmButtonText: 'Continue',
-          willClose: () => {
-            window.location.href = '/';
-          }
-        });
+      if (response.ok && data.userData) {
+        setEmailId(data?.userData?.email_id);
+        setPassword(data?.userData?.password);
+        userSubmit()
       } else {
+        setIsLoading(false);
         Swal.fire({
-          title: 'Login Failed 3',
+          title: 'Login Failed',
           text: data.message || 'Google user not found',
           icon: 'error',
           confirmButtonText: 'Retry'
         });
       }
     } catch (error) {
+      setIsLoading(false);
       Swal.fire({
-        title: 'Login Failed 4',
+        title: 'Login Failed',
         text: 'Google Login Failed',
         icon: 'error',
         confirmButtonText: 'Retry'
@@ -300,13 +292,11 @@ const Typing = () => {
           </form>
 
           <GoogleLogin
-            onSuccess={handleGoogleLogin}
+            onSuccess={(credentialResponse) => {
+              handleGoogleLogin(credentialResponse);
+            }}
             onError={() => {
-              Swal.fire({
-                title: 'Login Failed 5',
-                text: 'Google login was unsuccessful',
-                icon: 'error'
-              });
+              Swal.fire({ title: 'Login Failed', text: 'Google login failed', icon: 'error' });
             }}
             useOneTap
           />
