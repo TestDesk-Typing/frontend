@@ -99,21 +99,30 @@ const UserResults = () => {
     return new Date(year, month - 1, day);
   };
 
-  const applyDateFilter = () => {
-    const start = startDate ? new Date(startDate + 'T00:00:00') : null;
-    const end = endDate ? new Date(endDate + 'T23:59:59.999') : null;
+const applyDateFilter = () => {
+  const start = startDate
+    ? new Date(startDate.split("-")[0], parseInt(startDate.split("-")[1]) - 1, parseInt(startDate.split("-")[2]))
+    : null;
 
-    const filtered = userResults.filter((result) => {
-      const resultDate = parseCustomDate(result.date);
-      const afterStart = !start || resultDate >= start;
-      const beforeEnd = !end || resultDate <= end;
-      const statusMatch = statusFilter === 'All' || result.status === statusFilter;
-      return afterStart && beforeEnd && statusMatch;
-    });
+  const end = endDate
+    ? new Date(endDate.split("-")[0], parseInt(endDate.split("-")[1]) - 1, parseInt(endDate.split("-")[2]), 23, 59, 59, 999)
+    : null;
 
-    setFilteredResults(filtered);
-    setCurrentPage(1);
-  };
+  const filtered = userResults.filter((result) => {
+    const [day, month, year] = result.date.split("/").map(Number); // e.g. "2/8/2025"
+    const resultDate = new Date(year, month - 1, day);
+
+    const afterStart = !start || resultDate >= start;
+    const beforeEnd = !end || resultDate <= end;
+    const statusMatch = statusFilter === 'All' || result.status === statusFilter;
+
+    return afterStart && beforeEnd && statusMatch;
+  });
+
+  setFilteredResults(filtered);
+  setCurrentPage(1);
+};
+
 
   useEffect(() => {
     applyDateFilter();
@@ -151,8 +160,8 @@ const UserResults = () => {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 {Object.keys(examDropdownData[exam]).map((examName, subIndex) => (
-                  <Dropdown.Item 
-                    key={subIndex} 
+                  <Dropdown.Item
+                    key={subIndex}
                     onClick={() => handleExamNameSelect(examName, exam)}
                   >
                     {examName}
@@ -171,20 +180,20 @@ const UserResults = () => {
               <Col xs={12} md={3}>
                 <Form.Group>
                   <Form.Label>Start Date</Form.Label>
-                  <Form.Control 
-                    type="date" 
-                    value={startDate} 
-                    onChange={(e) => setStartDate(e.target.value)} 
+                  <Form.Control
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                   />
                 </Form.Group>
               </Col>
               <Col xs={12} md={3}>
                 <Form.Group>
                   <Form.Label>End Date</Form.Label>
-                  <Form.Control 
-                    type="date" 
-                    value={endDate} 
-                    onChange={(e) => setEndDate(e.target.value)} 
+                  <Form.Control
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
                   />
                 </Form.Group>
               </Col>
@@ -201,7 +210,7 @@ const UserResults = () => {
                   </Form.Select>
                 </Form.Group>
               </Col>
-              <Col xs={12} md={3} className="d-flex align-items-end gap-2">
+              <Col xs={12} md={3} className="d-flex align-items-end gap-2 mt-auto">
                 <Button variant="primary" onClick={applyDateFilter}>
                   Apply Filter
                 </Button>
@@ -233,8 +242,8 @@ const UserResults = () => {
           ) : (
             <>
               {paginatedResults.map((result, index) => (
-                <Card 
-                  key={index} 
+                <Card
+                  key={index}
                   className={`mb-3 ${result.status === 'Pass' ? 'border-start border-success border-3' : 'border-start border-danger border-3'}`}
                 >
                   <Card.Body>
@@ -248,8 +257,8 @@ const UserResults = () => {
                         </span>
                       </Col>
                       <Col xs={12} md={4} className="mt-3 mt-md-0 text-md-end">
-                        <Button 
-                          variant="primary" 
+                        <Button
+                          variant="primary"
                           onClick={() => handleViewResult(result.testname, result.paper_code)}
                         >
                           View Results
@@ -263,12 +272,12 @@ const UserResults = () => {
               {totalPages > 1 && (
                 <div className="d-flex justify-content-center mt-4">
                   <Pagination>
-                    <Pagination.Prev 
+                    <Pagination.Prev
                       onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
                     />
                     <Pagination.Item active>{currentPage}</Pagination.Item>
-                    <Pagination.Next 
+                    <Pagination.Next
                       onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
                     />
