@@ -190,51 +190,84 @@ const TypingModule = () => {
     let correctWordCount = 0, mistakeCount = 0, omissionCount = 0;
     let marks = 50;
 
-    // Calculate total typed words (common to both cases)
     const totalTypedWords = userInput.split(/\s+/).filter(Boolean).length;
 
     if (exam === "JCA") {
-      const originalWords = originalParagraph.split(/\s+/);
-      const userWords = userInput.split(/\s+/);
+      // const originalWords = originalParagraph.split(/\s+/);
+      // const userWords = userInput.split(/\s+/);
 
-      let comparisonHTML = [];
-      let originalIndex = 0;
-      let userIndex = 0;
+      // let comparisonHTML = [];
+      // let originalIndex = 0;
+      // let userIndex = 0;
 
-      while (userIndex < userWords.length && originalIndex < originalWords.length) {
-        if (userWords[userIndex] === originalWords[originalIndex]) {
-          comparisonHTML.push(`<span class="correctword">${userWords[userIndex]}</span>`);
-          correctWordCount++;
-        } else {
-          comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
-          mistakeCount++;
-        }
-        userIndex++;
-        originalIndex++;
-      }
+      // while (userIndex < userWords.length && originalIndex < originalWords.length) {
+      //   if (userWords[userIndex] === originalWords[originalIndex]) {
+      //     comparisonHTML.push(`<span class="correctword">${userWords[userIndex]}</span>`);
+      //     correctWordCount++;
+      //   } else {
+      //     comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
+      //     mistakeCount++;
+      //   }
+      //   userIndex++;
+      //   originalIndex++;
+      // }
 
-      // Handle remaining original words as missing
-      while (originalIndex < originalWords.length) {
-        comparisonHTML.push(`<span class="missingword">${originalWords[originalIndex]}</span>`);
-        mistakeCount++;
-        originalIndex++;
-      }
+      // while (originalIndex < originalWords.length) {
+      //   comparisonHTML.push(`<span class="missingword">${originalWords[originalIndex]}</span>`);
+      //   mistakeCount++;
+      //   originalIndex++;
+      // }
 
-      // Handle extra typed words
-      while (userIndex < userWords.length) {
-        comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
-        mistakeCount++;
-        userIndex++;
-      }
+      // while (userIndex < userWords.length) {
+      //   comparisonHTML.push(`<span class="wrongword">${userWords[userIndex]}</span>`);
+      //   mistakeCount++;
+      //   userIndex++;
+      // }
 
-      comparisonResult = comparisonHTML.join(" ");
+      // comparisonResult = comparisonHTML.join(" ");
 
-      const totalWords = originalWords.length;
+      // const totalWords = originalWords.length;
 
-      totalDepressions = originalWords.join(" ").length;
+      // totalDepressions = originalWords.join(" ").length;
 
-      accuracy = ((correctWordCount / totalWords) * 100).toFixed(2);
-      wrongPercentage = (100 - accuracy).toFixed(2);
+      // accuracy = ((correctWordCount / totalWords) * 100).toFixed(2);
+      // wrongPercentage = (100 - accuracy).toFixed(2);
+
+      // if (rmTm !== undefined) {
+      //   const timeParts = rmTm.split(":");
+      //   const totalSecondsUsed = +timeParts[0] * 3600 + +timeParts[1] * 60 + +timeParts[2];
+      //   const totalTestSeconds = (+minute) * 60;
+      //   const timeTaken = totalTestSeconds - totalSecondsUsed;
+
+      //   grossSpeed = Math.round(totalTypedWords / (timeTaken / 60));
+      //   netSpeed = Math.round((correctWordCount / (timeTaken / 60)));
+
+      //   if (mistakeCount > 0) {
+      //     marks = Math.max(25, 50 - (mistakeCount * 2.27));
+      //   }
+      // }
+
+      // ABOVE COMMENTED AREA IS FOR JCA ERROR AS PER AS SET PREVIOUSLY
+
+      
+      const diff = diffWords(originalParagraph, userInput);
+
+      comparisonResult = diff
+        .map((part) => {
+          const text = part.value;
+          if (part.added) {
+            return `<span class="wrongword">${text}</span>`;
+          } else if (part.removed) {
+            return `<span class="missingword">${text}</span>`;
+          } else {
+            return `<span class="correctword">${text}</span>`;
+          }
+        })
+        .join(" ");
+
+      correctChars = diff.reduce((acc, part) => (!part.added && !part.removed ? acc + part.value.length : acc), 0);
+      wrongChars = diff.reduce((acc, part) => (part.added ? acc + part.value.length : acc), 0);
+      totalDepressions = originalParagraph.length;
 
       if (rmTm !== undefined) {
         const timeParts = rmTm.split(":");
@@ -242,11 +275,12 @@ const TypingModule = () => {
         const totalTestSeconds = (+minute) * 60;
         const timeTaken = totalTestSeconds - totalSecondsUsed;
 
-        grossSpeed = Math.round(totalTypedWords / (timeTaken / 60));
-        netSpeed = Math.round((correctWordCount / (timeTaken / 60)));
-
-        if (mistakeCount > 0) {
-          marks = Math.max(25, 50 - (mistakeCount * 2.27));
+        grossSpeed = Math.round((message.length * 60) / (timeTaken * 5));
+        netSpeed = Math.round((correctChars * 60) / (timeTaken * 5));
+        accuracy = ((correctChars / totalDepressions) * 100).toFixed(2);
+        wrongPercentage = (100 - accuracy).toFixed(2);
+        if (wrongChars > 0) {
+          marks = Math.max(25, 50 - (wrongChars * 2.27));
         }
       }
     } else {
@@ -282,6 +316,27 @@ const TypingModule = () => {
       }
     }
 
+    // const typing_performance_result = {
+    //   email_id: cookies.SSIDCE,
+    //   paper_code: testcode,
+    //   student_paragraph: message,
+    //   paragraph: comparisonResult,
+    //   accuracy: accuracy,
+    //   wrong: wrongPercentage,
+    //   grossspeed: grossSpeed,
+    //   totaldepres: exam === "JCA" ? totalTypedWords : message.length,
+    //   accuratedep: exam === "JCA" ? correctWordCount : correctChars,
+    //   wrongdep: exam === "JCA" ? mistakeCount : wrongChars,
+    //   testname: testname,
+    //   speed: netSpeed,
+    //   time: rmTm,
+    //   actual_depression: exam === "JCA" ? totalTypedWords : message.length,
+    //   oldparagraph: oldparagraph,
+    //   marks: marks
+    // };
+
+    // ABOVE COMMENTED AREA IS FOR JCA ERROR AS PER AS SET PREVIOUSLY
+
     const typing_performance_result = {
       email_id: cookies.SSIDCE,
       paper_code: testcode,
@@ -290,13 +345,13 @@ const TypingModule = () => {
       accuracy: accuracy,
       wrong: wrongPercentage,
       grossspeed: grossSpeed,
-      totaldepres: exam === "JCA" ? totalTypedWords : message.length, // ✅ Corrected here
-      accuratedep: exam === "JCA" ? correctWordCount : correctChars,
-      wrongdep: exam === "JCA" ? mistakeCount : wrongChars,
+      totaldepres: message.length,
+      accuratedep: correctChars,
+      wrongdep: wrongChars,
       testname: testname,
       speed: netSpeed,
       time: rmTm,
-      actual_depression: exam === "JCA" ? totalTypedWords : message.length, // ✅ Corrected here
+      actual_depression: message.length,
       oldparagraph: oldparagraph,
       marks: marks
     };
