@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from "react";
+import gameplay from "../i/gameplay.gif";
+import "./SlidingNoticeBox.css";
 
 const SlidingNoticeBox = () => {
   const noticeBoxRef = useRef(null);
@@ -21,30 +23,16 @@ const SlidingNoticeBox = () => {
   }, []);
 
   return (
-    <div
-      ref={noticeBoxRef}
-      style={{
-        position: "fixed",
-        bottom: "20px",
-        right: "20px",
-        backgroundColor: "#ffecb3",
-        padding: "12px 20px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        cursor: "pointer",
-        zIndex: 1000,
-        display: "block", // Initially visible
-      }}
-    >
-      <a
-        href="/typing-game"
-        style={{
-          textDecoration: "none",
-          color: "#333",
-          fontWeight: "bold",
-        }}
-      >
-        🎮 To play the typing game, click here!
+    <div ref={noticeBoxRef} className="notice-box">
+      <a href="/user-dashboard" className="notice-box-link">
+        <img 
+          src={gameplay} 
+          alt="Typing Game Preview" 
+          className="notice-box-image"
+        />
+        <span className="notice-box-text">
+          🎮 Play the typing game!
+        </span>
       </a>
     </div>
   );
