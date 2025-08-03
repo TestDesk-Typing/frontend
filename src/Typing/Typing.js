@@ -87,7 +87,6 @@ const Typing = () => {
 
       const data = await response.json();
       setIsLoading(false);
-debugger;
       if (response.ok && data.userDetails) {
         Swal.fire({
           title: 'Login Successful',
@@ -124,7 +123,6 @@ debugger;
         credentials: 'include',
         body: JSON.stringify({ credential: credentialResponse.credential })
       });
-debugger;
       const data = await response.json();
       if (response.ok && data.userDetails) {
         setEmailId(data?.userDetails?.email_id);
