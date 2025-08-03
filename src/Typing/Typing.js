@@ -1,6 +1,8 @@
-// Updated Typing Component
+// Typing.jsx
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useCookies } from 'react-cookie';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './VirtualKeyboard.css';
@@ -34,26 +36,17 @@ const Typing = () => {
   }, []);
 
   const onChange = (input) => {
-    if (activeInput === 'emailId') {
-      setEmailId(input);
-    } else if (activeInput === 'password') {
-      setPassword(input);
-    }
+    if (activeInput === 'emailId') setEmailId(input);
+    else if (activeInput === 'password') setPassword(input);
   };
 
   const onKeyPress = (button) => {
     if (button === "{backspace}") {
-      if (activeInput === 'emailId') {
-        setEmailId(prev => prev.slice(0, -1));
-      } else if (activeInput === 'password') {
-        setPassword(prev => prev.slice(0, -1));
-      }
+      if (activeInput === 'emailId') setEmailId(prev => prev.slice(0, -1));
+      else if (activeInput === 'password') setPassword(prev => prev.slice(0, -1));
     } else if (button === "{clear}") {
-      if (activeInput === 'emailId') {
-        setEmailId('');
-      } else if (activeInput === 'password') {
-        setPassword('');
-      }
+      if (activeInput === 'emailId') setEmailId('');
+      else if (activeInput === 'password') setPassword('');
     }
   };
 
@@ -67,12 +60,7 @@ const Typing = () => {
     setActiveInput(inputType);
     setShowKeyboard(true);
 
-    let inputElement = null;
-    if (inputType === 'emailId') {
-      inputElement = emailInputRef.current;
-    } else if (inputType === 'password') {
-      inputElement = passwordInputRef.current;
-    }
+    const inputElement = inputType === 'emailId' ? emailInputRef.current : passwordInputRef.current;
 
     if (inputElement) {
       const rect = inputElement.getBoundingClientRect();
@@ -90,13 +78,15 @@ const Typing = () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
         method: 'POST',
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({ email_id: emailId, password })
       });
 
       const data = await response.json();
       setIsLoading(false);
-
       if (response.ok && data.userDetails) {
         Swal.fire({
           title: 'Login Successful',
@@ -115,9 +105,78 @@ const Typing = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      Swal.fire({ title: 'Login Failed', text: 'Network Error', icon: 'error', confirmButtonText: 'Retry' });
+      Swal.fire({
+        title: 'Login Failed',
+        text: 'Network Error',
+        icon: 'error',
+        confirmButtonText: 'Retry'
+      });
     }
   };
+
+  const handleGoogleLogin = (credentialResponse) => {
+    setIsLoading(true);
+
+    fetch(`${process.env.REACT_APP_API_URL}/api/google-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ credential: credentialResponse.credential })
+    })
+      .then(res => res.json().then(data => ({ ok: res.ok, data })))
+      .then(({ ok, data }) => {
+        if (ok && data.userDetails) {
+          return fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({
+              email_id: data.userDetails.email_id,
+              password: data.userDetails.password
+            })
+          })
+            .then(res => res.json().then(innerData => ({ ok: res.ok, data: innerData })));
+        } else {
+          throw new Error(data.message || 'Google user not found');
+        }
+      })
+      .then(({ ok, data }) => {
+        setIsLoading(false);
+        if (ok && data.userDetails) {
+          Swal.fire({
+            title: 'Login Successful',
+            text: data.message,
+            icon: 'success',
+            confirmButtonText: 'Continue',
+            willClose: () => {
+              setCookie("SSIDCE", data.userDetails.email_id, { path: "/", maxAge: 24 * 60 * 60 });
+              setCookie("session_id", data.session_id, { path: "/", maxAge: 24 * 60 * 60 });
+              setCookie("SSDSD", JSON.stringify(data.userDetails), { path: "/", maxAge: 24 * 60 * 60 });
+              window.location.href = '/';
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Login Failed',
+            text: data.message || 'User not found',
+            icon: 'error',
+            confirmButtonText: 'Retry'
+          });
+        }
+      })
+      .catch(error => {
+        setIsLoading(false);
+        Swal.fire({
+          title: 'Login Failed',
+          text: error.message || 'Network Error',
+          icon: 'error',
+          confirmButtonText: 'Retry'
+        });
+      });
+  };
+
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -125,8 +184,13 @@ const Typing = () => {
         try {
           const response = await fetch(`${process.env.REACT_APP_API_URL}/api/code-123`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json", "Accept": "application/json", "Authorization": `Bearer ${cookies.session_id}` }
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": `Bearer ${cookies.session_id}`
+            }
           });
+
           if (response.ok) {
             const { access } = await response.json();
             if (access === "access") {
@@ -145,7 +209,7 @@ const Typing = () => {
             }
           }
         } catch (error) {
-          console.error("Error fetching access:", error);
+          console.error("Access check error:", error);
         }
       }
     };
@@ -156,6 +220,7 @@ const Typing = () => {
   return (
     <div className="typing-test-selector-container">
       <div className="header-bar"></div>
+
       <div className="user-typing-info-container">
         <div className="info-section mt-0">
           <div className="info-item">
@@ -182,6 +247,7 @@ const Typing = () => {
           <img src={pic3} alt="Candidate" className="user-image" />
         </div>
       </div>
+
       <div className="message-for-login text-center mb-4">
         <p className="mb-0">
           If you are not logged in, <a href="/register" className="text-purple fw-bold">Signup</a>.
@@ -198,7 +264,6 @@ const Typing = () => {
               <span className="fontawesome-user"></span>
               <input
                 ref={emailInputRef}
-                id="in"
                 type="text"
                 name="email"
                 className="keyboardInput"
@@ -210,9 +275,9 @@ const Typing = () => {
               <div className='myimagekeyboard m-0'>
                 <img
                   src={pic2}
-                  alt="Display virtual keyboard interface"
+                  alt="keyboard"
                   className="keyboardInputInitiator"
-                  title="Select keyboard layout"
+                  title="Virtual keyboard"
                   onClick={() => toggleKeyboard('emailId')}
                 />
               </div>
@@ -232,9 +297,9 @@ const Typing = () => {
               <div className='myimagekeyboard m-0'>
                 <img
                   src={pic2}
-                  alt="Display virtual keyboard interface"
+                  alt="keyboard"
                   className="keyboardInputInitiator"
-                  title="Select keyboard layout"
+                  title="Virtual keyboard"
                   onClick={() => toggleKeyboard('password')}
                 />
               </div>
@@ -243,10 +308,7 @@ const Typing = () => {
             <button type="submit" className="btn btn-primary w-100 py-2 login-button-primary mt-4" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <span
-                    className="spinner-border me-2"
-                    role="status"
-                    aria-hidden="true"
+                  <span className="spinner-border me-2" role="status" aria-hidden="true"
                     style={{ width: '1rem', height: '1rem', borderWidth: '0.15em' }}
                   ></span>
                   Signing In...
@@ -256,6 +318,16 @@ const Typing = () => {
               )}
             </button>
           </form>
+
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              handleGoogleLogin(credentialResponse);
+            }}
+            onError={() => {
+              Swal.fire({ title: 'Login Failed', text: 'Google login failed', icon: 'error' });
+            }}
+            useOneTap
+          />
 
           {showKeyboard && (
             <div

@@ -48,6 +48,7 @@ const SidebarEbook = ({ setComponent }) => {
     { group: "Student", name: "Student Purchase Table", component: "StudentPurchase", roles: ["superAdmin"] },
     { group: "Student", name: "Notification", component: "NotificationTable", roles: ["superAdmin"] },
     { group: "Student", name: "Send Mail", component: "EmailSender", roles: ["superAdmin"] },
+    { group: "Student", name: "User Online", component: "UserOnline", roles: ["superAdmin"] },
   ];
 
   // 👉 Group items by group name

@@ -91,9 +91,17 @@ const ChatModal = ({ open, onClose }) => {
   };
 
   const getUserProfilePic = (msg) => {
-    if (msg.profile_pic) return `${process.env.REACT_APP_API_URL}${msg.profile_pic}`;
-    if (msg.userId && typeof msg.userId === "object" && msg.userId.profile_pic)
-      return `${process.env.REACT_APP_API_URL}${msg.userId.profile_pic}`;
+    const getProfilePicUrl = (profilePic) => {
+      if (!profilePic) return null;
+      return profilePic.includes('googleusercontent.com')
+        ? profilePic
+        : `${process.env.REACT_APP_API_URL}${profilePic}`;
+    };
+
+    if (msg.profile_pic) return getProfilePicUrl(msg.profile_pic);
+    if (msg.userId && typeof msg.userId === "object" && msg.userId.profile_pic) {
+      return getProfilePicUrl(msg.userId.profile_pic);
+    }
     return require("../i/profile.png");
   };
 
@@ -138,8 +146,8 @@ const ChatModal = ({ open, onClose }) => {
         <List>
           {messages.map((msg) => {
             const isOwnMessage =
-              msg.userId === userDetails.id ||
-              (typeof msg.userId === "object" && msg.userId._id === userDetails.id);
+              msg?.userId === userDetails?.id ||
+              (typeof msg?.userId === "object" && msg?.userId?._id === userDetails?.id);
 
             return (
               <ListItem
@@ -291,7 +299,7 @@ const ChatModal = ({ open, onClose }) => {
                   <Typography variant="body2" color="text.secondary">Gender:</Typography>
                   <Typography variant="body1">{selectedUser.gender}</Typography>
                 </Grid>
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">DOB:</Typography>
                   <Typography variant="body1">{new Date(selectedUser.dob).toLocaleDateString()}</Typography>
                 </Grid>
@@ -302,7 +310,7 @@ const ChatModal = ({ open, onClose }) => {
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Category:</Typography>
                   <Typography variant="body1">{selectedUser.category}</Typography>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6}>
                   <Typography variant="body2" color="text.secondary">Membership:</Typography>
                   <Typography variant="body1">{selectedUser.membership}</Typography>

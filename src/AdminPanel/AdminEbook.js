@@ -26,6 +26,7 @@ import TypingCategoryErrorTable from "../Forms/TypingCategoryErrorTable";
 import StudentPurchase from "../Forms/Students/StudentPurchase";
 import NotificationTable from "../Forms/NotificationTable";
 import EmailSender from "../Forms/Mails/SendMail";
+import UserOnline from "../Forms/UserOnline/UserOnline";
 
 const AdminTyping = () => {
   const [activeComponent, setActiveComponent] = useState(
@@ -107,6 +108,8 @@ const AdminTyping = () => {
         return <NotificationTable />;
       case "EmailSender":
         return <EmailSender />;
+      case "UserOnline":
+        return <UserOnline />;
       default:
         return <AddTypingParagraph />;
     }

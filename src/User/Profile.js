@@ -28,7 +28,13 @@ const Profile = () => {
       })
       .then((data) => {
         setUser(data);
-        setPreviewImage(data.profile_pic ? `${process.env.REACT_APP_API_URL}${data.profile_pic}` : pic);
+        setPreviewImage(
+          data.profile_pic
+            ? data.profile_pic.includes('googleusercontent.com')
+              ? data.profile_pic
+              : `${process.env.REACT_APP_API_URL}${data.profile_pic}`
+            : pic
+        );
         setLoading(false);
       })
       .catch((error) => {
@@ -116,6 +122,7 @@ const Profile = () => {
           gender: user.gender,
           membership: user.membership,
           exam_shortcut: user.exam_shortcut,
+          mobile_number: user.mobile_number,
         }),
       });
 
@@ -272,7 +279,7 @@ const Profile = () => {
                       <Form.Control
                         type="text"
                         value={user.mobile_number}
-                        disabled
+                        onChange={(e) => setUser({ ...user, mobile_number: e.target.value })}
                       />
                     ) : (
                       <p className="form-control-static">{user.mobile_number}</p>
