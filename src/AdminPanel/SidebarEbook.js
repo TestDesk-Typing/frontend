@@ -44,9 +44,11 @@ const SidebarEbook = ({ setComponent }) => {
     { group: "Typing", name: "Update typing info", component: "TypingInfoFormUpdate", roles: ["superAdmin"] },
     { group: "Typing", name: "Contact us", component: "AdminContactUs", roles: ["superAdmin"] },
     { group: "Typing", name: "Exam error percent", component: "TypingCategoryErrorTable", roles: ["superAdmin"] },
+
     { group: "Student", name: "Student Table", component: "StudentTable", roles: ["superAdmin"] },
     { group: "Student", name: "Student Purchase Table", component: "StudentPurchase", roles: ["superAdmin"] },
     { group: "Student", name: "Notification", component: "NotificationTable", roles: ["superAdmin"] },
+    { group: "Student", name: "Notice", component: "NoticeTable", roles: ["superAdmin"] },
     { group: "Student", name: "Send Mail", component: "EmailSender", roles: ["superAdmin"] },
     { group: "Student", name: "User Online", component: "UserOnline", roles: ["superAdmin"] },
   ];

@@ -1,37 +1,49 @@
-import React, { useEffect, useRef } from "react";
-import gameplay from "../i/gameplay.gif";
+import React, { useEffect, useRef, useState } from "react";
 import "./SlidingNoticeBox.css";
 
 const SlidingNoticeBox = () => {
   const noticeBoxRef = useRef(null);
+  const [notice, setNotice] = useState(null);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/getNoticeBox`);
+        const data = await response.json();
+        setNotice(data);
+      } catch (error) {
+        console.error("Failed to fetch notice box:", error);
+      }
+    };
+
+    fetchNotice();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
       if (noticeBoxRef.current) {
-        if (window.scrollY > 100) {
-          noticeBoxRef.current.style.display = "none";
-        } else {
-          noticeBoxRef.current.style.display = "block";
-        }
+        noticeBoxRef.current.style.display = window.scrollY > 100 ? "none" : "block";
       }
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (!notice || !notice.imageUrl) return null;
+
   return (
     <div ref={noticeBoxRef} className="notice-box">
-      <a href="/user-dashboard" className="notice-box-link">
-        <img 
-          src={gameplay} 
-          alt="Typing Game Preview" 
+      <a href={notice.linkUrl || "/"} className="notice-box-link">
+        <img
+          src={`${process.env.REACT_APP_API_URL}/${notice.imageUrl}`}
+          alt="Notice Preview"
           className="notice-box-image"
         />
         <span className="notice-box-text">
-          🎮 Play the typing game!
+          {notice.displayText || "Check this out!"}
         </span>
       </a>
     </div>
