@@ -71,8 +71,8 @@ const Typing = () => {
     }
   };
 
-  const userSubmit = async (event = null, userDetails = null) => {
-    event && event.preventDefault();
+  const userSubmit = async (event) => {
+    event.preventDefault();
     setIsLoading(true);
 
     try {
@@ -82,7 +82,7 @@ const Typing = () => {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({ email_id: userDetails ? userDetails?.email_id : emailId, password: userDetails ? userDetails?.password : password })
+        body: JSON.stringify({ email_id: emailId, password })
       });
 
       const data = await response.json();
@@ -114,39 +114,69 @@ const Typing = () => {
     }
   };
 
-  const handleGoogleLogin = async (credentialResponse) => {
+  const handleGoogleLogin = (credentialResponse) => {
     setIsLoading(true);
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/google-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ credential: credentialResponse.credential })
-      });
-      const data = await response.json();
-      if (response.ok && data.userDetails) {
-        setEmailId(data?.userDetails?.email_id);
-        setPassword(data?.userDetails?.password);
-        userSubmit(null, data.userDetails)
-      } else {
+
+    fetch(`${process.env.REACT_APP_API_URL}/api/google-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ credential: credentialResponse.credential })
+    })
+      .then(res => res.json().then(data => ({ ok: res.ok, data })))
+      .then(({ ok, data }) => {
+        if (ok && data.userDetails) {
+          return fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify({
+              email_id: data.userDetails.email_id,
+              password: data.userDetails.password
+            })
+          })
+            .then(res => res.json().then(innerData => ({ ok: res.ok, data: innerData })));
+        } else {
+          throw new Error(data.message || 'Google user not found');
+        }
+      })
+      .then(({ ok, data }) => {
+        setIsLoading(false);
+        if (ok && data.userDetails) {
+          Swal.fire({
+            title: 'Login Successful',
+            text: data.message,
+            icon: 'success',
+            confirmButtonText: 'Continue',
+            willClose: () => {
+              setCookie("SSIDCE", data.userDetails.email_id, { path: "/", maxAge: 24 * 60 * 60 });
+              setCookie("session_id", data.session_id, { path: "/", maxAge: 24 * 60 * 60 });
+              setCookie("SSDSD", JSON.stringify(data.userDetails), { path: "/", maxAge: 24 * 60 * 60 });
+              window.location.href = '/';
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Login Failed',
+            text: data.message || 'User not found',
+            icon: 'error',
+            confirmButtonText: 'Retry'
+          });
+        }
+      })
+      .catch(error => {
         setIsLoading(false);
         Swal.fire({
           title: 'Login Failed',
-          text: data.message || 'Google user not found',
+          text: error.message || 'Network Error',
           icon: 'error',
           confirmButtonText: 'Retry'
         });
-      }
-    } catch (error) {
-      setIsLoading(false);
-      Swal.fire({
-        title: 'Login Failed',
-        text: 'Google Login Failed',
-        icon: 'error',
-        confirmButtonText: 'Retry'
       });
-    }
   };
+
 
   useEffect(() => {
     const checkAccess = async () => {
