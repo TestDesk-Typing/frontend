@@ -71,7 +71,7 @@ const Typing = () => {
     }
   };
 
-  const userSubmit = async (event = null, userData = null) => {
+  const userSubmit = async (event = null, userDetails = null) => {
     event && event.preventDefault();
     setIsLoading(true);
 
@@ -82,12 +82,12 @@ const Typing = () => {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({ email_id: userData ? userData?.email_id : emailId, password: userData ? userData?.password : password })
+        body: JSON.stringify({ email_id: userDetails ? userDetails?.email_id : emailId, password: userDetails ? userDetails?.password : password })
       });
 
       const data = await response.json();
       setIsLoading(false);
-
+debugger;
       if (response.ok && data.userDetails) {
         Swal.fire({
           title: 'Login Successful',
@@ -124,12 +124,12 @@ const Typing = () => {
         credentials: 'include',
         body: JSON.stringify({ credential: credentialResponse.credential })
       });
-
+debugger;
       const data = await response.json();
-      if (response.ok && data.userData) {
-        setEmailId(data?.userData?.email_id);
-        setPassword(data?.userData?.password);
-        userSubmit(null, data.userData)
+      if (response.ok && data.userDetails) {
+        setEmailId(data?.userDetails?.email_id);
+        setPassword(data?.userDetails?.password);
+        userSubmit(null, data.userDetails)
       } else {
         setIsLoading(false);
         Swal.fire({
