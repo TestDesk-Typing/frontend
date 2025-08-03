@@ -10,6 +10,7 @@ import MainFooter from '../Footermain/Footer';
 import HomePageDescription from './HomePageDescription';
 import BrowseExam from './BrowseExam';
 import ExamList from './ExamList';
+import SlidingNoticeBox from './SlidingNoticeBox';
 
 
 
@@ -79,6 +80,7 @@ const HomePage = () => {
       {/* Components */}
       <TypingHeader />
       <Banner />
+      <SlidingNoticeBox />
       <AfterBanner />
      
       <ExamList />

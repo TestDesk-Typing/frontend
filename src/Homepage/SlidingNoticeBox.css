@@ -1,0 +1,30 @@
+.notice-box {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ffffff8c;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 1000;
+  display: block;
+}
+
+.notice-box-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  display: block;
+}
+
+.notice-box-image {
+  width: 200px;
+  height: auto;
+}
+
+.notice-box-text {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+}
