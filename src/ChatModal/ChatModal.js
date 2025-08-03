@@ -91,9 +91,17 @@ const ChatModal = ({ open, onClose }) => {
   };
 
   const getUserProfilePic = (msg) => {
-    if (msg.profile_pic) return `${process.env.REACT_APP_API_URL}${msg.profile_pic}`;
-    if (msg.userId && typeof msg.userId === "object" && msg.userId.profile_pic)
-      return `${process.env.REACT_APP_API_URL}${msg.userId.profile_pic}`;
+    const getProfilePicUrl = (profilePic) => {
+      if (!profilePic) return null;
+      return profilePic.includes('googleusercontent.com')
+        ? profilePic
+        : `${process.env.REACT_APP_API_URL}${profilePic}`;
+    };
+
+    if (msg.profile_pic) return getProfilePicUrl(msg.profile_pic);
+    if (msg.userId && typeof msg.userId === "object" && msg.userId.profile_pic) {
+      return getProfilePicUrl(msg.userId.profile_pic);
+    }
     return require("../i/profile.png");
   };
 
