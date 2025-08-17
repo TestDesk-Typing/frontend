@@ -299,11 +299,14 @@ const Profile = () => {
                   <Form.Group className="mb-3">
                     <Form.Label>Membership</Form.Label>
                     {isEditing ? (
-                      <Form.Control
-                        type="text"
+                      <Form.Select
                         value={user.membership}
                         onChange={(e) => setUser({ ...user, membership: e.target.value })}
-                      />
+                      >
+                        <option className="input-status-option" value="Basic">Basic</option>
+                        <option className="input-status-option" value="Premium">Premium</option>
+                        <option className="input-status-option" value="VIP">VIP</option>
+                      </Form.Select>
                     ) : (
                       <p className="form-control-static">{user.membership}</p>
                     )}
