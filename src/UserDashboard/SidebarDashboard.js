@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaTachometerAlt, FaUser, FaHome, FaCog, FaSignOutAlt, FaFileInvoice } from 'react-icons/fa';
 import { TbReport, TbDeviceGamepad2 } from "react-icons/tb";
 import { Link } from 'react-router-dom';
@@ -6,12 +6,10 @@ import { useCookies } from 'react-cookie';
 import { Nav, ListGroup } from 'react-bootstrap';
 import './SidebarDashboard.css';
 
-const SidebarDashboard = ({ onMenuClick }) => {
-  const [activeMenu, setActiveMenu] = useState('UserOverallChart');
-  const [cookies, setCookie, removeCookie] = useCookies(['session_id', 'SSIDCE', 'SSDSD']);
+const SidebarDashboard = ({ onMenuClick, activeMenu }) => {
+  const [cookies, , removeCookie] = useCookies(['session_id', 'SSIDCE', 'SSDSD']);
 
   const handleMenuClick = (menu) => {
-    setActiveMenu(menu);
     onMenuClick(menu);
   };
 

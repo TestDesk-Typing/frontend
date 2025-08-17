@@ -77,7 +77,6 @@ const TypingGame = () => {
         });
 
         const data = await response.json();
-        console.log("Access check result:", data);
 
         if (data.access === "access") {
           setUserAccess(true);

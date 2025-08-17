@@ -10,10 +10,11 @@ import TypingGame from '../Typing/TypingGame';
 import Invoice from '../User/Invoice';
 import './DashboardContainer.css';
 import DashboardHeader from './DashboardHeader';
+import Swal from 'sweetalert2';
 
 const DashboardContainer = () => {
   const [activeComponent, setActiveComponent] = useState('UserOverallChart');
-  const [cookies] = useCookies(['session_id']);
+  const [cookies] = useCookies(['session_id', 'SSIDCE']);
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
@@ -87,7 +88,6 @@ const DashboardContainer = () => {
     }
   };
 
-
   // Add event listeners when component mounts
   useEffect(() => {
     const mainContent = mainContentRef.current;
@@ -99,7 +99,6 @@ const DashboardContainer = () => {
       mainContent.addEventListener('touchend', onTouchEnd, { passive: true });
     }
 
-    // Add touch area for closed sidebar (10px edge)
     if (sidebar) {
       sidebar.addEventListener('touchstart', onTouchStart, { passive: true });
       sidebar.addEventListener('touchmove', onTouchMove, { passive: true });
@@ -119,6 +118,40 @@ const DashboardContainer = () => {
       }
     };
   }, [touchStart, touchEnd, sidebarCollapsed]);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/api/users/profile/${cookies.SSIDCE}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${cookies.session_id}`,
+      },
+    }).then((response) => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    }).then((data) => {
+      console.log("this is data =>>> ", data)
+      if (activeComponent !== 'Profile') {
+        if (data?.gender === "Other" || data?.mobile_number === "0000000000" || data?.city_name === "Unknown") {
+          Swal.fire({
+            title: 'Update Complete Profile',
+            text: 'Please update your complete profile for better experience.',
+            icon: 'warning',
+            confirmButtonText: 'Go To Profile',
+            showCloseButton: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setActiveComponent('Profile');
+            }
+          });
+        }
+      }
+    }).catch((error) => {
+      console.error('Error fetching user data:', error);
+    });
+  }, [activeComponent, cookies.SSIDCE, cookies.session_id]);
 
   const renderComponent = () => {
     switch (activeComponent) {
@@ -149,12 +182,13 @@ const DashboardContainer = () => {
       <div
         ref={sidebarRef}
         className={`sidebar ${window.innerWidth < 768
-            ? (sidebarCollapsed ? '' : 'show')
-            : (sidebarCollapsed ? 'collapsed' : '')
+          ? (sidebarCollapsed ? '' : 'show')
+          : (sidebarCollapsed ? 'collapsed' : '')
           }`}
       >
         <SidebarDashboard
           onMenuClick={handleMenuClick}
+          activeMenu={activeComponent}
           isCollapsed={sidebarCollapsed}
           toggleCollapse={toggleSidebar}
         />
@@ -181,8 +215,6 @@ const DashboardContainer = () => {
       </div>
     </div>
   );
-
-
 };
 
 export default DashboardContainer;
