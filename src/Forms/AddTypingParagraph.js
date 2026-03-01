@@ -48,8 +48,8 @@ const AddTypingParagraph = () => {
     },
     'Delhi Police': {
       examNames: {
-        'AWO-TPO English': ['DELHI-POLICE-TYPING-ENG-01', 'DELHI-POLICE-TYPING-ENG-02-2025'],
-        'AWO-TPO Hindi': ['DELHI-POLICE-TYPING-HIN-01', 'DELHI-POLICE-TYPING-HIN-02-2025'],
+        'DP HCM English': ['DELHI-POLICE-HCM-TYPING-ENG-01', 'DELHI-POLICE-HCM-TYPING-ENG-02-2025'],
+        'DP HCM Hindi': ['DELHI-POLICE-HCM-TYPING-HIN-01', 'DELHI-POLICE-HCM-TYPING-HIN-02-2025'],
       },
     },
     'Delhi High Court': {
